@@ -1,0 +1,4 @@
+# Keep shell scripts executable by bash on Linux after checkout.
+*.sh text eol=lf
+*.py text eol=lf
+*.bat text eol=crlf

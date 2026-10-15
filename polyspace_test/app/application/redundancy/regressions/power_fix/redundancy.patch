@@ -1,0 +1,25 @@
+--- redundancy.c before
++++ redundancy.c after
+@@ -759,12 +759,16 @@
+         if ((calculatePower == true) && (mrc_tablePackValues.invalidStringCurrent[s] == 0u) &&
+             (mrc_tablePackValues.invalidStringVoltage[s] == 0u)) {
+             /* Power measurement is invalid, but current and string voltage measurement are valid */
+-            const float_t stringCurrent_A = (float_t)mrc_tablePackValues.stringCurrent_mA[s] /
+-                                            UNIT_CONVERSION_FACTOR_1000_FLOAT;
+-            const float_t stringVoltage_V = (float_t)mrc_tablePackValues.stringVoltage_mV[s] /
+-                                            UNIT_CONVERSION_FACTOR_1000_FLOAT;
+-            mrc_tablePackValues.stringPower_W[s]      = (int32_t)(stringCurrent_A * stringVoltage_V);
+-            mrc_tablePackValues.invalidStringPower[s] = 0u;
++            const int64_t stringCurrent_mA = (int64_t)mrc_tablePackValues.stringCurrent_mA[s];
++            const int64_t stringVoltage_mV = (int64_t)mrc_tablePackValues.stringVoltage_mV[s];
++            /* Convert mA * mV to W, truncating fractional watts towards zero. */
++            const int64_t calculatedPower_W = (stringCurrent_mA * stringVoltage_mV) / INT64_C(1000000);
++            if ((calculatedPower_W >= INT32_MIN) && (calculatedPower_W <= INT32_MAX)) {
++                mrc_tablePackValues.stringPower_W[s]      = (int32_t)calculatedPower_W;
++                mrc_tablePackValues.invalidStringPower[s] = 0u;
++            } else {
++                mrc_tablePackValues.invalidStringPower[s] = 1u;
++            }
+         }
+         if (mrc_tablePackValues.invalidStringPower[s] == 0u) {
+             packPower_W += mrc_tablePackValues.stringPower_W[s];

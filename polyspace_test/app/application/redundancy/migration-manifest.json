@@ -1,0 +1,217 @@
+{
+  "historical_files": [
+    {
+      "historical_path": "polyspace/redundancy-tests/abort_probe.c",
+      "sha256": "b298b9f7525001d25b62c33669a47b6c4b76ed773ee57e632ff52ca8eace997b",
+      "retained_at_original_location": true
+    },
+    {
+      "historical_path": "polyspace/redundancy-tests/host_compat.h",
+      "sha256": "a31b0b49f2eb63abd680642697b6f79005e73905ef0c52812e10c3de8dcdd845",
+      "retained_at_original_location": true
+    },
+    {
+      "historical_path": "polyspace/redundancy-tests/stub_contract.h",
+      "sha256": "ad0a6c1c034bdc98e5ce5d4563a2cf1d34677ece641a7fb57914c977bb01e19d",
+      "retained_at_original_location": true
+    },
+    {
+      "historical_path": "polyspace/redundancy-tests/stubs.c",
+      "sha256": "243e67f1acb288bdd99034e01e9ebd3df83f19dec0c89802cb40f7506c7672d6",
+      "retained_at_original_location": true
+    },
+    {
+      "historical_path": "polyspace/redundancy-tests/test_redundancy.c",
+      "sha256": "514f392fa2f8d98e37e3f7c0041f9a791b7643e6518c9bc1a47f6a0392f1ee44",
+      "retained_at_original_location": true
+    },
+    {
+      "historical_path": "polyspace/redundancy-tests/test_redundancy_multi.c",
+      "sha256": "2cc17380dc3296292f290b0c0fa2a77f500305c53ed5d135ea76f5f0831a63e8",
+      "retained_at_original_location": true
+    },
+    {
+      "historical_path": "polyspace/power-fix-20261014/tests/host_compat.h",
+      "sha256": "a31b0b49f2eb63abd680642697b6f79005e73905ef0c52812e10c3de8dcdd845",
+      "retained_at_original_location": true
+    },
+    {
+      "historical_path": "polyspace/power-fix-20261014/tests/stub_contract.h",
+      "sha256": "ad0a6c1c034bdc98e5ce5d4563a2cf1d34677ece641a7fb57914c977bb01e19d",
+      "retained_at_original_location": true
+    },
+    {
+      "historical_path": "polyspace/power-fix-20261014/tests/stubs.c",
+      "sha256": "243e67f1acb288bdd99034e01e9ebd3df83f19dec0c89802cb40f7506c7672d6",
+      "retained_at_original_location": true
+    },
+    {
+      "historical_path": "polyspace/power-fix-20261014/tests/test_power_fix.c",
+      "sha256": "9cf34567d8b3c0297a208b8dcffc0347ab1484c356447e4cd9725d6110c442d3",
+      "retained_at_original_location": true
+    },
+    {
+      "historical_path": "polyspace/power-fix-20261014/tests/test_redundancy.c",
+      "sha256": "495beb376314aaf96e61bede77644dac285c4fb745a57c978ab62d0b9232cc33",
+      "retained_at_original_location": true
+    },
+    {
+      "historical_path": "polyspace/power-fix-20261014/tests/test_redundancy_multi.c",
+      "sha256": "c6851fcf2d5b2703982d23b67f79a994044acd7164f0070ccea233f99a86644d",
+      "retained_at_original_location": true
+    },
+    {
+      "historical_path": "polyspace/power-fix-20261014/coverage/host_compat.h",
+      "sha256": "a31b0b49f2eb63abd680642697b6f79005e73905ef0c52812e10c3de8dcdd845",
+      "retained_at_original_location": true
+    },
+    {
+      "historical_path": "polyspace/power-fix-20261014/coverage/stub_contract.h",
+      "sha256": "ad0a6c1c034bdc98e5ce5d4563a2cf1d34677ece641a7fb57914c977bb01e19d",
+      "retained_at_original_location": true
+    },
+    {
+      "historical_path": "polyspace/power-fix-20261014/coverage/stubs.c",
+      "sha256": "243e67f1acb288bdd99034e01e9ebd3df83f19dec0c89802cb40f7506c7672d6",
+      "retained_at_original_location": true
+    },
+    {
+      "historical_path": "polyspace/power-fix-20261014/coverage/test_power_fix.c",
+      "sha256": "9cf34567d8b3c0297a208b8dcffc0347ab1484c356447e4cd9725d6110c442d3",
+      "retained_at_original_location": true
+    },
+    {
+      "historical_path": "polyspace/power-fix-20261014/coverage/test_redundancy.c",
+      "sha256": "495beb376314aaf96e61bede77644dac285c4fb745a57c978ab62d0b9232cc33",
+      "retained_at_original_location": true
+    },
+    {
+      "historical_path": "polyspace/power-fix-20261014/coverage/test_redundancy_multi.c",
+      "sha256": "c6851fcf2d5b2703982d23b67f79a994044acd7164f0070ccea233f99a86644d",
+      "retained_at_original_location": true
+    }
+  ],
+  "canonical_tests": [
+    "test_redundancy_requirements.c",
+    "test_redundancy_multistring.c"
+  ],
+  "assert_location_changes": [
+    {
+      "test_file": "test_redundancy_requirements.c",
+      "function": "MRC_CalculateCellVoltageMinMaxAverage",
+      "null_parameter": 1,
+      "previous_line": 790,
+      "v1.11.0_line": 786,
+      "reason": "Same NULL argument assertion in unchanged v1.11.0; functional oracle unchanged."
+    },
+    {
+      "test_file": "test_redundancy_requirements.c",
+      "function": "MRC_CalculateCellVoltageMinMaxAverage",
+      "null_parameter": 2,
+      "previous_line": 791,
+      "v1.11.0_line": 787,
+      "reason": "Same NULL argument assertion in unchanged v1.11.0; functional oracle unchanged."
+    },
+    {
+      "test_file": "test_redundancy_requirements.c",
+      "function": "MRC_CalculateCellTemperatureMinMaxAverage",
+      "null_parameter": 1,
+      "previous_line": 848,
+      "v1.11.0_line": 844,
+      "reason": "Same NULL argument assertion in unchanged v1.11.0; functional oracle unchanged."
+    },
+    {
+      "test_file": "test_redundancy_requirements.c",
+      "function": "MRC_CalculateCellTemperatureMinMaxAverage",
+      "null_parameter": 2,
+      "previous_line": 849,
+      "v1.11.0_line": 845,
+      "reason": "Same NULL argument assertion in unchanged v1.11.0; functional oracle unchanged."
+    },
+    {
+      "test_file": "test_redundancy_requirements.c",
+      "function": "MRC_ValidateCellVoltage",
+      "null_parameter": 1,
+      "previous_line": 907,
+      "v1.11.0_line": 903,
+      "reason": "Same NULL argument assertion in unchanged v1.11.0; functional oracle unchanged."
+    },
+    {
+      "test_file": "test_redundancy_requirements.c",
+      "function": "MRC_ValidateCellVoltage",
+      "null_parameter": 2,
+      "previous_line": 908,
+      "v1.11.0_line": 904,
+      "reason": "Same NULL argument assertion in unchanged v1.11.0; functional oracle unchanged."
+    },
+    {
+      "test_file": "test_redundancy_requirements.c",
+      "function": "MRC_ValidateCellVoltage",
+      "null_parameter": 3,
+      "previous_line": 909,
+      "v1.11.0_line": 905,
+      "reason": "Same NULL argument assertion in unchanged v1.11.0; functional oracle unchanged."
+    },
+    {
+      "test_file": "test_redundancy_requirements.c",
+      "function": "MRC_UpdateCellVoltageValidation",
+      "null_parameter": 1,
+      "previous_line": 980,
+      "v1.11.0_line": 976,
+      "reason": "Same NULL argument assertion in unchanged v1.11.0; functional oracle unchanged."
+    },
+    {
+      "test_file": "test_redundancy_requirements.c",
+      "function": "MRC_UpdateCellVoltageValidation",
+      "null_parameter": 2,
+      "previous_line": 981,
+      "v1.11.0_line": 977,
+      "reason": "Same NULL argument assertion in unchanged v1.11.0; functional oracle unchanged."
+    },
+    {
+      "test_file": "test_redundancy_requirements.c",
+      "function": "MRC_ValidateCellTemperature",
+      "null_parameter": 1,
+      "previous_line": 998,
+      "v1.11.0_line": 994,
+      "reason": "Same NULL argument assertion in unchanged v1.11.0; functional oracle unchanged."
+    },
+    {
+      "test_file": "test_redundancy_requirements.c",
+      "function": "MRC_ValidateCellTemperature",
+      "null_parameter": 2,
+      "previous_line": 999,
+      "v1.11.0_line": 995,
+      "reason": "Same NULL argument assertion in unchanged v1.11.0; functional oracle unchanged."
+    },
+    {
+      "test_file": "test_redundancy_requirements.c",
+      "function": "MRC_ValidateCellTemperature",
+      "null_parameter": 3,
+      "previous_line": 1000,
+      "v1.11.0_line": 996,
+      "reason": "Same NULL argument assertion in unchanged v1.11.0; functional oracle unchanged."
+    },
+    {
+      "test_file": "test_redundancy_requirements.c",
+      "function": "MRC_UpdateCellTemperatureValidation",
+      "null_parameter": 1,
+      "previous_line": 1072,
+      "v1.11.0_line": 1068,
+      "reason": "Same NULL argument assertion in unchanged v1.11.0; functional oracle unchanged."
+    },
+    {
+      "test_file": "test_redundancy_requirements.c",
+      "function": "MRC_UpdateCellTemperatureValidation",
+      "null_parameter": 2,
+      "previous_line": 1073,
+      "v1.11.0_line": 1069,
+      "reason": "Same NULL argument assertion in unchanged v1.11.0; functional oracle unchanged."
+    }
+  ],
+  "case_ids_preserved": true,
+  "functional_expectations_preserved": true,
+  "production_code_modified": false,
+  "canonical_root": "polyspace_test",
+  "relocation_from": "src/polyspace_test"
+}

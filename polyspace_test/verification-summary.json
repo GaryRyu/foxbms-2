@@ -1,0 +1,123 @@
+{
+  "baseline_version": "v1.11.0",
+  "baseline_commit": "308028fb13d046ba29b98886895c2e17937b1437",
+  "actual_commit": "308028fb13d046ba29b98886895c2e17937b1437",
+  "compiler_version": "gcc.EXE (x86_64-win32-seh-rev0, Built by MinGW-W64 project) 8.1.0\nCopyright (C) 2018 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "target": "x86_64-w64-mingw32",
+  "host_abi": "pointer=8 int=4 long=4 uintptr_t=8",
+  "language_standard": "c11",
+  "total": 152,
+  "counts": {
+    "Pass": 139,
+    "Fail": 13,
+    "Incomplete": 0
+  },
+  "individual_status_changes": 0,
+  "all_case_ids_preserved": true,
+  "functional_expectations_changed": false,
+  "production_source_modified": false,
+  "assert_location_corrections": 14,
+  "run_directory": "build/polyspace_test/20261015-213227-922193",
+  "failures": [
+    {
+      "case": "ADD_POWER_invalid_no_current",
+      "strings": 1
+    },
+    {
+      "case": "ADD_POWER_invalid_no_voltage",
+      "strings": 1
+    },
+    {
+      "case": "ADD_POWER_same_invalid_loss",
+      "strings": 1
+    },
+    {
+      "case": "ADD_POWER_same_invalid_recovery",
+      "strings": 1
+    },
+    {
+      "case": "ADD_T_COUNT_dual_7_repeat1",
+      "strings": 1
+    },
+    {
+      "case": "ADD_T_COUNT_dual_7_repeat2",
+      "strings": 1
+    },
+    {
+      "case": "ADD_T_COUNT_dual_8_repeat1",
+      "strings": 1
+    },
+    {
+      "case": "ADD_T_COUNT_dual_8_repeat2",
+      "strings": 1
+    },
+    {
+      "case": "ADD_T_COUNT_single_7_repeat1",
+      "strings": 1
+    },
+    {
+      "case": "ADD_T_COUNT_single_7_repeat2",
+      "strings": 1
+    },
+    {
+      "case": "ADD_T_COUNT_single_8_repeat1",
+      "strings": 1
+    },
+    {
+      "case": "ADD_T_COUNT_single_8_repeat2",
+      "strings": 1
+    },
+    {
+      "case": "ADD_MULTI_power_independence_A0",
+      "strings": 2
+    }
+  ],
+  "abort_probe_validated": true,
+  "coverage_verification": {
+    "run_directory": "build/polyspace_test/20261015-211240-734038",
+    "counts": {
+      "Pass": 139,
+      "Fail": 13,
+      "Incomplete": 0
+    },
+    "individual_status_changes": 0,
+    "sut_metrics": [
+      {
+        "strings": 1,
+        "path": "C:\\Workspace\\foxBMS2\\foxbms-2\\src\\app\\application\\redundancy",
+        "Decision": "250/334",
+        "Condition": "178/184",
+        "MCDC": "33/35",
+        "Statement": "550/585",
+        "FunCall": "113/142",
+        "FunEntry": "18/18",
+        "FunExit": "18/18",
+        "RelationalBoundary": "169/267",
+        "CycloCplx": "135"
+      },
+      {
+        "strings": 2,
+        "path": "C:\\Workspace\\foxBMS2\\foxbms-2\\src\\app\\application\\redundancy",
+        "Decision": "43/334",
+        "Condition": "31/184",
+        "MCDC": "4/35",
+        "Statement": "100/585",
+        "FunCall": "16/142",
+        "FunEntry": "6/18",
+        "FunExit": "6/18",
+        "RelationalBoundary": "31/267",
+        "CycloCplx": "135"
+      }
+    ],
+    "sandbox_note": "Initial sandbox instrumentation stalled; identical commands completed with approved execution outside sandbox.",
+    "note": "Historical successful coverage run before repository-root relocation; retained as historical evidence, not rerun after relocation."
+  },
+  "previous_run_directory": "build/polyspace_test/20261015-210618-903929",
+  "canonical_test_root": "polyspace_test",
+  "root_relocation": {
+    "from": "src/polyspace_test",
+    "to": "polyspace_test",
+    "validated_cases": 152,
+    "individual_status_changes": 0
+  }
+}

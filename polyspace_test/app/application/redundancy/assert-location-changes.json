@@ -1,0 +1,114 @@
+[
+  {
+    "test_file": "test_redundancy_requirements.c",
+    "function": "MRC_CalculateCellVoltageMinMaxAverage",
+    "null_parameter": 1,
+    "previous_line": 790,
+    "v1.11.0_line": 786,
+    "reason": "Same NULL argument assertion in unchanged v1.11.0; functional oracle unchanged."
+  },
+  {
+    "test_file": "test_redundancy_requirements.c",
+    "function": "MRC_CalculateCellVoltageMinMaxAverage",
+    "null_parameter": 2,
+    "previous_line": 791,
+    "v1.11.0_line": 787,
+    "reason": "Same NULL argument assertion in unchanged v1.11.0; functional oracle unchanged."
+  },
+  {
+    "test_file": "test_redundancy_requirements.c",
+    "function": "MRC_CalculateCellTemperatureMinMaxAverage",
+    "null_parameter": 1,
+    "previous_line": 848,
+    "v1.11.0_line": 844,
+    "reason": "Same NULL argument assertion in unchanged v1.11.0; functional oracle unchanged."
+  },
+  {
+    "test_file": "test_redundancy_requirements.c",
+    "function": "MRC_CalculateCellTemperatureMinMaxAverage",
+    "null_parameter": 2,
+    "previous_line": 849,
+    "v1.11.0_line": 845,
+    "reason": "Same NULL argument assertion in unchanged v1.11.0; functional oracle unchanged."
+  },
+  {
+    "test_file": "test_redundancy_requirements.c",
+    "function": "MRC_ValidateCellVoltage",
+    "null_parameter": 1,
+    "previous_line": 907,
+    "v1.11.0_line": 903,
+    "reason": "Same NULL argument assertion in unchanged v1.11.0; functional oracle unchanged."
+  },
+  {
+    "test_file": "test_redundancy_requirements.c",
+    "function": "MRC_ValidateCellVoltage",
+    "null_parameter": 2,
+    "previous_line": 908,
+    "v1.11.0_line": 904,
+    "reason": "Same NULL argument assertion in unchanged v1.11.0; functional oracle unchanged."
+  },
+  {
+    "test_file": "test_redundancy_requirements.c",
+    "function": "MRC_ValidateCellVoltage",
+    "null_parameter": 3,
+    "previous_line": 909,
+    "v1.11.0_line": 905,
+    "reason": "Same NULL argument assertion in unchanged v1.11.0; functional oracle unchanged."
+  },
+  {
+    "test_file": "test_redundancy_requirements.c",
+    "function": "MRC_UpdateCellVoltageValidation",
+    "null_parameter": 1,
+    "previous_line": 980,
+    "v1.11.0_line": 976,
+    "reason": "Same NULL argument assertion in unchanged v1.11.0; functional oracle unchanged."
+  },
+  {
+    "test_file": "test_redundancy_requirements.c",
+    "function": "MRC_UpdateCellVoltageValidation",
+    "null_parameter": 2,
+    "previous_line": 981,
+    "v1.11.0_line": 977,
+    "reason": "Same NULL argument assertion in unchanged v1.11.0; functional oracle unchanged."
+  },
+  {
+    "test_file": "test_redundancy_requirements.c",
+    "function": "MRC_ValidateCellTemperature",
+    "null_parameter": 1,
+    "previous_line": 998,
+    "v1.11.0_line": 994,
+    "reason": "Same NULL argument assertion in unchanged v1.11.0; functional oracle unchanged."
+  },
+  {
+    "test_file": "test_redundancy_requirements.c",
+    "function": "MRC_ValidateCellTemperature",
+    "null_parameter": 2,
+    "previous_line": 999,
+    "v1.11.0_line": 995,
+    "reason": "Same NULL argument assertion in unchanged v1.11.0; functional oracle unchanged."
+  },
+  {
+    "test_file": "test_redundancy_requirements.c",
+    "function": "MRC_ValidateCellTemperature",
+    "null_parameter": 3,
+    "previous_line": 1000,
+    "v1.11.0_line": 996,
+    "reason": "Same NULL argument assertion in unchanged v1.11.0; functional oracle unchanged."
+  },
+  {
+    "test_file": "test_redundancy_requirements.c",
+    "function": "MRC_UpdateCellTemperatureValidation",
+    "null_parameter": 1,
+    "previous_line": 1072,
+    "v1.11.0_line": 1068,
+    "reason": "Same NULL argument assertion in unchanged v1.11.0; functional oracle unchanged."
+  },
+  {
+    "test_file": "test_redundancy_requirements.c",
+    "function": "MRC_UpdateCellTemperatureValidation",
+    "null_parameter": 2,
+    "previous_line": 1073,
+    "v1.11.0_line": 1069,
+    "reason": "Same NULL argument assertion in unchanged v1.11.0; functional oracle unchanged."
+  }
+]

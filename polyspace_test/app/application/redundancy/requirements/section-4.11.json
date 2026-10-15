@@ -1,0 +1,1045 @@
+{
+  "document": "foxBMS2_기능기반_요구사항_초안.docx",
+  "document_sha256": "ea995abf7d2d72b494beb0117e4ea95e2e2da6a79ad324618cfb13acdbfa6005",
+  "source": "../../../../../src/app/application/redundancy/redundancy.c",
+  "source_sha256": "bb7490b557131072584f6e9bbc0a8eca639dd43b243b20aa6d07d921f2c0bf75",
+  "section": "4.11",
+  "requirements": [
+    {
+      "id": "F2-LLR-ALG-080",
+      "text": "측정 이중화 모듈은 초기화, 셀 전압·온도 검증과 통계 산출, 스트링·배터리·고전압 버스 전압 산출, 스트링·Pack 전류와 전력 처리, 데이터베이스 갱신 및 입력 포인터 검사를 세부 요구사항 F2-LLR-ALG-080-01~29에 따라 수행해야 한다."
+    },
+    {
+      "id": "F2-LLR-ALG-080-01",
+      "text": "AFE 초기화초기화 시 모든 셀 전압, 모듈 전압, 스트링 전압 및 셀 온도의 무효 플래그를 설정해야 한다."
+    },
+    {
+      "id": "F2-LLR-ALG-080-02",
+      "text": "Pack 초기화초기화 시 모든 스트링의 전압·전류·전력과 Pack 전류·전력, 배터리 전압 및 고전압 버스 전압의 무효 플래그를 1로 설정해야 한다."
+    },
+    {
+      "id": "F2-LLR-ALG-080-03",
+      "text": "초기화 저장·반환초기화 결과를 검증된 셀 전압·셀 온도·Pack 데이터 블록에 기록하고, 데이터베이스 쓰기 함수의 반환값을 MRC_Initialize의 반환값으로 전달해야 한다."
+    },
+    {
+      "id": "F2-LLR-ALG-080-04",
+      "text": "측정 이력 판정timestamp와 previousTimestamp가 모두 0이면 미측정으로 판단하고, 그 외에는 한 번 이상 측정된 것으로 판단해야 한다."
+    },
+    {
+      "id": "F2-LLR-ALG-080-05",
+      "text": "최신성 판정한 번 이상 측정되었고 uint32_t 연산으로 구한 현재 시각 − timestamp가 허용 시간 이하이면 최신으로 판단해야 한다. AFE·전류는 250ms, V1·V3 전압 센서·전력은 300ms를 적용해야 한다. 경계값은 포함하며 시각 카운터 순환도 같은 뺄셈으로 처리해야 한다."
+    },
+    {
+      "id": "F2-LLR-ALG-080-06",
+      "text": "이중화 사용 결정셀 전압과 온도 각각에 대해 Redundancy0 데이터 블록이 한 번 이상 갱신되었으면 이중화 측정을 사용해야 한다. 갱신 이력이 없으면 Base 측정만 사용해야 한다."
+    },
+    {
+      "id": "F2-LLR-ALG-080-07",
+      "text": "AFE 측정 선택신규 여부는 저장된 해당 측정 처리 시각과 입력 timestamp가 다른지로 판단해야 한다. 이중화 사용 중 양쪽이 신규이면 두 측정을 비교해야 한다. 한쪽만 신규이고 반대쪽이 시간초과이면 신규 측정만 사용해야 한다. 반대쪽이 시간초과가 아니거나 양쪽 모두 신규가 아니면 결과를 유지해야 한다. 이중화 미사용 중에는 Base가 신규일 때 갱신해야 한다. 단일 측정 사용 시 데이터 본문을 복사하고 출력 블록의 헤더를 보존해야 한다. 최신성 및 처리 시각 저장의 미결정 사항은 RV-02를 참조한다."
+    },
+    {
+      "id": "F2-LLR-ALG-080-08",
+      "text": "셀 전압 검증셀별로 양쪽 입력이 유효하면 두 값의 정수 평균을 저장하고 절대 차이가 10mV 이하이면 유효, 초과하면 무효로 표시해야 한다. 한쪽만 유효하면 그 값을 유효한 출력으로 사용해야 한다. 양쪽 모두 무효이면 평균값을 저장하고 무효로 표시해야 한다. 정수 평균은 나머지를 0 방향으로 버려야 한다. 비교 함수는 하나라도 무효 출력이 있으면 STD_NOT_OK, 모두 유효하면 STD_OK를 반환해야 한다."
+    },
+    {
+      "id": "F2-LLR-ALG-080-09",
+      "text": "셀 온도 검증센서별로 양쪽 입력이 유효하면 두 값의 정수 평균을 저장하고 절대 차이가 50단위(5℃) 이하이면 유효, 초과하면 무효로 표시해야 한다. 정수 평균은 나머지를 0 방향으로 버려야 한다. 한쪽만 유효하면 그 값을 유효한 출력으로 사용해야 한다. 양쪽 모두 무효이면 출력도 무효로 표시해야 한다. 이 경우 저장 수치의 음수 연산은 RV-06의 미결정 사항으로 분리한다. 비교 함수는 하나라도 무효 출력이 있으면 STD_NOT_OK, 모두 유효하면 STD_OK를 반환해야 한다."
+    },
+    {
+      "id": "F2-LLR-ALG-080-10",
+      "text": "비교 직후 집계이중화 비교 직후 스트링별 유효 셀 전압 개수와 유효 온도 개수를 기록해야 한다. 스트링 전압은 비교 결과의 유효 셀 전압만 합산해야 한다. 최종 온도 개수는 080-27을 따라야 한다. 편차 검사 후 전압 집계 필드의 정합성은 RV-03을 참조한다."
+    },
+    {
+      "id": "F2-LLR-ALG-080-11",
+      "text": "셀 전압 통계스트링별로 최종 무효 플래그가 해제된 셀 전압만 사용하여 최소·최대·평균·유효 개수와 극값의 모듈·셀 위치를 계산해야 한다. 평균은 유효값 합계 / 유효 개수의 정수값이며 나머지는 0 방향으로 버려야 한다. 동일한 극값은 먼저 기록된 위치를 유지해야 한다. 모든 스트링에 유효값이 있으면 통계 함수는 STD_OK를 반환해야 한다."
+    },
+    {
+      "id": "F2-LLR-ALG-080-12",
+      "text": "셀 온도 통계스트링별로 최종 무효 플래그가 해제된 온도만 사용하여 최소·최대·평균·유효 개수와 극값의 모듈·센서 위치를 계산해야 한다. 평균은 float_t 합계 / 유효 개수로 계산하여 소수 부분을 유지해야 한다. 동일한 극값은 먼저 기록된 위치를 유지해야 한다. 모든 스트링에 유효값이 있으면 통계 함수는 STD_OK를 반환해야 한다. 최종 유효 개수의 일치는 080-27을 따라야 한다."
+    },
+    {
+      "id": "F2-LLR-ALG-080-13",
+      "text": "유효 측정 없음스트링에 유효 측정이 없으면 해당 통계의 유효 개수·평균·극값 위치를 0, 최소값을 INT16_MAX, 최대값을 INT16_MIN으로 기록해야 한다. 하나 이상의 스트링에서 이 조건이 발생하면 해당 전압 또는 온도 통계 계산 함수는 STD_NOT_OK를 반환해야 한다."
+    },
+    {
+      "id": "F2-LLR-ALG-080-14",
+      "text": "평균 대비 편차 검사최초 통계 계산 후 유효 셀 전압의 평균 대비 절대 차이가 300mV를 초과하거나 유효 온도의 차이가 100단위(10℃)를 초과하면 해당 측정을 무효화해야 한다. 온도 비교에는 최초 평균을 int16_t로 변환한 값을 사용해야 한다. 새 무효 측정이 발생하면 남은 유효값으로 통계를 한 번 다시 계산해야 한다. 동일 호출에서 재계산한 평균으로 편차 검사를 반복하지 않아야 한다. 최종 온도 개수는 080-27을 따라야 한다."
+    },
+    {
+      "id": "F2-LLR-ALG-080-15",
+      "text": "AFE 결과 저장·반환전압·온도 중 처리된 항목의 검증 데이터 블록과 최소·최대 데이터 블록을 기록해야 한다. 양쪽 모두 처리되면 세 블록을 기록해야 한다. 처리된 항목이 하나 이상이면 MRC_ValidateAfeMeasurement는 STD_OK, 없으면 STD_NOT_OK를 반환해야 한다. 이 반환값은 모든 측정의 유효함을 뜻하지 않는다. Base·Redundancy0 원본 블록은 읽기 입력으로 사용해야 한다. 데이터베이스 실패 전파는 RV-07을 참조한다."
+    },
+    {
+      "id": "F2-LLR-ALG-080-16",
+      "text": "스트링 전압 선택V1이 최신·유효하고 AFE의 유효 셀 개수가 구성 셀 수와 같으면 두 스트링 전압을 비교해야 한다. 절대 차이가 3000mV 미만이면 유효, 이상이면 무효로 표시하고 수치는 V1 측정값을 사용해야 한다. V1만 사용 가능하면 V1을 유효하게 사용해야 한다. V1이 사용 불가능하고 AFE의 모든 셀이 유효하면 AFE 스트링 전압을 유효하게 사용해야 한다. AFE 입력 최신성 및 집계 정합성은 RV-02·RV-03을 참조한다."
+    },
+    {
+      "id": "F2-LLR-ALG-080-17",
+      "text": "스트링 전압 추정V1을 사용할 수 없고 AFE에 무효 셀이 있으면 AFE 스트링 전압 + 평균 셀 전압 × 무효 셀 개수로 추정값을 계산해야 한다. 무효 셀이 5개 이하이면 추정 출력을 유효, 5개를 초과하면 무효로 표시해야 한다. 여기서 무효 셀 개수는 구성 셀 수 − AFE 유효 셀 개수이다."
+    },
+    {
+      "id": "F2-LLR-ALG-080-18",
+      "text": "배터리 전압연결된 스트링이 있으면 연결 상태이면서 전압이 유효한 스트링들의 평균을 사용해야 한다. 연결된 스트링이 없으면 모든 유효 스트링의 평균을 사용해야 한다. 대상이 하나 이상이면 유효로 표시하고, 없으면 INT32_MAX를 저장하고 무효로 표시해야 한다. 평균의 소수 부분은 0 방향으로 버려야 한다."
+    },
+    {
+      "id": "F2-LLR-ALG-080-19",
+      "text": "고전압 버스 전압연결 또는 프리차지 상태이며 V3 측정이 최신·유효한 스트링들의 전압 평균을 사용해야 한다. 대상이 하나 이상이면 유효로 표시하고, 없으면 기존 수치를 유지하고 무효로 표시해야 한다. 평균의 소수 부분은 0 방향으로 버려야 한다."
+    },
+    {
+      "id": "F2-LLR-ALG-080-20",
+      "text": "스트링 전류최신인 신규 전류 측정은 수치를 복사하고 입력 무효 플래그에 따라 출력 유효성을 설정해야 한다. 최신이지만 신규가 아니면 기존 수치와 플래그를 유지해야 한다. 미측정 또는 시간초과이면 기존 수치를 유지하고 무효로 표시해야 한다."
+    },
+    {
+      "id": "F2-LLR-ALG-080-21",
+      "text": "Pack 전류유효한 스트링 전류만 합산하여 Pack 전류를 기록해야 한다. 모든 스트링 전류가 유효하면 Pack 전류를 유효, 하나라도 무효이면 무효로 표시해야 한다. 합산 대상을 스트링 연결 상태로 제한하지 않아야 한다. 모든 스트링 전류가 무효이면 합산값은 0mA이고 Pack 무효 플래그는 1이어야 한다."
+    },
+    {
+      "id": "F2-LLR-ALG-080-22",
+      "text": "스트링 전력각 처리 시점의 스트링 전력은 080-28의 입력 선택 우선순위로 결정하고 080-29의 스트링별 독립성을 보장해야 한다. 대체 계산은 같은 스트링의 검증된 전류[mA] / 1000과 전압[mV] / 1000을 각각 float_t로 변환하여 곱한 뒤 int32_t의 W 값으로 저장해야 한다. 표현 가능한 범위에서 소수 부분은 0 방향으로 버리고 음수 전력의 부호는 유지해야 한다."
+    },
+    {
+      "id": "F2-LLR-ALG-080-23",
+      "text": "Pack 전력유효한 스트링 전력만 합산하여 Pack 전력을 기록해야 한다. 모든 스트링 전력이 유효하면 Pack 전력을 유효, 하나라도 무효이면 무효로 표시해야 한다. 합산 대상을 스트링 연결 상태로 제한하지 않아야 한다. 모든 스트링 전력이 무효이면 합산값은 0W이고 Pack 무효 플래그는 1이어야 한다."
+    },
+    {
+      "id": "F2-LLR-ALG-080-24",
+      "text": "Pack 처리 순서·저장MRC_ValidatePackMeasurement는 전류 → 스트링 전압 → 배터리 전압 → 고전압 버스 전압 → 전력 순으로 처리하고 Pack 데이터 블록을 기록해야 한다. 현재 API 반환 계약에 따라 측정 무효 플래그와 별개로 STD_OK를 반환해야 한다. 측정 유효성은 각 invalid 필드로 판단해야 한다. 데이터베이스 실패 전파 및 반환 계약 재정의는 RV-07을 참조한다."
+    },
+    {
+      "id": "F2-LLR-ALG-080-25",
+      "text": "진단 이벤트AFE 시간초과는 해당 Base·Redundancy0 진단 ID로 시스템 단위에 전달해야 한다. 사용 이력이 없는 Redundancy0의 시간초과 진단은 정상으로 전달해야 한다. 셀 이중화 비교·편차, Pack 센서 시간초과, 전류·전력 오류는 해당 진단 ID로 스트링 단위에 전달해야 한다. V1과 AFE를 함께 비교할 수 없으면 스트링 전압 비교 진단을 오류로 전달해야 한다. 센서 시간초과 진단은 대체 전력의 유효성과 별개로 전달하고, 전력 오류 진단은 최종 스트링 전력의 유효성으로 판단해야 한다."
+    },
+    {
+      "id": "F2-LLR-ALG-080-26",
+      "text": "NULL 입력 계약필수 포인터 인자를 갖는 MRC 내부 함수는 해당 인자가 NULL_PTR이면 역참조 전에 FAS_ASSERT를 발생시켜야 한다. NULL 입력의 기대 결과는 오류 반환값이 아니라 assert 발생으로 정의해야 한다. 이 계약은 assert에 의해 실행이 중단되는 설정을 전제로 한다. assert를 중단 없이 통과시키는 FAS_ASSERT_LEVEL_NO_OPERATION 설정에는 NULL 안전 처리를 보장하지 않는다."
+    },
+    {
+      "id": "F2-LLR-ALG-080-27",
+      "text": "최종 온도 유효 개수 [정상 동작 기준]셀 온도 검증과 평균 대비 편차 검사가 완료되면 스트링별 최종 온도 무효 플래그가 해제된 센서의 개수를 계산해야 한다. 각 센서는 한 번만 집계해야 하며 nrValidTemperatures와 validMeasuredCellTemperatures에는 동일한 최종 개수를 기록해야 한다. 개수는 0 이상 해당 스트링의 구성 센서 수 이하이어야 한다. 단일 측정원과 이중화 측정원 모두에 적용하고 이전 처리의 개수를 누적하지 않아야 한다."
+    },
+    {
+      "id": "F2-LLR-ALG-080-28",
+      "text": "전력 입력 선택·무효 처리 [정상 동작 기준]매 처리 시점에 다음 순서로 스트링 전력을 결정해야 한다. ① 측정 이력이 있고 경과 시간이 300ms 이하이며 입력이 유효한 전력 센서값이 있으면 그 값을 사용하고 유효로 표시한다. ② 센서값을 사용할 수 없고 같은 스트링의 검증된 전류·전압이 모두 유효하면 080-22의 대체 전력을 계산하고 유효로 표시한다. ③ 센서값도 사용할 수 없고 대체 계산도 불가능하면 이전 전력 수치를 유지하되 invalidStringPower를 1로 설정하고 Pack 합산에서 제외하며 전력 오류 진단을 전달한다. 무효 센서의 timestamp가 같더라도 대체 계산 가능 여부를 매 호출 다시 판단해야 한다. 전류·전압이 회복되면 대체 계산 결과로 유효성을 회복해야 한다."
+    },
+    {
+      "id": "F2-LLR-ALG-080-29",
+      "text": "스트링별 전력 독립성 [정상 동작 기준]각 스트링의 전력 측정 선택, 대체 계산 여부 및 출력 유효성은 해당 스트링의 입력과 상태만으로 결정해야 한다. 한 스트링의 무효 측정 또는 시간초과가 다른 스트링의 전력 선택과 유효성에 영향을 주어서는 안 된다. 최신·유효한 센서 전력값은 다른 스트링의 대체 계산 발생 여부와 관계없이 우선 사용해야 한다. Pack 전력은 각 스트링의 처리가 완료된 후 080-23에 따라 합산해야 한다."
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "F2-LLR-ALG-080-TC-01-01",
+      "sut": "MRC_MeasurementUpdatedAtLeastOnce",
+      "requirement_ids": "F2-LLR-ALG-080-04",
+      "description": "첫 측정 이력의 판정",
+      "precondition": "독립 시험으로 실행한다. 전역변수·저장된 모듈 상태의 사전 설정은 필요하지 않다.",
+      "inputs": "1st parameter — timestamp [uint32_t]: 10u2nd parameter — previousTimestamp [uint32_t]: 0u외부 입력: 없음",
+      "oracle": "SUT 반환값: trueSUT assert: 발생하지 않음위 기대 결과와 일치하면 시험 통과"
+    },
+    {
+      "id": "F2-LLR-ALG-080-TC-01-02",
+      "sut": "MRC_MeasurementUpdatedAtLeastOnce",
+      "requirement_ids": "F2-LLR-ALG-080-04",
+      "description": "두 번의 측정 이력의 판정",
+      "precondition": "독립 시험으로 실행한다. 전역변수·저장된 모듈 상태의 사전 설정은 필요하지 않다.",
+      "inputs": "1st parameter — timestamp [uint32_t]: 60u2nd parameter — previousTimestamp [uint32_t]: 10u외부 입력: 없음",
+      "oracle": "SUT 반환값: trueSUT assert: 발생하지 않음위 기대 결과와 일치하면 시험 통과"
+    },
+    {
+      "id": "F2-LLR-ALG-080-TC-01-03",
+      "sut": "MRC_MeasurementUpdatedAtLeastOnce",
+      "requirement_ids": "F2-LLR-ALG-080-04",
+      "description": "세 번째 측정 이력의 판정",
+      "precondition": "독립 시험으로 실행한다. 전역변수·저장된 모듈 상태의 사전 설정은 필요하지 않다.",
+      "inputs": "1st parameter — timestamp [uint32_t]: 70u2nd parameter — previousTimestamp [uint32_t]: 60u외부 입력: 없음",
+      "oracle": "SUT 반환값: trueSUT assert: 발생하지 않음위 기대 결과와 일치하면 시험 통과"
+    },
+    {
+      "id": "F2-LLR-ALG-080-TC-01-04",
+      "sut": "MRC_MeasurementUpdatedAtLeastOnce",
+      "requirement_ids": "F2-LLR-ALG-080-04",
+      "description": "측정 이력 없음의 판정",
+      "precondition": "독립 시험으로 실행한다. 전역변수·저장된 모듈 상태의 사전 설정은 필요하지 않다.",
+      "inputs": "1st parameter — timestamp [uint32_t]: 0u2nd parameter — previousTimestamp [uint32_t]: 0u외부 입력: 없음",
+      "oracle": "SUT 반환값: falseSUT assert: 발생하지 않음위 기대 결과와 일치하면 시험 통과"
+    },
+    {
+      "id": "F2-LLR-ALG-080-TC-02-01",
+      "sut": "MRC_MeasurementUpdatedRecently",
+      "requirement_ids": "F2-LLR-ALG-080-05",
+      "description": "허용 시간 이내 판정",
+      "precondition": "독립 시험으로 실행한다. 전역변수·저장된 모듈 상태의 사전 설정은 필요하지 않다.시간 단위: tick. 현재 구성에서 1tick = 1ms. 시험 허용 시간 100tick은 AFE 설정값 250ms와 별개이다.",
+      "inputs": "1st parameter — timestamp [uint32_t]: 50u2nd parameter — previousTimestamp [uint32_t]: 0u3rd parameter — timeInterval [uint32_t]: 100u외부 입력 — OS_GetTickCount 반환값 [uint32_t]: 100u",
+      "oracle": "SUT 반환값: STD_OK (0)uint32_t 경과 시간: 50tickSUT assert: 발생하지 않음위 기대 결과와 일치하면 시험 통과"
+    },
+    {
+      "id": "F2-LLR-ALG-080-TC-02-02",
+      "sut": "MRC_MeasurementUpdatedRecently",
+      "requirement_ids": "F2-LLR-ALG-080-05",
+      "description": "경계 시간 이내지만 미측정 판정",
+      "precondition": "독립 시험으로 실행한다. 전역변수·저장된 모듈 상태의 사전 설정은 필요하지 않다.시간 단위: tick. 현재 구성에서 1tick = 1ms. 시험 허용 시간 100tick은 AFE 설정값 250ms와 별개이다.",
+      "inputs": "1st parameter — timestamp [uint32_t]: 0u2nd parameter — previousTimestamp [uint32_t]: 0u3rd parameter — timeInterval [uint32_t]: 100u외부 입력 — OS_GetTickCount 반환값 [uint32_t]: 100u",
+      "oracle": "SUT 반환값: STD_NOT_OK (1)uint32_t 경과 시간: 100tick현재·이전 측정 시각이 모두 0이므로 미측정으로 판정SUT assert: 발생하지 않음위 기대 결과와 일치하면 시험 통과"
+    },
+    {
+      "id": "F2-LLR-ALG-080-TC-02-03",
+      "sut": "MRC_MeasurementUpdatedRecently",
+      "requirement_ids": "F2-LLR-ALG-080-05",
+      "description": "미측정이며 허용 시간 초과 판정",
+      "precondition": "독립 시험으로 실행한다. 전역변수·저장된 모듈 상태의 사전 설정은 필요하지 않다.시간 단위: tick. 현재 구성에서 1tick = 1ms. 시험 허용 시간 100tick은 AFE 설정값 250ms와 별개이다.",
+      "inputs": "1st parameter — timestamp [uint32_t]: 0u2nd parameter — previousTimestamp [uint32_t]: 0u3rd parameter — timeInterval [uint32_t]: 100u외부 입력 — OS_GetTickCount 반환값 [uint32_t]: 101u",
+      "oracle": "SUT 반환값: STD_NOT_OK (1)uint32_t 경과 시간: 101tick현재·이전 측정 시각이 모두 0이므로 미측정으로 판정SUT assert: 발생하지 않음위 기대 결과와 일치하면 시험 통과"
+    },
+    {
+      "id": "F2-LLR-ALG-080-TC-02-04",
+      "sut": "MRC_MeasurementUpdatedRecently",
+      "requirement_ids": "F2-LLR-ALG-080-05",
+      "description": "일반 측정의 최신성 판정",
+      "precondition": "독립 시험으로 실행한다. 전역변수·저장된 모듈 상태의 사전 설정은 필요하지 않다.시간 단위: tick. 현재 구성에서 1tick = 1ms. 시험 허용 시간 100tick은 AFE 설정값 250ms와 별개이다.",
+      "inputs": "1st parameter — timestamp [uint32_t]: 4937u2nd parameter — previousTimestamp [uint32_t]: 0u3rd parameter — timeInterval [uint32_t]: 100u외부 입력 — OS_GetTickCount 반환값 [uint32_t]: 5000u",
+      "oracle": "SUT 반환값: STD_OK (0)uint32_t 경과 시간: 63tickSUT assert: 발생하지 않음위 기대 결과와 일치하면 시험 통과"
+    },
+    {
+      "id": "F2-LLR-ALG-080-TC-02-05",
+      "sut": "MRC_MeasurementUpdatedRecently",
+      "requirement_ids": "F2-LLR-ALG-080-05",
+      "description": "시각 카운터 순환 이후 최신성 판정",
+      "precondition": "독립 시험으로 실행한다. 전역변수·저장된 모듈 상태의 사전 설정은 필요하지 않다.시간 단위: tick. 현재 구성에서 1tick = 1ms. 시험 허용 시간 100tick은 AFE 설정값 250ms와 별개이다.",
+      "inputs": "1st parameter — timestamp [uint32_t]: 4294967295u (UINT32_MAX)2nd parameter — previousTimestamp [uint32_t]: 0u3rd parameter — timeInterval [uint32_t]: 100u외부 입력 — OS_GetTickCount 반환값 [uint32_t]: 50u",
+      "oracle": "SUT 반환값: STD_OK (0)uint32_t 경과 시간: 51tickSUT assert: 발생하지 않음위 기대 결과와 일치하면 시험 통과"
+    },
+    {
+      "id": "F2-LLR-ALG-080-TC-02-06",
+      "sut": "MRC_MeasurementUpdatedRecently",
+      "requirement_ids": "F2-LLR-ALG-080-05",
+      "description": "순환 이후 허용 시간 경계 판정",
+      "precondition": "독립 시험으로 실행한다. 전역변수·저장된 모듈 상태의 사전 설정은 필요하지 않다.시간 단위: tick. 현재 구성에서 1tick = 1ms. 시험 허용 시간 100tick은 AFE 설정값 250ms와 별개이다.",
+      "inputs": "1st parameter — timestamp [uint32_t]: 4294967245u (UINT32_MAX − 50u)2nd parameter — previousTimestamp [uint32_t]: 0u3rd parameter — timeInterval [uint32_t]: 100u외부 입력 — OS_GetTickCount 반환값 [uint32_t]: 49u",
+      "oracle": "SUT 반환값: STD_OK (0)uint32_t 경과 시간: 100tickSUT assert: 발생하지 않음위 기대 결과와 일치하면 시험 통과"
+    },
+    {
+      "id": "F2-LLR-ALG-080-TC-02-07",
+      "sut": "MRC_MeasurementUpdatedRecently",
+      "requirement_ids": "F2-LLR-ALG-080-05",
+      "description": "순환 이후 허용 시간 초과 판정",
+      "precondition": "독립 시험으로 실행한다. 전역변수·저장된 모듈 상태의 사전 설정은 필요하지 않다.시간 단위: tick. 현재 구성에서 1tick = 1ms. 시험 허용 시간 100tick은 AFE 설정값 250ms와 별개이다.",
+      "inputs": "1st parameter — timestamp [uint32_t]: 4294967245u (UINT32_MAX − 50u)2nd parameter — previousTimestamp [uint32_t]: 0u3rd parameter — timeInterval [uint32_t]: 100u외부 입력 — OS_GetTickCount 반환값 [uint32_t]: 50u",
+      "oracle": "SUT 반환값: STD_NOT_OK (1)uint32_t 경과 시간: 101tickSUT assert: 발생하지 않음위 기대 결과와 일치하면 시험 통과"
+    },
+    {
+      "id": "F2-LLR-ALG-080-TC-02-08",
+      "sut": "MRC_MeasurementUpdatedRecently",
+      "requirement_ids": "F2-LLR-ALG-080-05",
+      "description": "큰 경과 시간의 시간초과 판정",
+      "precondition": "독립 시험으로 실행한다. 전역변수·저장된 모듈 상태의 사전 설정은 필요하지 않다.시간 단위: tick. 현재 구성에서 1tick = 1ms. 시험 허용 시간 100tick은 AFE 설정값 250ms와 별개이다.",
+      "inputs": "1st parameter — timestamp [uint32_t]: 50u2nd parameter — previousTimestamp [uint32_t]: 0u3rd parameter — timeInterval [uint32_t]: 100u외부 입력 — OS_GetTickCount 반환값 [uint32_t]: 4294967295u",
+      "oracle": "SUT 반환값: STD_NOT_OK (1)uint32_t 경과 시간: 4294967245tickSUT assert: 발생하지 않음위 기대 결과와 일치하면 시험 통과"
+    },
+    {
+      "id": "F2-LLR-ALG-080-TC-03-01",
+      "sut": "MRC_CalculateCellVoltageMinMaxAverage",
+      "requirement_ids": "F2-LLR-ALG-080-26",
+      "description": "셀 전압 통계 함수의 1번째 인자 NULL 방어 검사",
+      "precondition": "각 행을 독립 시험으로 실행한다. SUT assert를 관찰하고 정상 실행을 중단할 수 있는 시험 환경을 사용한다. assert 비활성화 또는 중단 없이 실행을 계속하는 설정은 사용하지 않는다.객체 dummy0 [DATA_BLOCK_MIN_MAX_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_MIN_MAX, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.",
+      "inputs": "1st parameter — pValidatedVoltages [DATA_BLOCK_CELL_VOLTAGE_s*]: NULL_PTR (널 포인터, 주소 0)2nd parameter — pMinMaxAverageValues [DATA_BLOCK_MIN_MAX_s*]: 객체 dummy0의 주소 (유효 포인터)외부 입력: 없음; NULL 검사 이후의 의존 함수 동작은 필요하지 않음",
+      "oracle": "SUT의 1번째 인자 NULL 검사에서 assert 발생정상 반환값: 없음 (true/false 또는 STD_OK/STD_NOT_OK를 기대하지 않음)NULL 역참조 전에 실행 중단예상한 SUT assert를 관찰하면 시험 통과; 정상 반환하거나 다른 원인으로 종료되면 시험 실패"
+    },
+    {
+      "id": "F2-LLR-ALG-080-TC-03-02",
+      "sut": "MRC_CalculateCellVoltageMinMaxAverage",
+      "requirement_ids": "F2-LLR-ALG-080-26",
+      "description": "셀 전압 통계 함수의 2번째 인자 NULL 방어 검사",
+      "precondition": "각 행을 독립 시험으로 실행한다. SUT assert를 관찰하고 정상 실행을 중단할 수 있는 시험 환경을 사용한다. assert 비활성화 또는 중단 없이 실행을 계속하는 설정은 사용하지 않는다.객체 dummy1 [DATA_BLOCK_CELL_VOLTAGE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_VOLTAGE, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.",
+      "inputs": "1st parameter — pValidatedVoltages [DATA_BLOCK_CELL_VOLTAGE_s*]: 객체 dummy1의 주소 (유효 포인터)2nd parameter — pMinMaxAverageValues [DATA_BLOCK_MIN_MAX_s*]: NULL_PTR (널 포인터, 주소 0)외부 입력: 없음; NULL 검사 이후의 의존 함수 동작은 필요하지 않음",
+      "oracle": "SUT의 2번째 인자 NULL 검사에서 assert 발생정상 반환값: 없음 (true/false 또는 STD_OK/STD_NOT_OK를 기대하지 않음)NULL 역참조 전에 실행 중단예상한 SUT assert를 관찰하면 시험 통과; 정상 반환하거나 다른 원인으로 종료되면 시험 실패"
+    },
+    {
+      "id": "F2-LLR-ALG-080-TC-04-01",
+      "sut": "MRC_CalculateCellTemperatureMinMaxAverage",
+      "requirement_ids": "F2-LLR-ALG-080-26",
+      "description": "셀 온도 통계 함수의 1번째 인자 NULL 방어 검사",
+      "precondition": "각 행을 독립 시험으로 실행한다. SUT assert를 관찰하고 정상 실행을 중단할 수 있는 시험 환경을 사용한다. assert 비활성화 또는 중단 없이 실행을 계속하는 설정은 사용하지 않는다.객체 dummy0 [DATA_BLOCK_MIN_MAX_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_MIN_MAX, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.",
+      "inputs": "1st parameter — pValidatedTemperatures [DATA_BLOCK_CELL_TEMPERATURE_s*]: NULL_PTR (널 포인터, 주소 0)2nd parameter — pMinMaxAverageValues [DATA_BLOCK_MIN_MAX_s*]: 객체 dummy0의 주소 (유효 포인터)외부 입력: 없음; NULL 검사 이후의 의존 함수 동작은 필요하지 않음",
+      "oracle": "SUT의 1번째 인자 NULL 검사에서 assert 발생정상 반환값: 없음 (true/false 또는 STD_OK/STD_NOT_OK를 기대하지 않음)NULL 역참조 전에 실행 중단예상한 SUT assert를 관찰하면 시험 통과; 정상 반환하거나 다른 원인으로 종료되면 시험 실패"
+    },
+    {
+      "id": "F2-LLR-ALG-080-TC-04-02",
+      "sut": "MRC_CalculateCellTemperatureMinMaxAverage",
+      "requirement_ids": "F2-LLR-ALG-080-26",
+      "description": "셀 온도 통계 함수의 2번째 인자 NULL 방어 검사",
+      "precondition": "각 행을 독립 시험으로 실행한다. SUT assert를 관찰하고 정상 실행을 중단할 수 있는 시험 환경을 사용한다. assert 비활성화 또는 중단 없이 실행을 계속하는 설정은 사용하지 않는다.객체 dummy1 [DATA_BLOCK_CELL_TEMPERATURE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_TEMPERATURE, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.",
+      "inputs": "1st parameter — pValidatedTemperatures [DATA_BLOCK_CELL_TEMPERATURE_s*]: 객체 dummy1의 주소 (유효 포인터)2nd parameter — pMinMaxAverageValues [DATA_BLOCK_MIN_MAX_s*]: NULL_PTR (널 포인터, 주소 0)외부 입력: 없음; NULL 검사 이후의 의존 함수 동작은 필요하지 않음",
+      "oracle": "SUT의 2번째 인자 NULL 검사에서 assert 발생정상 반환값: 없음 (true/false 또는 STD_OK/STD_NOT_OK를 기대하지 않음)NULL 역참조 전에 실행 중단예상한 SUT assert를 관찰하면 시험 통과; 정상 반환하거나 다른 원인으로 종료되면 시험 실패"
+    },
+    {
+      "id": "F2-LLR-ALG-080-TC-05-01",
+      "sut": "MRC_ValidateCellVoltage",
+      "requirement_ids": "F2-LLR-ALG-080-26",
+      "description": "셀 전압 이중화 비교 함수의 1번째 인자 NULL 방어 검사",
+      "precondition": "각 행을 독립 시험으로 실행한다. SUT assert를 관찰하고 정상 실행을 중단할 수 있는 시험 환경을 사용한다. assert 비활성화 또는 중단 없이 실행을 계속하는 설정은 사용하지 않는다.객체 dummy [DATA_BLOCK_CELL_VOLTAGE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_VOLTAGE, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.NULL이 아닌 두 인자는 원래 시험과 같이 동일한 dummy 객체를 참조한다.",
+      "inputs": "1st parameter — pCellVoltageBase [DATA_BLOCK_CELL_VOLTAGE_s*]: NULL_PTR (널 포인터, 주소 0)2nd parameter — pCellVoltageRedundancy0 [DATA_BLOCK_CELL_VOLTAGE_s*]: 객체 dummy의 주소 (유효 포인터)3rd parameter — pValidatedVoltages [DATA_BLOCK_CELL_VOLTAGE_s*]: 객체 dummy의 주소 (유효 포인터)외부 입력: 없음; NULL 검사 이후의 의존 함수 동작은 필요하지 않음",
+      "oracle": "SUT의 1번째 인자 NULL 검사에서 assert 발생정상 반환값: 없음 (true/false 또는 STD_OK/STD_NOT_OK를 기대하지 않음)NULL 역참조 전에 실행 중단예상한 SUT assert를 관찰하면 시험 통과; 정상 반환하거나 다른 원인으로 종료되면 시험 실패"
+    },
+    {
+      "id": "F2-LLR-ALG-080-TC-05-02",
+      "sut": "MRC_ValidateCellVoltage",
+      "requirement_ids": "F2-LLR-ALG-080-26",
+      "description": "셀 전압 이중화 비교 함수의 2번째 인자 NULL 방어 검사",
+      "precondition": "각 행을 독립 시험으로 실행한다. SUT assert를 관찰하고 정상 실행을 중단할 수 있는 시험 환경을 사용한다. assert 비활성화 또는 중단 없이 실행을 계속하는 설정은 사용하지 않는다.객체 dummy [DATA_BLOCK_CELL_VOLTAGE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_VOLTAGE, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.NULL이 아닌 두 인자는 원래 시험과 같이 동일한 dummy 객체를 참조한다.",
+      "inputs": "1st parameter — pCellVoltageBase [DATA_BLOCK_CELL_VOLTAGE_s*]: 객체 dummy의 주소 (유효 포인터)2nd parameter — pCellVoltageRedundancy0 [DATA_BLOCK_CELL_VOLTAGE_s*]: NULL_PTR (널 포인터, 주소 0)3rd parameter — pValidatedVoltages [DATA_BLOCK_CELL_VOLTAGE_s*]: 객체 dummy의 주소 (유효 포인터)외부 입력: 없음; NULL 검사 이후의 의존 함수 동작은 필요하지 않음",
+      "oracle": "SUT의 2번째 인자 NULL 검사에서 assert 발생정상 반환값: 없음 (true/false 또는 STD_OK/STD_NOT_OK를 기대하지 않음)NULL 역참조 전에 실행 중단예상한 SUT assert를 관찰하면 시험 통과; 정상 반환하거나 다른 원인으로 종료되면 시험 실패"
+    },
+    {
+      "id": "F2-LLR-ALG-080-TC-05-03",
+      "sut": "MRC_ValidateCellVoltage",
+      "requirement_ids": "F2-LLR-ALG-080-26",
+      "description": "셀 전압 이중화 비교 함수의 3번째 인자 NULL 방어 검사",
+      "precondition": "각 행을 독립 시험으로 실행한다. SUT assert를 관찰하고 정상 실행을 중단할 수 있는 시험 환경을 사용한다. assert 비활성화 또는 중단 없이 실행을 계속하는 설정은 사용하지 않는다.객체 dummy [DATA_BLOCK_CELL_VOLTAGE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_VOLTAGE, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.NULL이 아닌 두 인자는 원래 시험과 같이 동일한 dummy 객체를 참조한다.",
+      "inputs": "1st parameter — pCellVoltageBase [DATA_BLOCK_CELL_VOLTAGE_s*]: 객체 dummy의 주소 (유효 포인터)2nd parameter — pCellVoltageRedundancy0 [DATA_BLOCK_CELL_VOLTAGE_s*]: 객체 dummy의 주소 (유효 포인터)3rd parameter — pValidatedVoltages [DATA_BLOCK_CELL_VOLTAGE_s*]: NULL_PTR (널 포인터, 주소 0)외부 입력: 없음; NULL 검사 이후의 의존 함수 동작은 필요하지 않음",
+      "oracle": "SUT의 3번째 인자 NULL 검사에서 assert 발생정상 반환값: 없음 (true/false 또는 STD_OK/STD_NOT_OK를 기대하지 않음)NULL 역참조 전에 실행 중단예상한 SUT assert를 관찰하면 시험 통과; 정상 반환하거나 다른 원인으로 종료되면 시험 실패"
+    },
+    {
+      "id": "F2-LLR-ALG-080-TC-06-01",
+      "sut": "MRC_UpdateCellVoltageValidation",
+      "requirement_ids": "F2-LLR-ALG-080-26",
+      "description": "단일 셀 전압 복사 함수의 1번째 인자 NULL 방어 검사",
+      "precondition": "각 행을 독립 시험으로 실행한다. SUT assert를 관찰하고 정상 실행을 중단할 수 있는 시험 환경을 사용한다. assert 비활성화 또는 중단 없이 실행을 계속하는 설정은 사용하지 않는다.객체 dummy [DATA_BLOCK_CELL_VOLTAGE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_VOLTAGE, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.",
+      "inputs": "1st parameter — pCellVoltage [DATA_BLOCK_CELL_VOLTAGE_s*]: NULL_PTR (널 포인터, 주소 0)2nd parameter — pValidatedVoltages [DATA_BLOCK_CELL_VOLTAGE_s*]: 객체 dummy의 주소 (유효 포인터)외부 입력: 없음; NULL 검사 이후의 의존 함수 동작은 필요하지 않음",
+      "oracle": "SUT의 1번째 인자 NULL 검사에서 assert 발생정상 반환값: 없음 (true/false 또는 STD_OK/STD_NOT_OK를 기대하지 않음)NULL 역참조 전에 실행 중단예상한 SUT assert를 관찰하면 시험 통과; 정상 반환하거나 다른 원인으로 종료되면 시험 실패"
+    },
+    {
+      "id": "F2-LLR-ALG-080-TC-06-02",
+      "sut": "MRC_UpdateCellVoltageValidation",
+      "requirement_ids": "F2-LLR-ALG-080-26",
+      "description": "단일 셀 전압 복사 함수의 2번째 인자 NULL 방어 검사",
+      "precondition": "각 행을 독립 시험으로 실행한다. SUT assert를 관찰하고 정상 실행을 중단할 수 있는 시험 환경을 사용한다. assert 비활성화 또는 중단 없이 실행을 계속하는 설정은 사용하지 않는다.객체 dummy [DATA_BLOCK_CELL_VOLTAGE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_VOLTAGE, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.",
+      "inputs": "1st parameter — pCellVoltage [DATA_BLOCK_CELL_VOLTAGE_s*]: 객체 dummy의 주소 (유효 포인터)2nd parameter — pValidatedVoltages [DATA_BLOCK_CELL_VOLTAGE_s*]: NULL_PTR (널 포인터, 주소 0)외부 입력: 없음; NULL 검사 이후의 의존 함수 동작은 필요하지 않음",
+      "oracle": "SUT의 2번째 인자 NULL 검사에서 assert 발생정상 반환값: 없음 (true/false 또는 STD_OK/STD_NOT_OK를 기대하지 않음)NULL 역참조 전에 실행 중단예상한 SUT assert를 관찰하면 시험 통과; 정상 반환하거나 다른 원인으로 종료되면 시험 실패"
+    },
+    {
+      "id": "F2-LLR-ALG-080-TC-07-01",
+      "sut": "MRC_ValidateCellTemperature",
+      "requirement_ids": "F2-LLR-ALG-080-26",
+      "description": "셀 온도 이중화 비교 함수의 1번째 인자 NULL 방어 검사",
+      "precondition": "각 행을 독립 시험으로 실행한다. SUT assert를 관찰하고 정상 실행을 중단할 수 있는 시험 환경을 사용한다. assert 비활성화 또는 중단 없이 실행을 계속하는 설정은 사용하지 않는다.객체 dummy [DATA_BLOCK_CELL_TEMPERATURE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_TEMPERATURE, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.NULL이 아닌 두 인자는 원래 시험과 같이 동일한 dummy 객체를 참조한다.",
+      "inputs": "1st parameter — pCellTemperatureBase [DATA_BLOCK_CELL_TEMPERATURE_s*]: NULL_PTR (널 포인터, 주소 0)2nd parameter — pCellTemperatureRedundancy0 [DATA_BLOCK_CELL_TEMPERATURE_s*]: 객체 dummy의 주소 (유효 포인터)3rd parameter — pValidatedTemperatures [DATA_BLOCK_CELL_TEMPERATURE_s*]: 객체 dummy의 주소 (유효 포인터)외부 입력: 없음; NULL 검사 이후의 의존 함수 동작은 필요하지 않음",
+      "oracle": "SUT의 1번째 인자 NULL 검사에서 assert 발생정상 반환값: 없음 (true/false 또는 STD_OK/STD_NOT_OK를 기대하지 않음)NULL 역참조 전에 실행 중단예상한 SUT assert를 관찰하면 시험 통과; 정상 반환하거나 다른 원인으로 종료되면 시험 실패"
+    },
+    {
+      "id": "F2-LLR-ALG-080-TC-07-02",
+      "sut": "MRC_ValidateCellTemperature",
+      "requirement_ids": "F2-LLR-ALG-080-26",
+      "description": "셀 온도 이중화 비교 함수의 2번째 인자 NULL 방어 검사",
+      "precondition": "각 행을 독립 시험으로 실행한다. SUT assert를 관찰하고 정상 실행을 중단할 수 있는 시험 환경을 사용한다. assert 비활성화 또는 중단 없이 실행을 계속하는 설정은 사용하지 않는다.객체 dummy [DATA_BLOCK_CELL_TEMPERATURE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_TEMPERATURE, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.NULL이 아닌 두 인자는 원래 시험과 같이 동일한 dummy 객체를 참조한다.",
+      "inputs": "1st parameter — pCellTemperatureBase [DATA_BLOCK_CELL_TEMPERATURE_s*]: 객체 dummy의 주소 (유효 포인터)2nd parameter — pCellTemperatureRedundancy0 [DATA_BLOCK_CELL_TEMPERATURE_s*]: NULL_PTR (널 포인터, 주소 0)3rd parameter — pValidatedTemperatures [DATA_BLOCK_CELL_TEMPERATURE_s*]: 객체 dummy의 주소 (유효 포인터)외부 입력: 없음; NULL 검사 이후의 의존 함수 동작은 필요하지 않음",
+      "oracle": "SUT의 2번째 인자 NULL 검사에서 assert 발생정상 반환값: 없음 (true/false 또는 STD_OK/STD_NOT_OK를 기대하지 않음)NULL 역참조 전에 실행 중단예상한 SUT assert를 관찰하면 시험 통과; 정상 반환하거나 다른 원인으로 종료되면 시험 실패"
+    },
+    {
+      "id": "F2-LLR-ALG-080-TC-07-03",
+      "sut": "MRC_ValidateCellTemperature",
+      "requirement_ids": "F2-LLR-ALG-080-26",
+      "description": "셀 온도 이중화 비교 함수의 3번째 인자 NULL 방어 검사",
+      "precondition": "각 행을 독립 시험으로 실행한다. SUT assert를 관찰하고 정상 실행을 중단할 수 있는 시험 환경을 사용한다. assert 비활성화 또는 중단 없이 실행을 계속하는 설정은 사용하지 않는다.객체 dummy [DATA_BLOCK_CELL_TEMPERATURE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_TEMPERATURE, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.NULL이 아닌 두 인자는 원래 시험과 같이 동일한 dummy 객체를 참조한다.",
+      "inputs": "1st parameter — pCellTemperatureBase [DATA_BLOCK_CELL_TEMPERATURE_s*]: 객체 dummy의 주소 (유효 포인터)2nd parameter — pCellTemperatureRedundancy0 [DATA_BLOCK_CELL_TEMPERATURE_s*]: 객체 dummy의 주소 (유효 포인터)3rd parameter — pValidatedTemperatures [DATA_BLOCK_CELL_TEMPERATURE_s*]: NULL_PTR (널 포인터, 주소 0)외부 입력: 없음; NULL 검사 이후의 의존 함수 동작은 필요하지 않음",
+      "oracle": "SUT의 3번째 인자 NULL 검사에서 assert 발생정상 반환값: 없음 (true/false 또는 STD_OK/STD_NOT_OK를 기대하지 않음)NULL 역참조 전에 실행 중단예상한 SUT assert를 관찰하면 시험 통과; 정상 반환하거나 다른 원인으로 종료되면 시험 실패"
+    },
+    {
+      "id": "F2-LLR-ALG-080-TC-08-01",
+      "sut": "MRC_UpdateCellTemperatureValidation",
+      "requirement_ids": "F2-LLR-ALG-080-26",
+      "description": "단일 셀 온도 복사 함수의 1번째 인자 NULL 방어 검사",
+      "precondition": "각 행을 독립 시험으로 실행한다. SUT assert를 관찰하고 정상 실행을 중단할 수 있는 시험 환경을 사용한다. assert 비활성화 또는 중단 없이 실행을 계속하는 설정은 사용하지 않는다.객체 dummy [DATA_BLOCK_CELL_TEMPERATURE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_TEMPERATURE, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.",
+      "inputs": "1st parameter — pCellTemperature [DATA_BLOCK_CELL_TEMPERATURE_s*]: NULL_PTR (널 포인터, 주소 0)2nd parameter — pValidatedTemperature [DATA_BLOCK_CELL_TEMPERATURE_s*]: 객체 dummy의 주소 (유효 포인터)외부 입력: 없음; NULL 검사 이후의 의존 함수 동작은 필요하지 않음",
+      "oracle": "SUT의 1번째 인자 NULL 검사에서 assert 발생정상 반환값: 없음 (true/false 또는 STD_OK/STD_NOT_OK를 기대하지 않음)NULL 역참조 전에 실행 중단예상한 SUT assert를 관찰하면 시험 통과; 정상 반환하거나 다른 원인으로 종료되면 시험 실패"
+    },
+    {
+      "id": "F2-LLR-ALG-080-TC-08-02",
+      "sut": "MRC_UpdateCellTemperatureValidation",
+      "requirement_ids": "F2-LLR-ALG-080-26",
+      "description": "단일 셀 온도 복사 함수의 2번째 인자 NULL 방어 검사",
+      "precondition": "각 행을 독립 시험으로 실행한다. SUT assert를 관찰하고 정상 실행을 중단할 수 있는 시험 환경을 사용한다. assert 비활성화 또는 중단 없이 실행을 계속하는 설정은 사용하지 않는다.객체 dummy [DATA_BLOCK_CELL_TEMPERATURE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_TEMPERATURE, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.",
+      "inputs": "1st parameter — pCellTemperature [DATA_BLOCK_CELL_TEMPERATURE_s*]: 객체 dummy의 주소 (유효 포인터)2nd parameter — pValidatedTemperature [DATA_BLOCK_CELL_TEMPERATURE_s*]: NULL_PTR (널 포인터, 주소 0)외부 입력: 없음; NULL 검사 이후의 의존 함수 동작은 필요하지 않음",
+      "oracle": "SUT의 2번째 인자 NULL 검사에서 assert 발생정상 반환값: 없음 (true/false 또는 STD_OK/STD_NOT_OK를 기대하지 않음)NULL 역참조 전에 실행 중단예상한 SUT assert를 관찰하면 시험 통과; 정상 반환하거나 다른 원인으로 종료되면 시험 실패"
+    },
+    {
+      "id": "F2-LLR-ALG-080-TC-09",
+      "sut": "MRC_ValidateAfeMeasurement",
+      "requirement_ids": "F2-LLR-ALG-080-04F2-LLR-ALG-080-05F2-LLR-ALG-080-06F2-LLR-ALG-080-07F2-LLR-ALG-080-15F2-LLR-ALG-080-25",
+      "description": "미측정·시각 0에서 AFE 갱신을 수행하지 않는 동작",
+      "precondition": "이 시험을 독립 실행하여 모듈 정적 상태를 초기 상태로 준비한다.전역 상태 — mrc_state.lastBaseCellVoltageTimestamp [uint32_t]: 0u전역 상태 — mrc_state.lastRedundancy0CellVoltageTimestamp [uint32_t]: 0u전역 상태 — mrc_state.lastBaseCellTemperatureTimestamp [uint32_t]: 0u전역 상태 — mrc_state.lastRedundancy0CellTemperatureTimestamp [uint32_t]: 0u검증 결과 객체 mrc_tableCellVoltages·mrc_tableCellTemperatures·mrc_tableMinimumMaximumValues는 정적 초기 상태로 준비한다. 각 header.uniqueId는 DATA_BLOCK_ID_CELL_VOLTAGE·DATA_BLOCK_ID_CELL_TEMPERATURE·DATA_BLOCK_ID_MIN_MAX이고 나머지 필드는 0/false이다. 이 값의 유효성을 확인하는 시험이 아니라 무처리 시 보존 여부를 확인하는 시험이다.",
+      "inputs": "명시적 함수 인자: 없음데이터베이스 읽기에서 다음 네 블록을 SUT에 제공한다.객체 전압 Base [DATA_BLOCK_CELL_VOLTAGE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_VOLTAGE_BASE, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.객체 전압 Redundancy0 [DATA_BLOCK_CELL_VOLTAGE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_VOLTAGE_REDUNDANCY0, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.객체 온도 Base [DATA_BLOCK_CELL_TEMPERATURE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_TEMPERATURE_BASE, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.객체 온도 Redundancy0 [DATA_BLOCK_CELL_TEMPERATURE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_TEMPERATURE_REDUNDANCY0, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.외부 입력 — OS_GetTickCount 반환값: 0u외부 입력 — 데이터베이스 읽기 결과: STD_OK (0)외부 입력 — 네 블록의 최신성 판정: false (현재·이전 timestamp가 모두 0)외부 입력 — 전압·온도 Redundancy0의 측정 이력 판정: false외부 입력 — 각 진단 처리의 반환값: STD_OK (0)",
+      "oracle": "SUT 반환값: STD_NOT_OK (1)SUT assert: 발생하지 않음검증 데이터베이스 쓰기: 수행하지 않음검증 결과 세 객체와 저장된 AFE 처리 시각 네 항목: 시험 전 값 유지진단 이벤트 (모두 DIAG_SYSTEM, 인덱스 0u):DIAG_ID_BASE_CELL_VOLTAGE_MEASUREMENT_TIMEOUT: DIAG_EVENT_NOT_OKDIAG_ID_REDUNDANCY0_CELL_VOLTAGE_MEASUREMENT_TIMEOUT: DIAG_EVENT_OKDIAG_ID_BASE_CELL_TEMPERATURE_MEASUREMENT_TIMEOUT: DIAG_EVENT_NOT_OKDIAG_ID_REDUNDANCY0_CELL_TEMPERATURE_MEASUREMENT_TIMEOUT: DIAG_EVENT_OK위 반환값·상태·쓰기 여부·진단 이벤트가 일치하면 시험 통과"
+    },
+    {
+      "id": "F2-LLR-ALG-080-TC-10-01",
+      "sut": "MRC_ValidateCellVoltageMeasurement",
+      "requirement_ids": "F2-LLR-ALG-080-26",
+      "description": "셀 전압 측정 처리 함수의 1번째 인자 NULL 방어 검사",
+      "precondition": "각 행을 독립 시험으로 실행한다. SUT assert를 관찰하고 정상 실행을 중단할 수 있는 시험 환경을 사용한다. assert 비활성화 또는 중단 없이 실행을 계속하는 설정은 사용하지 않는다.객체 testCellVoltageRedundancy0 [DATA_BLOCK_CELL_VOLTAGE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_VOLTAGE_REDUNDANCY0, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.",
+      "inputs": "1st parameter — pCellVoltageBase [DATA_BLOCK_CELL_VOLTAGE_s*]: NULL_PTR (널 포인터, 주소 0)2nd parameter — pCellVoltageRedundancy0 [DATA_BLOCK_CELL_VOLTAGE_s*]: 객체 testCellVoltageRedundancy0의 주소 (유효 포인터)외부 입력: 없음; NULL 검사 이후의 의존 함수 동작은 필요하지 않음",
+      "oracle": "SUT의 1번째 인자 NULL 검사에서 assert 발생정상 반환값: 없음 (true/false 또는 STD_OK/STD_NOT_OK를 기대하지 않음)NULL 역참조 전에 실행 중단예상한 SUT assert를 관찰하면 시험 통과; 정상 반환하거나 다른 원인으로 종료되면 시험 실패"
+    },
+    {
+      "id": "F2-LLR-ALG-080-TC-10-02",
+      "sut": "MRC_ValidateCellVoltageMeasurement",
+      "requirement_ids": "F2-LLR-ALG-080-26",
+      "description": "셀 전압 측정 처리 함수의 2번째 인자 NULL 방어 검사",
+      "precondition": "각 행을 독립 시험으로 실행한다. SUT assert를 관찰하고 정상 실행을 중단할 수 있는 시험 환경을 사용한다. assert 비활성화 또는 중단 없이 실행을 계속하는 설정은 사용하지 않는다.객체 testCellVoltageBase [DATA_BLOCK_CELL_VOLTAGE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_VOLTAGE_BASE, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.",
+      "inputs": "1st parameter — pCellVoltageBase [DATA_BLOCK_CELL_VOLTAGE_s*]: 객체 testCellVoltageBase의 주소 (유효 포인터)2nd parameter — pCellVoltageRedundancy0 [DATA_BLOCK_CELL_VOLTAGE_s*]: NULL_PTR (널 포인터, 주소 0)외부 입력: 없음; NULL 검사 이후의 의존 함수 동작은 필요하지 않음",
+      "oracle": "SUT의 2번째 인자 NULL 검사에서 assert 발생정상 반환값: 없음 (true/false 또는 STD_OK/STD_NOT_OK를 기대하지 않음)NULL 역참조 전에 실행 중단예상한 SUT assert를 관찰하면 시험 통과; 정상 반환하거나 다른 원인으로 종료되면 시험 실패"
+    }
+  ],
+  "blocks": [
+    {
+      "index": 186,
+      "type": "paragraph",
+      "text": "4.11 Application / Measurement redundancy (상위 1개·세부 29개 요구사항)"
+    },
+    {
+      "index": 187,
+      "type": "paragraph",
+      "text": ""
+    },
+    {
+      "index": 188,
+      "type": "paragraph",
+      "text": "4.11.1 Measurement redundancy"
+    },
+    {
+      "index": 189,
+      "type": "paragraph",
+      "text": "모듈 목적: 측정 이중화 모듈은 초기화, AFE 셀 전압·온도 검증과 통계 산출, Pack 전압·전류·전력 처리 및 결과 저장을 수행한다."
+    },
+    {
+      "index": 190,
+      "type": "paragraph",
+      "text": "요구사항"
+    },
+    {
+      "index": 191,
+      "type": "paragraph",
+      "text": "공통 정의 및 작성 기준"
+    },
+    {
+      "index": 192,
+      "type": "paragraph",
+      "text": "작성 기준: 2026-10-12에 확인한 현 구현을 바탕으로 하되 온도 유효 개수·무효 전력 처리·다중 스트링 전력은 정상 동작을 요구 기준으로 확정하였다. 소스 위치는 구현 확인 및 추적용이며 해당 구현의 요구사항 충족을 뜻하지 않는다."
+    },
+    {
+      "index": 193,
+      "type": "paragraph",
+      "text": "유효성: invalid 필드의 0/false는 유효, 1/true는 무효이다. 최신성은 측정 시각부터 현재까지의 경과 시간 조건이며, 신규 여부는 저장된 처리 시각과 timestamp의 차이 조건이다. 두 개념은 별개이다."
+    },
+    {
+      "index": 194,
+      "type": "paragraph",
+      "text": "단위·인덱스: 전압 mV, 전류 mA, 전력 W, 온도 0.1℃이며 인덱스는 0부터 시작한다. 현재 구성은 1스트링·스트링당 1모듈·18셀·온도 센서 8개·1ms tick이다. 허용치는 redundancy.h와 plausibility_cfg.h의 현재 설정값을 기준으로 한다."
+    },
+    {
+      "index": 195,
+      "type": "paragraph",
+      "text": "기본 전제: 초기화는 기동 시 1회 호출하고 AFE 처리 이후 Pack을 처리한다. 정수 합산·전력 변환 입력은 결과를 자료형으로 표현할 수 있는 범위로 제한한다. 범위를 벗어난 산술의 처리 정책은 이번 개정에서 확정하지 않는다."
+    },
+    {
+      "index": 196,
+      "type": "paragraph",
+      "text": "적용 범위: 080-27~29는 정상 기대 동작이다. 현재 구현이 다르면 요구사항 불일치로 기록한다. RV로 분리한 미결정 동작을 코드 관찰값만으로 합격 기준으로 확정하지 않는다. 기존 시험 시나리오는 보존하며 새 요구사항의 검증 완료 근거로 간주하지 않는다."
+    },
+    {
+      "index": 197,
+      "type": "paragraph",
+      "text": "추적 기준 파일: src/app/application/redundancy/redundancy.c (SHA256 bb7490b557131072584f6e9bbc0a8eca639dd43b243b20aa6d07d921f2c0bf75). 소스 위치는 foxbms-2 루트 기준이다."
+    },
+    {
+      "index": 198,
+      "type": "paragraph",
+      "text": "상위 요구사항"
+    },
+    {
+      "index": 199,
+      "type": "table",
+      "rows": [
+        [
+          "Requirement ID",
+          "Requirement 설명"
+        ],
+        [
+          "F2-LLR-ALG-080",
+          "측정 이중화 모듈은 초기화, 셀 전압·온도 검증과 통계 산출, 스트링·배터리·고전압 버스 전압 산출, 스트링·Pack 전류와 전력 처리, 데이터베이스 갱신 및 입력 포인터 검사를 세부 요구사항 F2-LLR-ALG-080-01~29에 따라 수행해야 한다."
+        ]
+      ]
+    },
+    {
+      "index": 200,
+      "type": "paragraph",
+      "text": "초기화·시간 판정"
+    },
+    {
+      "index": 201,
+      "type": "table",
+      "rows": [
+        [
+          "Requirement ID",
+          "기능 / Requirement 설명"
+        ],
+        [
+          "F2-LLR-ALG-080-01",
+          "AFE 초기화초기화 시 모든 셀 전압, 모듈 전압, 스트링 전압 및 셀 온도의 무효 플래그를 설정해야 한다."
+        ],
+        [
+          "F2-LLR-ALG-080-02",
+          "Pack 초기화초기화 시 모든 스트링의 전압·전류·전력과 Pack 전류·전력, 배터리 전압 및 고전압 버스 전압의 무효 플래그를 1로 설정해야 한다."
+        ],
+        [
+          "F2-LLR-ALG-080-03",
+          "초기화 저장·반환초기화 결과를 검증된 셀 전압·셀 온도·Pack 데이터 블록에 기록하고, 데이터베이스 쓰기 함수의 반환값을 MRC_Initialize의 반환값으로 전달해야 한다."
+        ],
+        [
+          "F2-LLR-ALG-080-04",
+          "측정 이력 판정timestamp와 previousTimestamp가 모두 0이면 미측정으로 판단하고, 그 외에는 한 번 이상 측정된 것으로 판단해야 한다."
+        ],
+        [
+          "F2-LLR-ALG-080-05",
+          "최신성 판정한 번 이상 측정되었고 uint32_t 연산으로 구한 현재 시각 − timestamp가 허용 시간 이하이면 최신으로 판단해야 한다. AFE·전류는 250ms, V1·V3 전압 센서·전력은 300ms를 적용해야 한다. 경계값은 포함하며 시각 카운터 순환도 같은 뺄셈으로 처리해야 한다."
+        ]
+      ]
+    },
+    {
+      "index": 203,
+      "type": "paragraph",
+      "text": "AFE 측정 선택·검증"
+    },
+    {
+      "index": 204,
+      "type": "table",
+      "rows": [
+        [
+          "Requirement ID",
+          "기능 / Requirement 설명"
+        ],
+        [
+          "F2-LLR-ALG-080-06",
+          "이중화 사용 결정셀 전압과 온도 각각에 대해 Redundancy0 데이터 블록이 한 번 이상 갱신되었으면 이중화 측정을 사용해야 한다. 갱신 이력이 없으면 Base 측정만 사용해야 한다."
+        ],
+        [
+          "F2-LLR-ALG-080-07",
+          "AFE 측정 선택신규 여부는 저장된 해당 측정 처리 시각과 입력 timestamp가 다른지로 판단해야 한다. 이중화 사용 중 양쪽이 신규이면 두 측정을 비교해야 한다. 한쪽만 신규이고 반대쪽이 시간초과이면 신규 측정만 사용해야 한다. 반대쪽이 시간초과가 아니거나 양쪽 모두 신규가 아니면 결과를 유지해야 한다. 이중화 미사용 중에는 Base가 신규일 때 갱신해야 한다. 단일 측정 사용 시 데이터 본문을 복사하고 출력 블록의 헤더를 보존해야 한다. 최신성 및 처리 시각 저장의 미결정 사항은 RV-02를 참조한다."
+        ],
+        [
+          "F2-LLR-ALG-080-08",
+          "셀 전압 검증셀별로 양쪽 입력이 유효하면 두 값의 정수 평균을 저장하고 절대 차이가 10mV 이하이면 유효, 초과하면 무효로 표시해야 한다. 한쪽만 유효하면 그 값을 유효한 출력으로 사용해야 한다. 양쪽 모두 무효이면 평균값을 저장하고 무효로 표시해야 한다. 정수 평균은 나머지를 0 방향으로 버려야 한다. 비교 함수는 하나라도 무효 출력이 있으면 STD_NOT_OK, 모두 유효하면 STD_OK를 반환해야 한다."
+        ],
+        [
+          "F2-LLR-ALG-080-09",
+          "셀 온도 검증센서별로 양쪽 입력이 유효하면 두 값의 정수 평균을 저장하고 절대 차이가 50단위(5℃) 이하이면 유효, 초과하면 무효로 표시해야 한다. 정수 평균은 나머지를 0 방향으로 버려야 한다. 한쪽만 유효하면 그 값을 유효한 출력으로 사용해야 한다. 양쪽 모두 무효이면 출력도 무효로 표시해야 한다. 이 경우 저장 수치의 음수 연산은 RV-06의 미결정 사항으로 분리한다. 비교 함수는 하나라도 무효 출력이 있으면 STD_NOT_OK, 모두 유효하면 STD_OK를 반환해야 한다."
+        ],
+        [
+          "F2-LLR-ALG-080-10",
+          "비교 직후 집계이중화 비교 직후 스트링별 유효 셀 전압 개수와 유효 온도 개수를 기록해야 한다. 스트링 전압은 비교 결과의 유효 셀 전압만 합산해야 한다. 최종 온도 개수는 080-27을 따라야 한다. 편차 검사 후 전압 집계 필드의 정합성은 RV-03을 참조한다."
+        ]
+      ]
+    },
+    {
+      "index": 205,
+      "type": "paragraph",
+      "text": "통계·편차·AFE 저장"
+    },
+    {
+      "index": 206,
+      "type": "table",
+      "rows": [
+        [
+          "Requirement ID",
+          "기능 / Requirement 설명"
+        ],
+        [
+          "F2-LLR-ALG-080-11",
+          "셀 전압 통계스트링별로 최종 무효 플래그가 해제된 셀 전압만 사용하여 최소·최대·평균·유효 개수와 극값의 모듈·셀 위치를 계산해야 한다. 평균은 유효값 합계 / 유효 개수의 정수값이며 나머지는 0 방향으로 버려야 한다. 동일한 극값은 먼저 기록된 위치를 유지해야 한다. 모든 스트링에 유효값이 있으면 통계 함수는 STD_OK를 반환해야 한다."
+        ],
+        [
+          "F2-LLR-ALG-080-12",
+          "셀 온도 통계스트링별로 최종 무효 플래그가 해제된 온도만 사용하여 최소·최대·평균·유효 개수와 극값의 모듈·센서 위치를 계산해야 한다. 평균은 float_t 합계 / 유효 개수로 계산하여 소수 부분을 유지해야 한다. 동일한 극값은 먼저 기록된 위치를 유지해야 한다. 모든 스트링에 유효값이 있으면 통계 함수는 STD_OK를 반환해야 한다. 최종 유효 개수의 일치는 080-27을 따라야 한다."
+        ],
+        [
+          "F2-LLR-ALG-080-13",
+          "유효 측정 없음스트링에 유효 측정이 없으면 해당 통계의 유효 개수·평균·극값 위치를 0, 최소값을 INT16_MAX, 최대값을 INT16_MIN으로 기록해야 한다. 하나 이상의 스트링에서 이 조건이 발생하면 해당 전압 또는 온도 통계 계산 함수는 STD_NOT_OK를 반환해야 한다."
+        ],
+        [
+          "F2-LLR-ALG-080-14",
+          "평균 대비 편차 검사최초 통계 계산 후 유효 셀 전압의 평균 대비 절대 차이가 300mV를 초과하거나 유효 온도의 차이가 100단위(10℃)를 초과하면 해당 측정을 무효화해야 한다. 온도 비교에는 최초 평균을 int16_t로 변환한 값을 사용해야 한다. 새 무효 측정이 발생하면 남은 유효값으로 통계를 한 번 다시 계산해야 한다. 동일 호출에서 재계산한 평균으로 편차 검사를 반복하지 않아야 한다. 최종 온도 개수는 080-27을 따라야 한다."
+        ],
+        [
+          "F2-LLR-ALG-080-15",
+          "AFE 결과 저장·반환전압·온도 중 처리된 항목의 검증 데이터 블록과 최소·최대 데이터 블록을 기록해야 한다. 양쪽 모두 처리되면 세 블록을 기록해야 한다. 처리된 항목이 하나 이상이면 MRC_ValidateAfeMeasurement는 STD_OK, 없으면 STD_NOT_OK를 반환해야 한다. 이 반환값은 모든 측정의 유효함을 뜻하지 않는다. Base·Redundancy0 원본 블록은 읽기 입력으로 사용해야 한다. 데이터베이스 실패 전파는 RV-07을 참조한다."
+        ]
+      ]
+    },
+    {
+      "index": 208,
+      "type": "paragraph",
+      "text": "Pack 전압"
+    },
+    {
+      "index": 209,
+      "type": "table",
+      "rows": [
+        [
+          "Requirement ID",
+          "기능 / Requirement 설명"
+        ],
+        [
+          "F2-LLR-ALG-080-16",
+          "스트링 전압 선택V1이 최신·유효하고 AFE의 유효 셀 개수가 구성 셀 수와 같으면 두 스트링 전압을 비교해야 한다. 절대 차이가 3000mV 미만이면 유효, 이상이면 무효로 표시하고 수치는 V1 측정값을 사용해야 한다. V1만 사용 가능하면 V1을 유효하게 사용해야 한다. V1이 사용 불가능하고 AFE의 모든 셀이 유효하면 AFE 스트링 전압을 유효하게 사용해야 한다. AFE 입력 최신성 및 집계 정합성은 RV-02·RV-03을 참조한다."
+        ],
+        [
+          "F2-LLR-ALG-080-17",
+          "스트링 전압 추정V1을 사용할 수 없고 AFE에 무효 셀이 있으면 AFE 스트링 전압 + 평균 셀 전압 × 무효 셀 개수로 추정값을 계산해야 한다. 무효 셀이 5개 이하이면 추정 출력을 유효, 5개를 초과하면 무효로 표시해야 한다. 여기서 무효 셀 개수는 구성 셀 수 − AFE 유효 셀 개수이다."
+        ],
+        [
+          "F2-LLR-ALG-080-18",
+          "배터리 전압연결된 스트링이 있으면 연결 상태이면서 전압이 유효한 스트링들의 평균을 사용해야 한다. 연결된 스트링이 없으면 모든 유효 스트링의 평균을 사용해야 한다. 대상이 하나 이상이면 유효로 표시하고, 없으면 INT32_MAX를 저장하고 무효로 표시해야 한다. 평균의 소수 부분은 0 방향으로 버려야 한다."
+        ],
+        [
+          "F2-LLR-ALG-080-19",
+          "고전압 버스 전압연결 또는 프리차지 상태이며 V3 측정이 최신·유효한 스트링들의 전압 평균을 사용해야 한다. 대상이 하나 이상이면 유효로 표시하고, 없으면 기존 수치를 유지하고 무효로 표시해야 한다. 평균의 소수 부분은 0 방향으로 버려야 한다."
+        ]
+      ]
+    },
+    {
+      "index": 210,
+      "type": "paragraph",
+      "text": "전류·전력·공통 처리"
+    },
+    {
+      "index": 211,
+      "type": "table",
+      "rows": [
+        [
+          "Requirement ID",
+          "기능 / Requirement 설명"
+        ],
+        [
+          "F2-LLR-ALG-080-20",
+          "스트링 전류최신인 신규 전류 측정은 수치를 복사하고 입력 무효 플래그에 따라 출력 유효성을 설정해야 한다. 최신이지만 신규가 아니면 기존 수치와 플래그를 유지해야 한다. 미측정 또는 시간초과이면 기존 수치를 유지하고 무효로 표시해야 한다."
+        ],
+        [
+          "F2-LLR-ALG-080-21",
+          "Pack 전류유효한 스트링 전류만 합산하여 Pack 전류를 기록해야 한다. 모든 스트링 전류가 유효하면 Pack 전류를 유효, 하나라도 무효이면 무효로 표시해야 한다. 합산 대상을 스트링 연결 상태로 제한하지 않아야 한다. 모든 스트링 전류가 무효이면 합산값은 0mA이고 Pack 무효 플래그는 1이어야 한다."
+        ],
+        [
+          "F2-LLR-ALG-080-22",
+          "스트링 전력각 처리 시점의 스트링 전력은 080-28의 입력 선택 우선순위로 결정하고 080-29의 스트링별 독립성을 보장해야 한다. 대체 계산은 같은 스트링의 검증된 전류[mA] / 1000과 전압[mV] / 1000을 각각 float_t로 변환하여 곱한 뒤 int32_t의 W 값으로 저장해야 한다. 표현 가능한 범위에서 소수 부분은 0 방향으로 버리고 음수 전력의 부호는 유지해야 한다."
+        ],
+        [
+          "F2-LLR-ALG-080-23",
+          "Pack 전력유효한 스트링 전력만 합산하여 Pack 전력을 기록해야 한다. 모든 스트링 전력이 유효하면 Pack 전력을 유효, 하나라도 무효이면 무효로 표시해야 한다. 합산 대상을 스트링 연결 상태로 제한하지 않아야 한다. 모든 스트링 전력이 무효이면 합산값은 0W이고 Pack 무효 플래그는 1이어야 한다."
+        ],
+        [
+          "F2-LLR-ALG-080-24",
+          "Pack 처리 순서·저장MRC_ValidatePackMeasurement는 전류 → 스트링 전압 → 배터리 전압 → 고전압 버스 전압 → 전력 순으로 처리하고 Pack 데이터 블록을 기록해야 한다. 현재 API 반환 계약에 따라 측정 무효 플래그와 별개로 STD_OK를 반환해야 한다. 측정 유효성은 각 invalid 필드로 판단해야 한다. 데이터베이스 실패 전파 및 반환 계약 재정의는 RV-07을 참조한다."
+        ],
+        [
+          "F2-LLR-ALG-080-25",
+          "진단 이벤트AFE 시간초과는 해당 Base·Redundancy0 진단 ID로 시스템 단위에 전달해야 한다. 사용 이력이 없는 Redundancy0의 시간초과 진단은 정상으로 전달해야 한다. 셀 이중화 비교·편차, Pack 센서 시간초과, 전류·전력 오류는 해당 진단 ID로 스트링 단위에 전달해야 한다. V1과 AFE를 함께 비교할 수 없으면 스트링 전압 비교 진단을 오류로 전달해야 한다. 센서 시간초과 진단은 대체 전력의 유효성과 별개로 전달하고, 전력 오류 진단은 최종 스트링 전력의 유효성으로 판단해야 한다."
+        ],
+        [
+          "F2-LLR-ALG-080-26",
+          "NULL 입력 계약필수 포인터 인자를 갖는 MRC 내부 함수는 해당 인자가 NULL_PTR이면 역참조 전에 FAS_ASSERT를 발생시켜야 한다. NULL 입력의 기대 결과는 오류 반환값이 아니라 assert 발생으로 정의해야 한다. 이 계약은 assert에 의해 실행이 중단되는 설정을 전제로 한다. assert를 중단 없이 통과시키는 FAS_ASSERT_LEVEL_NO_OPERATION 설정에는 NULL 안전 처리를 보장하지 않는다."
+        ]
+      ]
+    },
+    {
+      "index": 213,
+      "type": "paragraph",
+      "text": "정상 동작으로 확정한 추가 요구사항"
+    },
+    {
+      "index": 214,
+      "type": "table",
+      "rows": [
+        [
+          "Requirement ID",
+          "기능 / Requirement 설명"
+        ],
+        [
+          "F2-LLR-ALG-080-27",
+          "최종 온도 유효 개수 [정상 동작 기준]셀 온도 검증과 평균 대비 편차 검사가 완료되면 스트링별 최종 온도 무효 플래그가 해제된 센서의 개수를 계산해야 한다. 각 센서는 한 번만 집계해야 하며 nrValidTemperatures와 validMeasuredCellTemperatures에는 동일한 최종 개수를 기록해야 한다. 개수는 0 이상 해당 스트링의 구성 센서 수 이하이어야 한다. 단일 측정원과 이중화 측정원 모두에 적용하고 이전 처리의 개수를 누적하지 않아야 한다."
+        ],
+        [
+          "F2-LLR-ALG-080-28",
+          "전력 입력 선택·무효 처리 [정상 동작 기준]매 처리 시점에 다음 순서로 스트링 전력을 결정해야 한다. ① 측정 이력이 있고 경과 시간이 300ms 이하이며 입력이 유효한 전력 센서값이 있으면 그 값을 사용하고 유효로 표시한다. ② 센서값을 사용할 수 없고 같은 스트링의 검증된 전류·전압이 모두 유효하면 080-22의 대체 전력을 계산하고 유효로 표시한다. ③ 센서값도 사용할 수 없고 대체 계산도 불가능하면 이전 전력 수치를 유지하되 invalidStringPower를 1로 설정하고 Pack 합산에서 제외하며 전력 오류 진단을 전달한다. 무효 센서의 timestamp가 같더라도 대체 계산 가능 여부를 매 호출 다시 판단해야 한다. 전류·전압이 회복되면 대체 계산 결과로 유효성을 회복해야 한다."
+        ],
+        [
+          "F2-LLR-ALG-080-29",
+          "스트링별 전력 독립성 [정상 동작 기준]각 스트링의 전력 측정 선택, 대체 계산 여부 및 출력 유효성은 해당 스트링의 입력과 상태만으로 결정해야 한다. 한 스트링의 무효 측정 또는 시간초과가 다른 스트링의 전력 선택과 유효성에 영향을 주어서는 안 된다. 최신·유효한 센서 전력값은 다른 스트링의 대체 계산 발생 여부와 관계없이 우선 사용해야 한다. Pack 전력은 각 스트링의 처리가 완료된 후 080-23에 따라 합산해야 한다."
+        ]
+      ]
+    },
+    {
+      "index": 215,
+      "type": "paragraph",
+      "text": "참고사항"
+    },
+    {
+      "index": 216,
+      "type": "paragraph",
+      "text": "온도 개수"
+    },
+    {
+      "index": 217,
+      "type": "paragraph",
+      "text": "센서 8개가 모두 최종 유효이면 nrValidTemperatures = validMeasuredCellTemperatures = 8이어야 한다. 1개가 편차 검사에서 제외되면 두 값 모두 7, 모두 제외되면 두 값 모두 0이어야 한다. 같은 결과를 여러 번 처리해도 누적되지 않아야 한다."
+    },
+    {
+      "index": 218,
+      "type": "paragraph",
+      "text": "무효 전력"
+    },
+    {
+      "index": 219,
+      "type": "paragraph",
+      "text": "이전 전력이 100W이고 현재 센서가 무효이며 전류 또는 전압도 무효이면 stringPower_W는 100을 유지하고 invalidStringPower = 1이어야 한다. 해당 값을 합산에서 제외하고 Pack 전력을 무효로 표시해야 한다. 모든 스트링이 무효이면 packPower_W = 0, invalidPackPower = 1이다."
+    },
+    {
+      "index": 220,
+      "type": "paragraph",
+      "text": "대체 계산·회복"
+    },
+    {
+      "index": 221,
+      "type": "paragraph",
+      "text": "센서가 무효이고 전류 2000mA·전압 50000mV가 유효이면 대체 전력 100W를 유효하게 사용해야 한다. 전류가 -2000mA이면 -100W이다. 센서 timestamp가 그대로여도 전류·전압이 회복되면 대체 계산으로 전력을 유효하게 회복해야 한다."
+    },
+    {
+      "index": 222,
+      "type": "paragraph",
+      "text": "다중 스트링 독립성"
+    },
+    {
+      "index": 223,
+      "type": "paragraph",
+      "text": "스트링 A가 100W 대체 계산을 사용하고 B의 최신·유효 센서값이 200W이면 B는 200W를 사용해야 한다. B의 전류×전압이 250W이더라도 센서값을 덮어쓰지 않아야 한다. 두 스트링이 모두 유효이면 Pack 합산은 300W이며 유효이다. 구성 스트링 수는 이 예시에 한해 2개이다."
+    },
+    {
+      "index": 224,
+      "type": "paragraph",
+      "text": "기존 시험 시나리오 정정 안내: 다음 시험 표는 기존 호출 29개를 독립 시나리오로 재구성하고 세부 요구사항에 연결하였다. 입력·기대 결과는 도구와 무관하게 기술하였다. 신규 기능 시험의 설계·실행은 이번 정정 범위에 포함하지 않는다."
+    },
+    {
+      "index": 225,
+      "type": "paragraph",
+      "text": ""
+    },
+    {
+      "index": 226,
+      "type": "paragraph",
+      "text": "검증 시험 시나리오"
+    },
+    {
+      "index": 227,
+      "type": "paragraph",
+      "text": "검증 시험 시나리오 정정 안내: 기존 시험 함수 10개의 개별 SUT 호출 29개를 독립 행으로 분리하였다. 기존 시험 ID에 세부 번호를 추가하고 각 행의 입력·사전 상태·기대 결과를 완결되게 기록하였다. 기존 코드의 실행 순서는 시험 간 선행 조건으로 요구하지 않는다."
+    },
+    {
+      "index": 228,
+      "type": "paragraph",
+      "text": "표기 기준: SUT에는 실제 MRC 함수를 표시한다. 내부 static 함수를 시험하는 경우 각 도구가 시험용 연결 또는 내부 함수 접근을 구성해야 한다. 1st/2nd/3rd parameter는 인자 순서이며 외부 함수 응답과 전역 상태는 구분하여 기록하였다. 구조체의 0/false 초기값은 시험용 객체 준비를 의미하며 유효 측정값의 존재를 뜻하지 않는다."
+    },
+    {
+      "index": 229,
+      "type": "paragraph",
+      "text": "판정 기준: SUT 반환값과 기대값이 일치하면 시험이 통과한다. STD_NOT_OK (1) 또는 false도 해당 조건의 정상 기대 결과일 수 있다. NULL 시험은 예상 위치의 SUT assert 발생이 기대 결과이며 정상 반환값은 없다. 시험 도구의 검증 실패와 SUT assert를 구분한다."
+    },
+    {
+      "index": 230,
+      "type": "paragraph",
+      "text": "정정 사항: TC-02-05는 timestamp = UINT32_MAX, 현재 시각 = 50u이므로 uint32_t 경과 시간은 51tick이다. 원래 입력은 유지하고 주석의 50ms 설명만 바로잡았다. TC-02의 100tick은 시간 판정 함수에 전달하는 시험 인자이며 AFE·전류의 250ms 또는 센서의 300ms 설정값과 다르다."
+    },
+    {
+      "index": 231,
+      "type": "paragraph",
+      "text": "검증 상태: 아래 29개 시나리오는 테스트 소스·주석·실제 알고리즘을 대조하여 재구성한 명세이다. 이번 문서 정정에서는 Ceedling 또는 다른 도구로 새 시험을 실행하지 않았다. 초기화·Pack·정상 온도 개수·전력 요구사항 전체의 검증 완료를 뜻하지 않는다."
+    },
+    {
+      "index": 232,
+      "type": "table",
+      "rows": [
+        [
+          "Test ID",
+          "SUT",
+          "Requirement ID",
+          "Test 설명",
+          "Precondition",
+          "Inputs",
+          "Expected (Oracle)"
+        ],
+        [
+          "F2-LLR-ALG-080-TC-01-01",
+          "MRC_MeasurementUpdatedAtLeastOnce",
+          "F2-LLR-ALG-080-04",
+          "첫 측정 이력의 판정",
+          "독립 시험으로 실행한다. 전역변수·저장된 모듈 상태의 사전 설정은 필요하지 않다.",
+          "1st parameter — timestamp [uint32_t]: 10u2nd parameter — previousTimestamp [uint32_t]: 0u외부 입력: 없음",
+          "SUT 반환값: trueSUT assert: 발생하지 않음위 기대 결과와 일치하면 시험 통과"
+        ],
+        [
+          "F2-LLR-ALG-080-TC-01-02",
+          "MRC_MeasurementUpdatedAtLeastOnce",
+          "F2-LLR-ALG-080-04",
+          "두 번의 측정 이력의 판정",
+          "독립 시험으로 실행한다. 전역변수·저장된 모듈 상태의 사전 설정은 필요하지 않다.",
+          "1st parameter — timestamp [uint32_t]: 60u2nd parameter — previousTimestamp [uint32_t]: 10u외부 입력: 없음",
+          "SUT 반환값: trueSUT assert: 발생하지 않음위 기대 결과와 일치하면 시험 통과"
+        ],
+        [
+          "F2-LLR-ALG-080-TC-01-03",
+          "MRC_MeasurementUpdatedAtLeastOnce",
+          "F2-LLR-ALG-080-04",
+          "세 번째 측정 이력의 판정",
+          "독립 시험으로 실행한다. 전역변수·저장된 모듈 상태의 사전 설정은 필요하지 않다.",
+          "1st parameter — timestamp [uint32_t]: 70u2nd parameter — previousTimestamp [uint32_t]: 60u외부 입력: 없음",
+          "SUT 반환값: trueSUT assert: 발생하지 않음위 기대 결과와 일치하면 시험 통과"
+        ],
+        [
+          "F2-LLR-ALG-080-TC-01-04",
+          "MRC_MeasurementUpdatedAtLeastOnce",
+          "F2-LLR-ALG-080-04",
+          "측정 이력 없음의 판정",
+          "독립 시험으로 실행한다. 전역변수·저장된 모듈 상태의 사전 설정은 필요하지 않다.",
+          "1st parameter — timestamp [uint32_t]: 0u2nd parameter — previousTimestamp [uint32_t]: 0u외부 입력: 없음",
+          "SUT 반환값: falseSUT assert: 발생하지 않음위 기대 결과와 일치하면 시험 통과"
+        ],
+        [
+          "F2-LLR-ALG-080-TC-02-01",
+          "MRC_MeasurementUpdatedRecently",
+          "F2-LLR-ALG-080-05",
+          "허용 시간 이내 판정",
+          "독립 시험으로 실행한다. 전역변수·저장된 모듈 상태의 사전 설정은 필요하지 않다.시간 단위: tick. 현재 구성에서 1tick = 1ms. 시험 허용 시간 100tick은 AFE 설정값 250ms와 별개이다.",
+          "1st parameter — timestamp [uint32_t]: 50u2nd parameter — previousTimestamp [uint32_t]: 0u3rd parameter — timeInterval [uint32_t]: 100u외부 입력 — OS_GetTickCount 반환값 [uint32_t]: 100u",
+          "SUT 반환값: STD_OK (0)uint32_t 경과 시간: 50tickSUT assert: 발생하지 않음위 기대 결과와 일치하면 시험 통과"
+        ],
+        [
+          "F2-LLR-ALG-080-TC-02-02",
+          "MRC_MeasurementUpdatedRecently",
+          "F2-LLR-ALG-080-05",
+          "경계 시간 이내지만 미측정 판정",
+          "독립 시험으로 실행한다. 전역변수·저장된 모듈 상태의 사전 설정은 필요하지 않다.시간 단위: tick. 현재 구성에서 1tick = 1ms. 시험 허용 시간 100tick은 AFE 설정값 250ms와 별개이다.",
+          "1st parameter — timestamp [uint32_t]: 0u2nd parameter — previousTimestamp [uint32_t]: 0u3rd parameter — timeInterval [uint32_t]: 100u외부 입력 — OS_GetTickCount 반환값 [uint32_t]: 100u",
+          "SUT 반환값: STD_NOT_OK (1)uint32_t 경과 시간: 100tick현재·이전 측정 시각이 모두 0이므로 미측정으로 판정SUT assert: 발생하지 않음위 기대 결과와 일치하면 시험 통과"
+        ],
+        [
+          "F2-LLR-ALG-080-TC-02-03",
+          "MRC_MeasurementUpdatedRecently",
+          "F2-LLR-ALG-080-05",
+          "미측정이며 허용 시간 초과 판정",
+          "독립 시험으로 실행한다. 전역변수·저장된 모듈 상태의 사전 설정은 필요하지 않다.시간 단위: tick. 현재 구성에서 1tick = 1ms. 시험 허용 시간 100tick은 AFE 설정값 250ms와 별개이다.",
+          "1st parameter — timestamp [uint32_t]: 0u2nd parameter — previousTimestamp [uint32_t]: 0u3rd parameter — timeInterval [uint32_t]: 100u외부 입력 — OS_GetTickCount 반환값 [uint32_t]: 101u",
+          "SUT 반환값: STD_NOT_OK (1)uint32_t 경과 시간: 101tick현재·이전 측정 시각이 모두 0이므로 미측정으로 판정SUT assert: 발생하지 않음위 기대 결과와 일치하면 시험 통과"
+        ],
+        [
+          "F2-LLR-ALG-080-TC-02-04",
+          "MRC_MeasurementUpdatedRecently",
+          "F2-LLR-ALG-080-05",
+          "일반 측정의 최신성 판정",
+          "독립 시험으로 실행한다. 전역변수·저장된 모듈 상태의 사전 설정은 필요하지 않다.시간 단위: tick. 현재 구성에서 1tick = 1ms. 시험 허용 시간 100tick은 AFE 설정값 250ms와 별개이다.",
+          "1st parameter — timestamp [uint32_t]: 4937u2nd parameter — previousTimestamp [uint32_t]: 0u3rd parameter — timeInterval [uint32_t]: 100u외부 입력 — OS_GetTickCount 반환값 [uint32_t]: 5000u",
+          "SUT 반환값: STD_OK (0)uint32_t 경과 시간: 63tickSUT assert: 발생하지 않음위 기대 결과와 일치하면 시험 통과"
+        ],
+        [
+          "F2-LLR-ALG-080-TC-02-05",
+          "MRC_MeasurementUpdatedRecently",
+          "F2-LLR-ALG-080-05",
+          "시각 카운터 순환 이후 최신성 판정",
+          "독립 시험으로 실행한다. 전역변수·저장된 모듈 상태의 사전 설정은 필요하지 않다.시간 단위: tick. 현재 구성에서 1tick = 1ms. 시험 허용 시간 100tick은 AFE 설정값 250ms와 별개이다.",
+          "1st parameter — timestamp [uint32_t]: 4294967295u (UINT32_MAX)2nd parameter — previousTimestamp [uint32_t]: 0u3rd parameter — timeInterval [uint32_t]: 100u외부 입력 — OS_GetTickCount 반환값 [uint32_t]: 50u",
+          "SUT 반환값: STD_OK (0)uint32_t 경과 시간: 51tickSUT assert: 발생하지 않음위 기대 결과와 일치하면 시험 통과"
+        ],
+        [
+          "F2-LLR-ALG-080-TC-02-06",
+          "MRC_MeasurementUpdatedRecently",
+          "F2-LLR-ALG-080-05",
+          "순환 이후 허용 시간 경계 판정",
+          "독립 시험으로 실행한다. 전역변수·저장된 모듈 상태의 사전 설정은 필요하지 않다.시간 단위: tick. 현재 구성에서 1tick = 1ms. 시험 허용 시간 100tick은 AFE 설정값 250ms와 별개이다.",
+          "1st parameter — timestamp [uint32_t]: 4294967245u (UINT32_MAX − 50u)2nd parameter — previousTimestamp [uint32_t]: 0u3rd parameter — timeInterval [uint32_t]: 100u외부 입력 — OS_GetTickCount 반환값 [uint32_t]: 49u",
+          "SUT 반환값: STD_OK (0)uint32_t 경과 시간: 100tickSUT assert: 발생하지 않음위 기대 결과와 일치하면 시험 통과"
+        ],
+        [
+          "F2-LLR-ALG-080-TC-02-07",
+          "MRC_MeasurementUpdatedRecently",
+          "F2-LLR-ALG-080-05",
+          "순환 이후 허용 시간 초과 판정",
+          "독립 시험으로 실행한다. 전역변수·저장된 모듈 상태의 사전 설정은 필요하지 않다.시간 단위: tick. 현재 구성에서 1tick = 1ms. 시험 허용 시간 100tick은 AFE 설정값 250ms와 별개이다.",
+          "1st parameter — timestamp [uint32_t]: 4294967245u (UINT32_MAX − 50u)2nd parameter — previousTimestamp [uint32_t]: 0u3rd parameter — timeInterval [uint32_t]: 100u외부 입력 — OS_GetTickCount 반환값 [uint32_t]: 50u",
+          "SUT 반환값: STD_NOT_OK (1)uint32_t 경과 시간: 101tickSUT assert: 발생하지 않음위 기대 결과와 일치하면 시험 통과"
+        ],
+        [
+          "F2-LLR-ALG-080-TC-02-08",
+          "MRC_MeasurementUpdatedRecently",
+          "F2-LLR-ALG-080-05",
+          "큰 경과 시간의 시간초과 판정",
+          "독립 시험으로 실행한다. 전역변수·저장된 모듈 상태의 사전 설정은 필요하지 않다.시간 단위: tick. 현재 구성에서 1tick = 1ms. 시험 허용 시간 100tick은 AFE 설정값 250ms와 별개이다.",
+          "1st parameter — timestamp [uint32_t]: 50u2nd parameter — previousTimestamp [uint32_t]: 0u3rd parameter — timeInterval [uint32_t]: 100u외부 입력 — OS_GetTickCount 반환값 [uint32_t]: 4294967295u",
+          "SUT 반환값: STD_NOT_OK (1)uint32_t 경과 시간: 4294967245tickSUT assert: 발생하지 않음위 기대 결과와 일치하면 시험 통과"
+        ],
+        [
+          "F2-LLR-ALG-080-TC-03-01",
+          "MRC_CalculateCellVoltageMinMaxAverage",
+          "F2-LLR-ALG-080-26",
+          "셀 전압 통계 함수의 1번째 인자 NULL 방어 검사",
+          "각 행을 독립 시험으로 실행한다. SUT assert를 관찰하고 정상 실행을 중단할 수 있는 시험 환경을 사용한다. assert 비활성화 또는 중단 없이 실행을 계속하는 설정은 사용하지 않는다.객체 dummy0 [DATA_BLOCK_MIN_MAX_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_MIN_MAX, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.",
+          "1st parameter — pValidatedVoltages [DATA_BLOCK_CELL_VOLTAGE_s*]: NULL_PTR (널 포인터, 주소 0)2nd parameter — pMinMaxAverageValues [DATA_BLOCK_MIN_MAX_s*]: 객체 dummy0의 주소 (유효 포인터)외부 입력: 없음; NULL 검사 이후의 의존 함수 동작은 필요하지 않음",
+          "SUT의 1번째 인자 NULL 검사에서 assert 발생정상 반환값: 없음 (true/false 또는 STD_OK/STD_NOT_OK를 기대하지 않음)NULL 역참조 전에 실행 중단예상한 SUT assert를 관찰하면 시험 통과; 정상 반환하거나 다른 원인으로 종료되면 시험 실패"
+        ],
+        [
+          "F2-LLR-ALG-080-TC-03-02",
+          "MRC_CalculateCellVoltageMinMaxAverage",
+          "F2-LLR-ALG-080-26",
+          "셀 전압 통계 함수의 2번째 인자 NULL 방어 검사",
+          "각 행을 독립 시험으로 실행한다. SUT assert를 관찰하고 정상 실행을 중단할 수 있는 시험 환경을 사용한다. assert 비활성화 또는 중단 없이 실행을 계속하는 설정은 사용하지 않는다.객체 dummy1 [DATA_BLOCK_CELL_VOLTAGE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_VOLTAGE, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.",
+          "1st parameter — pValidatedVoltages [DATA_BLOCK_CELL_VOLTAGE_s*]: 객체 dummy1의 주소 (유효 포인터)2nd parameter — pMinMaxAverageValues [DATA_BLOCK_MIN_MAX_s*]: NULL_PTR (널 포인터, 주소 0)외부 입력: 없음; NULL 검사 이후의 의존 함수 동작은 필요하지 않음",
+          "SUT의 2번째 인자 NULL 검사에서 assert 발생정상 반환값: 없음 (true/false 또는 STD_OK/STD_NOT_OK를 기대하지 않음)NULL 역참조 전에 실행 중단예상한 SUT assert를 관찰하면 시험 통과; 정상 반환하거나 다른 원인으로 종료되면 시험 실패"
+        ],
+        [
+          "F2-LLR-ALG-080-TC-04-01",
+          "MRC_CalculateCellTemperatureMinMaxAverage",
+          "F2-LLR-ALG-080-26",
+          "셀 온도 통계 함수의 1번째 인자 NULL 방어 검사",
+          "각 행을 독립 시험으로 실행한다. SUT assert를 관찰하고 정상 실행을 중단할 수 있는 시험 환경을 사용한다. assert 비활성화 또는 중단 없이 실행을 계속하는 설정은 사용하지 않는다.객체 dummy0 [DATA_BLOCK_MIN_MAX_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_MIN_MAX, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.",
+          "1st parameter — pValidatedTemperatures [DATA_BLOCK_CELL_TEMPERATURE_s*]: NULL_PTR (널 포인터, 주소 0)2nd parameter — pMinMaxAverageValues [DATA_BLOCK_MIN_MAX_s*]: 객체 dummy0의 주소 (유효 포인터)외부 입력: 없음; NULL 검사 이후의 의존 함수 동작은 필요하지 않음",
+          "SUT의 1번째 인자 NULL 검사에서 assert 발생정상 반환값: 없음 (true/false 또는 STD_OK/STD_NOT_OK를 기대하지 않음)NULL 역참조 전에 실행 중단예상한 SUT assert를 관찰하면 시험 통과; 정상 반환하거나 다른 원인으로 종료되면 시험 실패"
+        ],
+        [
+          "F2-LLR-ALG-080-TC-04-02",
+          "MRC_CalculateCellTemperatureMinMaxAverage",
+          "F2-LLR-ALG-080-26",
+          "셀 온도 통계 함수의 2번째 인자 NULL 방어 검사",
+          "각 행을 독립 시험으로 실행한다. SUT assert를 관찰하고 정상 실행을 중단할 수 있는 시험 환경을 사용한다. assert 비활성화 또는 중단 없이 실행을 계속하는 설정은 사용하지 않는다.객체 dummy1 [DATA_BLOCK_CELL_TEMPERATURE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_TEMPERATURE, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.",
+          "1st parameter — pValidatedTemperatures [DATA_BLOCK_CELL_TEMPERATURE_s*]: 객체 dummy1의 주소 (유효 포인터)2nd parameter — pMinMaxAverageValues [DATA_BLOCK_MIN_MAX_s*]: NULL_PTR (널 포인터, 주소 0)외부 입력: 없음; NULL 검사 이후의 의존 함수 동작은 필요하지 않음",
+          "SUT의 2번째 인자 NULL 검사에서 assert 발생정상 반환값: 없음 (true/false 또는 STD_OK/STD_NOT_OK를 기대하지 않음)NULL 역참조 전에 실행 중단예상한 SUT assert를 관찰하면 시험 통과; 정상 반환하거나 다른 원인으로 종료되면 시험 실패"
+        ],
+        [
+          "F2-LLR-ALG-080-TC-05-01",
+          "MRC_ValidateCellVoltage",
+          "F2-LLR-ALG-080-26",
+          "셀 전압 이중화 비교 함수의 1번째 인자 NULL 방어 검사",
+          "각 행을 독립 시험으로 실행한다. SUT assert를 관찰하고 정상 실행을 중단할 수 있는 시험 환경을 사용한다. assert 비활성화 또는 중단 없이 실행을 계속하는 설정은 사용하지 않는다.객체 dummy [DATA_BLOCK_CELL_VOLTAGE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_VOLTAGE, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.NULL이 아닌 두 인자는 원래 시험과 같이 동일한 dummy 객체를 참조한다.",
+          "1st parameter — pCellVoltageBase [DATA_BLOCK_CELL_VOLTAGE_s*]: NULL_PTR (널 포인터, 주소 0)2nd parameter — pCellVoltageRedundancy0 [DATA_BLOCK_CELL_VOLTAGE_s*]: 객체 dummy의 주소 (유효 포인터)3rd parameter — pValidatedVoltages [DATA_BLOCK_CELL_VOLTAGE_s*]: 객체 dummy의 주소 (유효 포인터)외부 입력: 없음; NULL 검사 이후의 의존 함수 동작은 필요하지 않음",
+          "SUT의 1번째 인자 NULL 검사에서 assert 발생정상 반환값: 없음 (true/false 또는 STD_OK/STD_NOT_OK를 기대하지 않음)NULL 역참조 전에 실행 중단예상한 SUT assert를 관찰하면 시험 통과; 정상 반환하거나 다른 원인으로 종료되면 시험 실패"
+        ],
+        [
+          "F2-LLR-ALG-080-TC-05-02",
+          "MRC_ValidateCellVoltage",
+          "F2-LLR-ALG-080-26",
+          "셀 전압 이중화 비교 함수의 2번째 인자 NULL 방어 검사",
+          "각 행을 독립 시험으로 실행한다. SUT assert를 관찰하고 정상 실행을 중단할 수 있는 시험 환경을 사용한다. assert 비활성화 또는 중단 없이 실행을 계속하는 설정은 사용하지 않는다.객체 dummy [DATA_BLOCK_CELL_VOLTAGE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_VOLTAGE, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.NULL이 아닌 두 인자는 원래 시험과 같이 동일한 dummy 객체를 참조한다.",
+          "1st parameter — pCellVoltageBase [DATA_BLOCK_CELL_VOLTAGE_s*]: 객체 dummy의 주소 (유효 포인터)2nd parameter — pCellVoltageRedundancy0 [DATA_BLOCK_CELL_VOLTAGE_s*]: NULL_PTR (널 포인터, 주소 0)3rd parameter — pValidatedVoltages [DATA_BLOCK_CELL_VOLTAGE_s*]: 객체 dummy의 주소 (유효 포인터)외부 입력: 없음; NULL 검사 이후의 의존 함수 동작은 필요하지 않음",
+          "SUT의 2번째 인자 NULL 검사에서 assert 발생정상 반환값: 없음 (true/false 또는 STD_OK/STD_NOT_OK를 기대하지 않음)NULL 역참조 전에 실행 중단예상한 SUT assert를 관찰하면 시험 통과; 정상 반환하거나 다른 원인으로 종료되면 시험 실패"
+        ],
+        [
+          "F2-LLR-ALG-080-TC-05-03",
+          "MRC_ValidateCellVoltage",
+          "F2-LLR-ALG-080-26",
+          "셀 전압 이중화 비교 함수의 3번째 인자 NULL 방어 검사",
+          "각 행을 독립 시험으로 실행한다. SUT assert를 관찰하고 정상 실행을 중단할 수 있는 시험 환경을 사용한다. assert 비활성화 또는 중단 없이 실행을 계속하는 설정은 사용하지 않는다.객체 dummy [DATA_BLOCK_CELL_VOLTAGE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_VOLTAGE, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.NULL이 아닌 두 인자는 원래 시험과 같이 동일한 dummy 객체를 참조한다.",
+          "1st parameter — pCellVoltageBase [DATA_BLOCK_CELL_VOLTAGE_s*]: 객체 dummy의 주소 (유효 포인터)2nd parameter — pCellVoltageRedundancy0 [DATA_BLOCK_CELL_VOLTAGE_s*]: 객체 dummy의 주소 (유효 포인터)3rd parameter — pValidatedVoltages [DATA_BLOCK_CELL_VOLTAGE_s*]: NULL_PTR (널 포인터, 주소 0)외부 입력: 없음; NULL 검사 이후의 의존 함수 동작은 필요하지 않음",
+          "SUT의 3번째 인자 NULL 검사에서 assert 발생정상 반환값: 없음 (true/false 또는 STD_OK/STD_NOT_OK를 기대하지 않음)NULL 역참조 전에 실행 중단예상한 SUT assert를 관찰하면 시험 통과; 정상 반환하거나 다른 원인으로 종료되면 시험 실패"
+        ],
+        [
+          "F2-LLR-ALG-080-TC-06-01",
+          "MRC_UpdateCellVoltageValidation",
+          "F2-LLR-ALG-080-26",
+          "단일 셀 전압 복사 함수의 1번째 인자 NULL 방어 검사",
+          "각 행을 독립 시험으로 실행한다. SUT assert를 관찰하고 정상 실행을 중단할 수 있는 시험 환경을 사용한다. assert 비활성화 또는 중단 없이 실행을 계속하는 설정은 사용하지 않는다.객체 dummy [DATA_BLOCK_CELL_VOLTAGE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_VOLTAGE, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.",
+          "1st parameter — pCellVoltage [DATA_BLOCK_CELL_VOLTAGE_s*]: NULL_PTR (널 포인터, 주소 0)2nd parameter — pValidatedVoltages [DATA_BLOCK_CELL_VOLTAGE_s*]: 객체 dummy의 주소 (유효 포인터)외부 입력: 없음; NULL 검사 이후의 의존 함수 동작은 필요하지 않음",
+          "SUT의 1번째 인자 NULL 검사에서 assert 발생정상 반환값: 없음 (true/false 또는 STD_OK/STD_NOT_OK를 기대하지 않음)NULL 역참조 전에 실행 중단예상한 SUT assert를 관찰하면 시험 통과; 정상 반환하거나 다른 원인으로 종료되면 시험 실패"
+        ],
+        [
+          "F2-LLR-ALG-080-TC-06-02",
+          "MRC_UpdateCellVoltageValidation",
+          "F2-LLR-ALG-080-26",
+          "단일 셀 전압 복사 함수의 2번째 인자 NULL 방어 검사",
+          "각 행을 독립 시험으로 실행한다. SUT assert를 관찰하고 정상 실행을 중단할 수 있는 시험 환경을 사용한다. assert 비활성화 또는 중단 없이 실행을 계속하는 설정은 사용하지 않는다.객체 dummy [DATA_BLOCK_CELL_VOLTAGE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_VOLTAGE, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.",
+          "1st parameter — pCellVoltage [DATA_BLOCK_CELL_VOLTAGE_s*]: 객체 dummy의 주소 (유효 포인터)2nd parameter — pValidatedVoltages [DATA_BLOCK_CELL_VOLTAGE_s*]: NULL_PTR (널 포인터, 주소 0)외부 입력: 없음; NULL 검사 이후의 의존 함수 동작은 필요하지 않음",
+          "SUT의 2번째 인자 NULL 검사에서 assert 발생정상 반환값: 없음 (true/false 또는 STD_OK/STD_NOT_OK를 기대하지 않음)NULL 역참조 전에 실행 중단예상한 SUT assert를 관찰하면 시험 통과; 정상 반환하거나 다른 원인으로 종료되면 시험 실패"
+        ],
+        [
+          "F2-LLR-ALG-080-TC-07-01",
+          "MRC_ValidateCellTemperature",
+          "F2-LLR-ALG-080-26",
+          "셀 온도 이중화 비교 함수의 1번째 인자 NULL 방어 검사",
+          "각 행을 독립 시험으로 실행한다. SUT assert를 관찰하고 정상 실행을 중단할 수 있는 시험 환경을 사용한다. assert 비활성화 또는 중단 없이 실행을 계속하는 설정은 사용하지 않는다.객체 dummy [DATA_BLOCK_CELL_TEMPERATURE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_TEMPERATURE, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.NULL이 아닌 두 인자는 원래 시험과 같이 동일한 dummy 객체를 참조한다.",
+          "1st parameter — pCellTemperatureBase [DATA_BLOCK_CELL_TEMPERATURE_s*]: NULL_PTR (널 포인터, 주소 0)2nd parameter — pCellTemperatureRedundancy0 [DATA_BLOCK_CELL_TEMPERATURE_s*]: 객체 dummy의 주소 (유효 포인터)3rd parameter — pValidatedTemperatures [DATA_BLOCK_CELL_TEMPERATURE_s*]: 객체 dummy의 주소 (유효 포인터)외부 입력: 없음; NULL 검사 이후의 의존 함수 동작은 필요하지 않음",
+          "SUT의 1번째 인자 NULL 검사에서 assert 발생정상 반환값: 없음 (true/false 또는 STD_OK/STD_NOT_OK를 기대하지 않음)NULL 역참조 전에 실행 중단예상한 SUT assert를 관찰하면 시험 통과; 정상 반환하거나 다른 원인으로 종료되면 시험 실패"
+        ],
+        [
+          "F2-LLR-ALG-080-TC-07-02",
+          "MRC_ValidateCellTemperature",
+          "F2-LLR-ALG-080-26",
+          "셀 온도 이중화 비교 함수의 2번째 인자 NULL 방어 검사",
+          "각 행을 독립 시험으로 실행한다. SUT assert를 관찰하고 정상 실행을 중단할 수 있는 시험 환경을 사용한다. assert 비활성화 또는 중단 없이 실행을 계속하는 설정은 사용하지 않는다.객체 dummy [DATA_BLOCK_CELL_TEMPERATURE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_TEMPERATURE, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.NULL이 아닌 두 인자는 원래 시험과 같이 동일한 dummy 객체를 참조한다.",
+          "1st parameter — pCellTemperatureBase [DATA_BLOCK_CELL_TEMPERATURE_s*]: 객체 dummy의 주소 (유효 포인터)2nd parameter — pCellTemperatureRedundancy0 [DATA_BLOCK_CELL_TEMPERATURE_s*]: NULL_PTR (널 포인터, 주소 0)3rd parameter — pValidatedTemperatures [DATA_BLOCK_CELL_TEMPERATURE_s*]: 객체 dummy의 주소 (유효 포인터)외부 입력: 없음; NULL 검사 이후의 의존 함수 동작은 필요하지 않음",
+          "SUT의 2번째 인자 NULL 검사에서 assert 발생정상 반환값: 없음 (true/false 또는 STD_OK/STD_NOT_OK를 기대하지 않음)NULL 역참조 전에 실행 중단예상한 SUT assert를 관찰하면 시험 통과; 정상 반환하거나 다른 원인으로 종료되면 시험 실패"
+        ],
+        [
+          "F2-LLR-ALG-080-TC-07-03",
+          "MRC_ValidateCellTemperature",
+          "F2-LLR-ALG-080-26",
+          "셀 온도 이중화 비교 함수의 3번째 인자 NULL 방어 검사",
+          "각 행을 독립 시험으로 실행한다. SUT assert를 관찰하고 정상 실행을 중단할 수 있는 시험 환경을 사용한다. assert 비활성화 또는 중단 없이 실행을 계속하는 설정은 사용하지 않는다.객체 dummy [DATA_BLOCK_CELL_TEMPERATURE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_TEMPERATURE, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.NULL이 아닌 두 인자는 원래 시험과 같이 동일한 dummy 객체를 참조한다.",
+          "1st parameter — pCellTemperatureBase [DATA_BLOCK_CELL_TEMPERATURE_s*]: 객체 dummy의 주소 (유효 포인터)2nd parameter — pCellTemperatureRedundancy0 [DATA_BLOCK_CELL_TEMPERATURE_s*]: 객체 dummy의 주소 (유효 포인터)3rd parameter — pValidatedTemperatures [DATA_BLOCK_CELL_TEMPERATURE_s*]: NULL_PTR (널 포인터, 주소 0)외부 입력: 없음; NULL 검사 이후의 의존 함수 동작은 필요하지 않음",
+          "SUT의 3번째 인자 NULL 검사에서 assert 발생정상 반환값: 없음 (true/false 또는 STD_OK/STD_NOT_OK를 기대하지 않음)NULL 역참조 전에 실행 중단예상한 SUT assert를 관찰하면 시험 통과; 정상 반환하거나 다른 원인으로 종료되면 시험 실패"
+        ],
+        [
+          "F2-LLR-ALG-080-TC-08-01",
+          "MRC_UpdateCellTemperatureValidation",
+          "F2-LLR-ALG-080-26",
+          "단일 셀 온도 복사 함수의 1번째 인자 NULL 방어 검사",
+          "각 행을 독립 시험으로 실행한다. SUT assert를 관찰하고 정상 실행을 중단할 수 있는 시험 환경을 사용한다. assert 비활성화 또는 중단 없이 실행을 계속하는 설정은 사용하지 않는다.객체 dummy [DATA_BLOCK_CELL_TEMPERATURE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_TEMPERATURE, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.",
+          "1st parameter — pCellTemperature [DATA_BLOCK_CELL_TEMPERATURE_s*]: NULL_PTR (널 포인터, 주소 0)2nd parameter — pValidatedTemperature [DATA_BLOCK_CELL_TEMPERATURE_s*]: 객체 dummy의 주소 (유효 포인터)외부 입력: 없음; NULL 검사 이후의 의존 함수 동작은 필요하지 않음",
+          "SUT의 1번째 인자 NULL 검사에서 assert 발생정상 반환값: 없음 (true/false 또는 STD_OK/STD_NOT_OK를 기대하지 않음)NULL 역참조 전에 실행 중단예상한 SUT assert를 관찰하면 시험 통과; 정상 반환하거나 다른 원인으로 종료되면 시험 실패"
+        ],
+        [
+          "F2-LLR-ALG-080-TC-08-02",
+          "MRC_UpdateCellTemperatureValidation",
+          "F2-LLR-ALG-080-26",
+          "단일 셀 온도 복사 함수의 2번째 인자 NULL 방어 검사",
+          "각 행을 독립 시험으로 실행한다. SUT assert를 관찰하고 정상 실행을 중단할 수 있는 시험 환경을 사용한다. assert 비활성화 또는 중단 없이 실행을 계속하는 설정은 사용하지 않는다.객체 dummy [DATA_BLOCK_CELL_TEMPERATURE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_TEMPERATURE, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.",
+          "1st parameter — pCellTemperature [DATA_BLOCK_CELL_TEMPERATURE_s*]: 객체 dummy의 주소 (유효 포인터)2nd parameter — pValidatedTemperature [DATA_BLOCK_CELL_TEMPERATURE_s*]: NULL_PTR (널 포인터, 주소 0)외부 입력: 없음; NULL 검사 이후의 의존 함수 동작은 필요하지 않음",
+          "SUT의 2번째 인자 NULL 검사에서 assert 발생정상 반환값: 없음 (true/false 또는 STD_OK/STD_NOT_OK를 기대하지 않음)NULL 역참조 전에 실행 중단예상한 SUT assert를 관찰하면 시험 통과; 정상 반환하거나 다른 원인으로 종료되면 시험 실패"
+        ],
+        [
+          "F2-LLR-ALG-080-TC-09",
+          "MRC_ValidateAfeMeasurement",
+          "F2-LLR-ALG-080-04F2-LLR-ALG-080-05F2-LLR-ALG-080-06F2-LLR-ALG-080-07F2-LLR-ALG-080-15F2-LLR-ALG-080-25",
+          "미측정·시각 0에서 AFE 갱신을 수행하지 않는 동작",
+          "이 시험을 독립 실행하여 모듈 정적 상태를 초기 상태로 준비한다.전역 상태 — mrc_state.lastBaseCellVoltageTimestamp [uint32_t]: 0u전역 상태 — mrc_state.lastRedundancy0CellVoltageTimestamp [uint32_t]: 0u전역 상태 — mrc_state.lastBaseCellTemperatureTimestamp [uint32_t]: 0u전역 상태 — mrc_state.lastRedundancy0CellTemperatureTimestamp [uint32_t]: 0u검증 결과 객체 mrc_tableCellVoltages·mrc_tableCellTemperatures·mrc_tableMinimumMaximumValues는 정적 초기 상태로 준비한다. 각 header.uniqueId는 DATA_BLOCK_ID_CELL_VOLTAGE·DATA_BLOCK_ID_CELL_TEMPERATURE·DATA_BLOCK_ID_MIN_MAX이고 나머지 필드는 0/false이다. 이 값의 유효성을 확인하는 시험이 아니라 무처리 시 보존 여부를 확인하는 시험이다.",
+          "명시적 함수 인자: 없음데이터베이스 읽기에서 다음 네 블록을 SUT에 제공한다.객체 전압 Base [DATA_BLOCK_CELL_VOLTAGE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_VOLTAGE_BASE, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.객체 전압 Redundancy0 [DATA_BLOCK_CELL_VOLTAGE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_VOLTAGE_REDUNDANCY0, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.객체 온도 Base [DATA_BLOCK_CELL_TEMPERATURE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_TEMPERATURE_BASE, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.객체 온도 Redundancy0 [DATA_BLOCK_CELL_TEMPERATURE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_TEMPERATURE_REDUNDANCY0, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.외부 입력 — OS_GetTickCount 반환값: 0u외부 입력 — 데이터베이스 읽기 결과: STD_OK (0)외부 입력 — 네 블록의 최신성 판정: false (현재·이전 timestamp가 모두 0)외부 입력 — 전압·온도 Redundancy0의 측정 이력 판정: false외부 입력 — 각 진단 처리의 반환값: STD_OK (0)",
+          "SUT 반환값: STD_NOT_OK (1)SUT assert: 발생하지 않음검증 데이터베이스 쓰기: 수행하지 않음검증 결과 세 객체와 저장된 AFE 처리 시각 네 항목: 시험 전 값 유지진단 이벤트 (모두 DIAG_SYSTEM, 인덱스 0u):DIAG_ID_BASE_CELL_VOLTAGE_MEASUREMENT_TIMEOUT: DIAG_EVENT_NOT_OKDIAG_ID_REDUNDANCY0_CELL_VOLTAGE_MEASUREMENT_TIMEOUT: DIAG_EVENT_OKDIAG_ID_BASE_CELL_TEMPERATURE_MEASUREMENT_TIMEOUT: DIAG_EVENT_NOT_OKDIAG_ID_REDUNDANCY0_CELL_TEMPERATURE_MEASUREMENT_TIMEOUT: DIAG_EVENT_OK위 반환값·상태·쓰기 여부·진단 이벤트가 일치하면 시험 통과"
+        ],
+        [
+          "F2-LLR-ALG-080-TC-10-01",
+          "MRC_ValidateCellVoltageMeasurement",
+          "F2-LLR-ALG-080-26",
+          "셀 전압 측정 처리 함수의 1번째 인자 NULL 방어 검사",
+          "각 행을 독립 시험으로 실행한다. SUT assert를 관찰하고 정상 실행을 중단할 수 있는 시험 환경을 사용한다. assert 비활성화 또는 중단 없이 실행을 계속하는 설정은 사용하지 않는다.객체 testCellVoltageRedundancy0 [DATA_BLOCK_CELL_VOLTAGE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_VOLTAGE_REDUNDANCY0, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.",
+          "1st parameter — pCellVoltageBase [DATA_BLOCK_CELL_VOLTAGE_s*]: NULL_PTR (널 포인터, 주소 0)2nd parameter — pCellVoltageRedundancy0 [DATA_BLOCK_CELL_VOLTAGE_s*]: 객체 testCellVoltageRedundancy0의 주소 (유효 포인터)외부 입력: 없음; NULL 검사 이후의 의존 함수 동작은 필요하지 않음",
+          "SUT의 1번째 인자 NULL 검사에서 assert 발생정상 반환값: 없음 (true/false 또는 STD_OK/STD_NOT_OK를 기대하지 않음)NULL 역참조 전에 실행 중단예상한 SUT assert를 관찰하면 시험 통과; 정상 반환하거나 다른 원인으로 종료되면 시험 실패"
+        ],
+        [
+          "F2-LLR-ALG-080-TC-10-02",
+          "MRC_ValidateCellVoltageMeasurement",
+          "F2-LLR-ALG-080-26",
+          "셀 전압 측정 처리 함수의 2번째 인자 NULL 방어 검사",
+          "각 행을 독립 시험으로 실행한다. SUT assert를 관찰하고 정상 실행을 중단할 수 있는 시험 환경을 사용한다. assert 비활성화 또는 중단 없이 실행을 계속하는 설정은 사용하지 않는다.객체 testCellVoltageBase [DATA_BLOCK_CELL_VOLTAGE_s]: 유효한 메모리 객체, header.uniqueId = DATA_BLOCK_ID_CELL_VOLTAGE_BASE, header.timestamp = 0u, header.previousTimestamp = 0u. 나머지 모든 수치 필드·배열 원소 = 0, bool 필드·배열 원소 = false. 주소는 시험 도구가 할당하며 고정 주소를 요구하지 않는다.",
+          "1st parameter — pCellVoltageBase [DATA_BLOCK_CELL_VOLTAGE_s*]: 객체 testCellVoltageBase의 주소 (유효 포인터)2nd parameter — pCellVoltageRedundancy0 [DATA_BLOCK_CELL_VOLTAGE_s*]: NULL_PTR (널 포인터, 주소 0)외부 입력: 없음; NULL 검사 이후의 의존 함수 동작은 필요하지 않음",
+          "SUT의 2번째 인자 NULL 검사에서 assert 발생정상 반환값: 없음 (true/false 또는 STD_OK/STD_NOT_OK를 기대하지 않음)NULL 역참조 전에 실행 중단예상한 SUT assert를 관찰하면 시험 통과; 정상 반환하거나 다른 원인으로 종료되면 시험 실패"
+        ]
+      ]
+    },
+    {
+      "index": 233,
+      "type": "paragraph",
+      "text": ""
+    }
+  ]
+}

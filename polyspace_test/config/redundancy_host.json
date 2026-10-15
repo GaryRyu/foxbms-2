@@ -1,0 +1,63 @@
+{
+  "baseline_version": "v1.11.0",
+  "baseline_commit": "308028fb13d046ba29b98886895c2e17937b1437",
+  "sut": "src/app/application/redundancy/redundancy.c",
+  "sut_sha256": "bb7490b557131072584f6e9bbc0a8eca639dd43b243b20aa6d07d921f2c0bf75",
+  "compiler_hint": "C:/MinGW_W64_Distributions/MinGW-builds_POSIX_MSVCRT/mingw-w64-old/bin/gcc.EXE",
+  "macros": {
+    "FOXBMS_HAVE_AEROSOL_SENSOR": "(0u)",
+    "FOXBMS_ALGORITHM_STATE_ESTIMATOR_COUNTING_SOC": "(1u)",
+    "FOXBMS_ALGORITHM_STATE_ESTIMATOR_COUNTING_SOE": "(1u)",
+    "FOXBMS_ALGORITHM_STATE_ESTIMATOR_TRAPEZOID_SOF": "(1u)",
+    "FOXBMS_ALGORITHM_STATE_ESTIMATOR_NONE_SOH": "(1u)",
+    "FOXBMS_BALANCING_STRATEGY_VOLTAGE": "(1u)",
+    "FOXBMS_CS_TYPE_CAN": "(1u)",
+    "FOXBMS_CS_ISABELLENHUETTE_IVT_S": "(1u)",
+    "FOXBMS_HAVE_INSULATION_MONITORING": "(0u)",
+    "FOXBMS_IMD_TYPE_IGNORE": "(1u)",
+    "FOXBMS_IMD_NONE_NONE": "(1u)",
+    "FOXBMS_RTOS_FREERTOS": "(1u)",
+    "EMAC_TxInterruptServiceRoutine": "phantomInterrupt",
+    "EMAC_RxInterruptServiceRoutine": "phantomInterrupt",
+    "FOXBMS_AFE_DRIVER_LTC": "(1u)",
+    "FOXBMS_AFE_DRIVER_LTC_6813_1": "(1u)",
+    "FOXBMS_AFE_DRIVER_TYPE_FSM": "(1u)"
+  },
+  "include_paths": [
+    "src/app/application/redundancy",
+    "src/app/application/bms",
+    "src/app/application/config",
+    "src/app/application/plausibility",
+    "src/app/driver/config",
+    "src/app/driver/contactor",
+    "src/app/driver/foxmath",
+    "src/app/driver/mcu",
+    "src/app/driver/sps",
+    "src/app/engine/config",
+    "src/app/engine/database",
+    "src/app/engine/diag",
+    "src/app/main/include",
+    "src/app/task/config",
+    "src/app/task/os",
+    "src/os/freertos/freertos/include",
+    "src/os/freertos/freertos/portable/ccs/arm_cortex-r5"
+  ],
+  "real_dependencies": [
+    "src/app/application/plausibility/plausibility.c",
+    "src/app/engine/database/database_helper.c",
+    "src/app/driver/foxmath/foxmath.c"
+  ],
+  "variants": [
+    {
+      "strings": 1,
+      "test": "test_redundancy_requirements.c",
+      "case_count": 137
+    },
+    {
+      "strings": 2,
+      "test": "test_redundancy_multistring.c",
+      "case_count": 15
+    }
+  ],
+  "sut_lf_sha256": "8cd338327a83e2daf405b436046d6dd77bff951a1013e6f7b3d2a4a3bdd588db"
+}
