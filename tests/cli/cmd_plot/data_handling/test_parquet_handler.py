@@ -59,7 +59,7 @@ except ModuleNotFoundError:
 class TestPARQUETHandlerInit(unittest.TestCase):
     """Tests for the __init__ method of PARQUETHandler."""
 
-    def test_can_instantiate(self) -> None:
+    def test_can_instantiate(self):
         """Ensure the handler can be instantiated without arguments."""
         handler = PARQUETHandler()
         self.assertIsInstance(handler, PARQUETHandler)
@@ -68,11 +68,11 @@ class TestPARQUETHandlerInit(unittest.TestCase):
 class TestPARQUETHandlerGetData(unittest.TestCase):
     """Tests for the get_data method of PARQUETHandler."""
 
-    def setUp(self) -> None:
+    def setUp(self):
         """Create shared fixtures."""
         self.handler = PARQUETHandler()
 
-    def test_reads_parquet_and_writes_cache_when_no_tmp(self) -> None:
+    def test_reads_parquet_and_writes_cache_when_no_tmp(self):
         """Read from disk when no cached data is available and write tmp file."""
         with TemporaryDirectory() as tmpdir:
             file_path = Path(tmpdir) / "data.parquet"
@@ -84,11 +84,9 @@ class TestPARQUETHandlerGetData(unittest.TestCase):
                 df = self.handler.get_data(file_path, no_tmp=False)
 
             self.assertIs(df, fresh_df)
-            m_read.assert_called_once_with(
-                file_path, engine="pyarrow", to_pandas_kwargs={}
-            )
+            m_read.assert_called_once_with(file_path, engine="pyarrow")
 
-    def test_arrow_error_logs_and_exits(self) -> None:
+    def test_arrow_error_logs_and_exits(self):
         """Log ArrowInvalid errors and exit with SystemExit."""
         with TemporaryDirectory() as tmpdir:
             file_path = Path(tmpdir) / "data.parquet"
@@ -107,7 +105,7 @@ class TestPARQUETHandlerGetData(unittest.TestCase):
             args, _ = m_recho.call_args
             self.assertIn("Parquet Error", args[0])
 
-    def test_oserror_logs_and_exits(self) -> None:
+    def test_oserror_logs_and_exits(self):
         """Log OSError errors and exit with SystemExit."""
         with TemporaryDirectory() as tmpdir:
             file_path = Path(tmpdir) / "data.parquet"

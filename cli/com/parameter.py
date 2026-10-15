@@ -64,22 +64,6 @@ class ComControl:
     # process is created the log level of the fox.py logger is always warning.
     log_level: int = 50
 
-    def close(self) -> None:
-        """Close multiprocessing queue endpoints to avoid GC-time connection warnings."""
-        for queue in (self.input, self.output, self.logger):
-            try:  # noqa: SIM105
-                queue.close()
-            except (AttributeError, OSError, ValueError):
-                pass
-            try:  # noqa: SIM105
-                queue.join_thread()
-            except (AttributeError, RuntimeError, OSError, ValueError):
-                pass
-
-    def __del__(self) -> None:
-        """Best-effort queue cleanup during object finalization."""
-        self.close()
-
 
 @dataclass(slots=True, frozen=True)
 class ModbusParameter:
@@ -158,7 +142,7 @@ class FileParameter:
     can_logger: CANLoggerParameter = field(default_factory=CANLoggerParameter)
 
     def __post_init__(self) -> None:
-        """Ensure that input_file and output_file are Path objects after initialization."""
+        """Ensures that input_file and output_file are Path objects after initialization."""
         if self.input_file:
             self.input_file = Path(self.input_file)
         if self.output_file:

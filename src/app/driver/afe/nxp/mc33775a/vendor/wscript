@@ -37,8 +37,6 @@
 # - "This product includes parts of foxBMS®"
 # - "This product is derived from foxBMS®"
 
-from waflib.Build import BuildContext
 
-
-def build(bld: BuildContext) -> None:
+def build(bld):
     bld(features="validate_hashes")

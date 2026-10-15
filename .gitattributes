@@ -6,7 +6,6 @@
 
 # vendored files
 src/os/freertos/* linguist-vendored
-
 tests/scripts/waf-core/* linguist-vendored
 tools/vendor/* linguist-vendored
 tools/waf linguist-vendored

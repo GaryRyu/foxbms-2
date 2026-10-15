@@ -45,7 +45,7 @@ import unittest
 class TestGraphTypes(unittest.TestCase):
     """Test of 'graph_types.py'"""
 
-    def test_dummy(self) -> None:
+    def test_dummy(self):
         """Dummy test"""
         # this test is necessary because otherwise the exit code is non-zero
 

@@ -15,7 +15,6 @@ BMS Software Modules
     :maxdepth: 1
 
     ./../modules/driver/can/can_how-to.rst
-    ./../modules/driver/can/can_how-to_use_the_f_debug_message.rst
     ./../modules/engine/diag/diag_how-to.rst
     ./../modules/engine/database/database_how-to.rst
     ./../modules/task/ftask/ftask_how-to.rst
@@ -38,4 +37,3 @@ Other
     ./../build-process/library-project_how-to.rst
     ./../modules/application/ethernet/test_tcp_ip-how_to.rst
     ./../modules/application/ethernet/ethernet_port-how_to.rst
-    ./../modules/driver/spi/spi-configure-multi-strings_how-to.rst

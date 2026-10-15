@@ -43,8 +43,8 @@
  * @file    os.h
  * @author  foxBMS Team
  * @date    2019-08-27 (date of creation)
- * @updated 2026-10-06 (date of last update)
- * @version v1.12.0
+ * @updated 2026-04-20 (date of last update)
+ * @version v1.11.0
  * @ingroup OS
  * @prefix  OS
  *
@@ -56,7 +56,7 @@
 #define FOXBMS__OS_H_
 
 /*========== Includes =======================================================*/
-#include "foxbms_config_rtos.h"
+#include "foxbms_config.h"
 
 #include "fstd_types.h"
 
@@ -73,6 +73,9 @@
 #define OS_SEMAPHORE_HANDLE     SemaphoreHandle_t
 #define OS_IDLE_TASK_STACK_SIZE (configMINIMAL_STACK_SIZE) /**< stack size of the idle task */
 #define OS_TICK_RATE_MS         (portTICK_RATE_MS)         /**< FreeRTOS name of the tick rate */
+#ifndef OS_ENABLE_CACHE
+#define OS_ENABLE_CACHE (false) /**< true: Enable cache, false: Disable cache */
+#endif
 #endif
 
 /*
@@ -191,17 +194,14 @@ extern void OS_InitializeOperatingSystem(void);
  *          configSUPPORT_STATIC_ALLOCATION and configUSE_TIMERS.
  *          This is an FreeRTOS function an does not adhere to foxBMS function
  *          naming conventions.
- * @param   ppxTimerTaskTCBBuffer   Pointer to the location that receives the
- *                                  static timer task control block.
- * @param   ppxTimerTaskStackBuffer Pointer to the location that receives the
- *                                  timer task stack buffer.
- * @param   puxTimerTaskStackSize   Pointer to the location that receives the
- *                                  timer task stack size.
+ * @param   ppxTimerTaskTCBBuffer   TODO
+ * @param   ppxTimerTaskStackBuffer TODO
+ * @param   pulTimerTaskStackSize   TODO
  */
 extern void vApplicationGetTimerTaskMemory(
     StaticTask_t **ppxTimerTaskTCBBuffer,
     StackType_t **ppxTimerTaskStackBuffer,
-    configSTACK_DEPTH_TYPE *puxTimerTaskStackSize);
+    configSTACK_DEPTH_TYPE *pulTimerTaskStackSize);
 #endif /* configUSE_TIMERS */
 
 /**
@@ -238,19 +238,14 @@ extern void OS_IncrementTimer(void);
 
 /**
  * @brief   Returns OS based system tick value.
- * @details Returns the current tick count from the underlying operating
- *          system.
- *          The value is used throughout the application as time base for task
- *          scheduling and timeout handling.
+ * @details TODO
  * @return  time stamp in milliseconds, based on the operating system time.
  */
 extern uint32_t OS_GetTickCount(void);
 
 /**
  * @brief    Delay a task for specified time
- * @details  Blocks the calling task for at least the requested delay.
- *           The delay is converted from milliseconds into operating-system
- *           ticks before it is passed to the OS-specific implementation.
+ * @details  TODO
  *
  * @param    milliseconds        time delay value in milliseconds
  */
@@ -258,10 +253,7 @@ extern void OS_DelayTask(uint32_t milliseconds);
 
 /**
  * @brief    Delay a task until a specified time
- * @details  Delays the calling task until the next periodic wake-up based on
- *           the previous wake time.
- *           This is intended for cyclic tasks that need a stable execution
- *           period independent of their runtime.
+ * @details  TODO
  * @param    pPreviousWakeTime   Pointer to a variable that holds the time at
  *                               which the task was last unblocked.
  *                               PreviousWakeTime must be initialized with the

@@ -37,6 +37,7 @@
 # - "This product includes parts of foxBMS®"
 # - "This product is derived from foxBMS®"
 
+
 """Centralized stdout/stderr stream references for CLI output."""
 
 from typing import IO, Any
@@ -50,6 +51,7 @@ def get_stdout() -> IO[Any] | None:
 
     Returns:
         The current stdout stream, or None if not set.
+
     """
     return STDOUT
 
@@ -59,5 +61,6 @@ def get_stderr() -> IO[Any] | None:
 
     Returns:
         The current stderr stream, or None if not set.
+
     """
     return STDERR

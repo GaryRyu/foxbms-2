@@ -1,10 +1,10 @@
 .. include:: ./../../../../macros.txt
 .. include:: ./../../../../units.txt
 
-.. _IMD_DRIVER:
+.. _INSULATION_MEASUREMENT_DEVICE:
 
-IMD
-===
+Insulation Measurement Device
+=============================
 
 Several different Insulation Measurement Devices (IMD) are supported.
 
@@ -40,7 +40,8 @@ The state machine consists of the following states:
 The transitions between the main states of the IMD state machine is depicted
 below.
 
-.. figure:: ../../../../../build/docs/docs/software/modules/driver/imd/imd-state-diagram.svg
+.. drawio-figure:: imd-state-diagram.drawio
+   :format: svg
    :alt: IMD state flow diagram
    :name: imd-state-diagram
    :width: 240px
@@ -64,7 +65,7 @@ transitions with the next call automatically to state
 ``IMD_FSM_STATE_UNINITIALIZED``.
 The state machine waits in this state until the
 ``IMD_STATE_INITIALIZE_REQUEST`` has been submitted to the state machine
-during the startup phase from the ``sys`` module.
+during the startup phase from the `sys` module.
 The state machine transitions to state ``IMD_FSM_STATE_IMD_ENABLE`` after a
 successful initialization of the required peripherals and the software modules
 of the selected IMD driver implementation in state

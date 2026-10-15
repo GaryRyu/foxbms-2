@@ -58,6 +58,7 @@ def check_file(files: list[Path]) -> int:
 
     Returns:
         Number of lines containing C++-style comments across all files.
+
     """
     err = 0
     for i in files:
@@ -77,6 +78,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     Returns:
         Exit code (``0`` if no issues, up to ``255`` otherwise).
+
     """
     parser = argparse.ArgumentParser()
     parser.add_argument("files", nargs="*", help="Files to check")

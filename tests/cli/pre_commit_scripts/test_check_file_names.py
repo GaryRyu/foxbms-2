@@ -44,8 +44,7 @@ import sys
 import unittest
 from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
-from typing import ClassVar
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 try:
     from cli.pre_commit_scripts import check_file_names
@@ -59,19 +58,17 @@ PATH_TEMP = Path(__file__).parent / "temp"
 class TestFileNames(unittest.TestCase):
     """Test of the main function"""
 
-    tests_dir: ClassVar[Path]
-
     @classmethod
-    def setUpClass(cls) -> None:  # noqa: D102
+    def setUpClass(cls):
         cls.tests_dir = Path(__file__).parent / Path(__file__).stem
 
-    def test_main_unique_file(self) -> None:
+    def test_main_unique_file(self):
         """Unique file, i.e., no error"""
         test = self.tests_dir / "abcdef.txt"
         result = check_file_names.main([str(test)])
         self.assertEqual(result, 0)
 
-    def test_main_not_unique_file(self) -> None:
+    def test_main_not_unique_file(self):
         """Not unique file, i.e., error"""
         test = self.tests_dir / "README.md"
 
@@ -86,7 +83,7 @@ class TestFileNames(unittest.TestCase):
         )
 
     @patch("cli.pre_commit_scripts.check_file_names.which", return_value=None)
-    def test_main_no_git(self, _mock_which: MagicMock) -> None:
+    def test_main_no_git(self, _):
         """Git is not available, i.e., error"""
         test = self.tests_dir / "abcdef.txt"
         _err, _out = io.StringIO(), io.StringIO()

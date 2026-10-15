@@ -44,21 +44,20 @@ import sys
 import unittest
 from contextlib import redirect_stderr
 from pathlib import Path
-from typing import ClassVar
 from unittest.mock import MagicMock, patch
 
 try:
     from cli.foxbms_version import get_version
-    from cli.helpers.project_context import PROJECT_ROOT
+    from cli.helpers.misc import PROJECT_ROOT
     from cli.pre_commit_scripts import check_doxygen
 except ModuleNotFoundError:
     sys.path.insert(0, str(Path(__file__).parents[3]))
     from cli.foxbms_version import get_version
-    from cli.helpers.project_context import PROJECT_ROOT
+    from cli.helpers.misc import PROJECT_ROOT
     from cli.pre_commit_scripts import check_doxygen
 
 
-def expected_error_msg(file_path: str, label: str) -> str:
+def expected_error_msg(file_path: str, label: str):
     """Creates the expected error message"""
     return f"{file_path}: Doxygen @{label} field is wrong/missing."
 
@@ -67,16 +66,13 @@ def expected_error_msg(file_path: str, label: str) -> str:
 class TestCheckDoxygenComment(unittest.TestCase):
     """Test of the main function"""
 
-    tests_dir: ClassVar[Path]
-    version: ClassVar[str]
-
     @classmethod
-    def setUpClass(cls) -> None:  # noqa: D102
+    def setUpClass(cls):
         cls.tests_dir = Path(__file__).parent / Path(__file__).stem
         cls.version = get_version()
 
     @patch("cli.pre_commit_scripts.check_doxygen.Popen")
-    def test_invalid_version(self, mock_popen: MagicMock) -> None:
+    def test_invalid_version(self, mock_popen: MagicMock):
         """A invalid number"""
         process = mock_popen.return_value.__enter__.return_value
         process.returncode = 0
@@ -89,7 +85,7 @@ class TestCheckDoxygenComment(unittest.TestCase):
         self.assertIn(expected_error_msg(test_file, "version"), err.getvalue())
 
     @patch("cli.pre_commit_scripts.check_doxygen.Popen")
-    def test_version_not_determinable(self, mock_popen: MagicMock) -> None:
+    def test_version_not_determinable(self, mock_popen: MagicMock):
         """A invalid number"""
         process = mock_popen.return_value.__enter__.return_value
         process.returncode = 0
@@ -100,7 +96,7 @@ class TestCheckDoxygenComment(unittest.TestCase):
         self.assertIn("Could not determine foxBMS version.", err.getvalue())
         self.assertEqual(result, 1)
 
-    def test_ignore_version_comment(self) -> None:
+    def test_ignore_version_comment(self):
         """@version shall be ignored"""
         test_file = (
             (self.tests_dir / "ignore-version-comment.c")
@@ -115,7 +111,7 @@ class TestCheckDoxygenComment(unittest.TestCase):
         self.assertEqual(result, 0)
 
     @patch("cli.pre_commit_scripts.check_doxygen.Popen")
-    def test_valid_doxygen(self, mock_popen: MagicMock) -> None:
+    def test_valid_doxygen(self, mock_popen: MagicMock):
         """A valid doxygen comment shall not raise an error"""
         # run once again on main so that we have full test coverage
         # all other tests will then just test on the 'check_doxygen' function
@@ -127,7 +123,7 @@ class TestCheckDoxygenComment(unittest.TestCase):
         result = check_doxygen.main(files)
         self.assertEqual(result, 0)
 
-    def test_invalid_encoding(self) -> None:
+    def test_invalid_encoding(self):
         """Invalid file encoding"""
         test_file = "invalid-encoding_utf-16.c"
         files = [self.tests_dir / test_file]
@@ -137,7 +133,7 @@ class TestCheckDoxygenComment(unittest.TestCase):
         self.assertEqual(result, 1)
         self.assertIn(f"{test_file}: Could not ASCII-decode this file.", err.getvalue())
 
-    def test_no_doxygen_comments(self) -> None:
+    def test_no_doxygen_comments(self):
         """All doxygen comments are missing"""
         test_file = "no-doxygen-comments.c"
         files = [self.tests_dir / test_file]
@@ -158,7 +154,7 @@ class TestCheckDoxygenComment(unittest.TestCase):
         self.assertIn(expected_error_msg(test_file, "brief"), err.getvalue())
         self.assertIn(expected_error_msg(test_file, "details"), err.getvalue())
 
-    def test_no_start_comment(self) -> None:
+    def test_no_start_comment(self):
         """Doxygen block comment start label is missing"""
         test_file = "no-start-comment.c"
         files = [self.tests_dir / test_file]
@@ -170,7 +166,7 @@ class TestCheckDoxygenComment(unittest.TestCase):
             f"{test_file}: Doxygen comment start marker is missing.", err.getvalue()
         )
 
-    def test_no_file_comment(self) -> None:
+    def test_no_file_comment(self):
         """@file comment is missing"""
         test_file = "no-file-comment.c"
         files = [self.tests_dir / test_file]
@@ -180,7 +176,7 @@ class TestCheckDoxygenComment(unittest.TestCase):
         self.assertEqual(result, 1)
         self.assertIn(expected_error_msg(test_file, "file"), err.getvalue())
 
-    def test_no_author_comment(self) -> None:
+    def test_no_author_comment(self):
         """@author comment is missing"""
         test_file = "no-author-comment.c"
         files = [self.tests_dir / test_file]
@@ -190,7 +186,7 @@ class TestCheckDoxygenComment(unittest.TestCase):
         self.assertEqual(result, 1)
         self.assertIn(expected_error_msg(test_file, "author"), err.getvalue())
 
-    def test_ignore_author_comment(self) -> None:
+    def test_ignore_author_comment(self):
         """@author shall be ignored"""
         test_file = (
             (self.tests_dir / "ignore-author-comment.c")
@@ -204,7 +200,7 @@ class TestCheckDoxygenComment(unittest.TestCase):
             result = check_doxygen.check_doxygen(files, self.version)
         self.assertEqual(result, 0)
 
-    def test_ignore_author_comment_entirely(self) -> None:
+    def test_ignore_author_comment_entirely(self):
         """@author shall be ignored"""
         test_file = (
             (self.tests_dir / "ignore-author-comment-entirely.c")
@@ -218,7 +214,7 @@ class TestCheckDoxygenComment(unittest.TestCase):
             result = check_doxygen.check_doxygen(files, self.version)
         self.assertEqual(result, 0)
 
-    def test_no_date_comment(self) -> None:
+    def test_no_date_comment(self):
         """@date comment is missing"""
         test_file = "no-date-comment.c"
         files = [self.tests_dir / test_file]
@@ -228,7 +224,7 @@ class TestCheckDoxygenComment(unittest.TestCase):
         self.assertEqual(result, 1)
         self.assertIn(expected_error_msg(test_file, "date"), err.getvalue())
 
-    def test_ignore_date_comment(self) -> None:
+    def test_ignore_date_comment(self):
         """@date shall be ignored"""
         test_file = (
             (self.tests_dir / "ignore-date-comment.c")
@@ -242,7 +238,7 @@ class TestCheckDoxygenComment(unittest.TestCase):
             result = check_doxygen.check_doxygen(files, self.version)
         self.assertEqual(result, 0)
 
-    def test_no_updated_comment(self) -> None:
+    def test_no_updated_comment(self):
         """@updated comment is missing"""
         test_file = "no-updated-comment.c"
         files = [self.tests_dir / test_file]
@@ -252,7 +248,7 @@ class TestCheckDoxygenComment(unittest.TestCase):
         self.assertEqual(result, 1)
         self.assertIn(expected_error_msg(test_file, "updated"), err.getvalue())
 
-    def test_no_ingroup_comment(self) -> None:
+    def test_no_ingroup_comment(self):
         """@ingroup comment is missing"""
         test_file = "no-ingroup-comment.c"
         files = [self.tests_dir / test_file]
@@ -262,7 +258,7 @@ class TestCheckDoxygenComment(unittest.TestCase):
         self.assertEqual(result, 1)
         self.assertIn(expected_error_msg(test_file, "ingroup"), err.getvalue())
 
-    def test_no_prefix_comment(self) -> None:
+    def test_no_prefix_comment(self):
         """@prefix comment is missing"""
         test_file = "no-prefix-comment.c"
         files = [self.tests_dir / test_file]
@@ -272,7 +268,7 @@ class TestCheckDoxygenComment(unittest.TestCase):
         self.assertEqual(result, 1)
         self.assertIn(expected_error_msg(test_file, "prefix"), err.getvalue())
 
-    def test_no_brief_comment(self) -> None:
+    def test_no_brief_comment(self):
         """@brief comment is missing"""
         test_file = "no-brief-comment.c"
         files = [self.tests_dir / test_file]
@@ -282,7 +278,7 @@ class TestCheckDoxygenComment(unittest.TestCase):
         self.assertEqual(result, 1)
         self.assertIn(expected_error_msg(test_file, "brief"), err.getvalue())
 
-    def test_multiline_brief_comment(self) -> None:
+    def test_multiline_brief_comment(self):
         """@brief shall be supported"""
         test_file = "multiline-brief.c"
         files = [self.tests_dir / test_file]
@@ -291,7 +287,7 @@ class TestCheckDoxygenComment(unittest.TestCase):
             result = check_doxygen.check_doxygen(files, self.version)
         self.assertEqual(result, 0)
 
-    def test_no_details_comment(self) -> None:
+    def test_no_details_comment(self):
         """@details comment is missing"""
         test_file = "no-details-comment.c"
         files = [self.tests_dir / test_file]
@@ -301,7 +297,7 @@ class TestCheckDoxygenComment(unittest.TestCase):
         self.assertEqual(result, 1)
         self.assertIn(expected_error_msg(test_file, "details"), err.getvalue())
 
-    def test_empty_line_between_multiline_brief_and_details(self) -> None:
+    def test_empty_line_between_multiline_brief_and_details(self):
         """@details comment is missing"""
         test_file = "empty-line-between-brief-and-details.c"
         files = [self.tests_dir / test_file]
@@ -311,7 +307,7 @@ class TestCheckDoxygenComment(unittest.TestCase):
         self.assertEqual(result, 1)
         self.assertIn(expected_error_msg(test_file, "details"), err.getvalue())
 
-    def test_files_with_special_start_lines(self) -> None:
+    def test_files_with_special_start_lines(self):
         """Special file is tested"""
         test_file = Path(
             "tests/cli/pre_commit_scripts/test_check_license_info/no-license.c"
@@ -322,7 +318,7 @@ class TestCheckDoxygenComment(unittest.TestCase):
             result = check_doxygen.check_doxygen(files, self.version)
         self.assertEqual(result, 0)
 
-    def test_default_confidential_offset_is_used_without_bsd_header(self) -> None:
+    def test_default_confidential_offset_is_used_without_bsd_header(self):
         """Use confidential default offset when file has no SPDX marker and no index map entry."""
         content = "\n".join(  # noqa: FLY002
             [

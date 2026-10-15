@@ -43,16 +43,13 @@
  * @file    can_cbs.h
  * @author  foxBMS Team
  * @date    2021-04-20 (date of creation)
- * @updated 2026-10-06 (date of last update)
- * @version v1.12.0
+ * @updated 2026-04-20 (date of last update)
+ * @version v1.11.0
  * @ingroup DRIVERS
  * @prefix  CAN
  *
  * @brief   CAN callbacks header
- * @details Declares the CAN receive callback interface used by the bootloader
- *          update protocol. The handlers cover action requests, transfer
- *          metadata, loop synchronization, payload transfer, and CRC
- *          validation messages.
+ * @details TODO
  */
 
 #ifndef FOXBMS__CAN_CBS_H_

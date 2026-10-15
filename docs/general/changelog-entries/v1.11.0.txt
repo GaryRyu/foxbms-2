@@ -1,7 +1,6 @@
 This release features the quarterly dependency update of the following tools:
 
 - Internal:
-
   - FreeRTOS:
 
     - FreeRTOS Add-ons
@@ -143,7 +142,7 @@ Changed
   - Fix some naming issues.
 
 - Simplify **Configuration** documentation of the TI HALCoGen tool.
-- Update dependencies:
+- Update Dependencies:
 
   - Internal:
 
@@ -247,7 +246,7 @@ Fixed
 - Fix PHY not getting link status.
 - Fix GUI tests.
 - Align SYM/DBC file with fatal diagnosis events.
-- Fix vendor hash check (``tools/waf_tools/hash_check.py``).
+- Fix vendor hash check (``tools/waf-tools/hash_check.py``).
 - Fix foxBMS BMS-Master supply voltage to max 36V continuous.
 - Fix stack size of the I2C Task.
 - Fix bug in ``CAN`` module that in exceptional cases invalid data is

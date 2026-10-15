@@ -1,50 +1,31 @@
-<!-- cspell:ignore cfdl -->
-
 # Variant Build Configuration
 
-- Tests are organized in directories containing
-  - `battery_cell_cfg.json`
-  - `battery_cell_soc_lookup-table.csv`
-  - `battery_cell_soe_lookup-table.csv`
-  - `battery_system_cfg.json`
-  - `bms.json`
-  - `diag_array_cfg.json`
-  files.
-- Test cases may contain additional PowerShell scripts that are named after the
-  test directory.
-- The name of the test directory  is prefixed by `c_` if it is confidential or
-  cannot be published for other reasons or `p_` if is published.
-  Then a four-digits number follows, starting at `0000`.
-- Each directory shall contain a `README.md` explaining the necessity of the
-  test case.
-- There is a helper script [`apply-test-case.ps1`](./apply-test-case.ps1) that
-  copies the test configuration to the build-relevant location (`conf/bms`).
+The naming schema for simple build variant configuration files is:
 
-## Configuration file timestamps
+1. Operating System
+1. Analog Front-End
+   1. Manufacturer
+   1. Chip
+1. Balancing strategy
+1. SoX algorithms:
+   1. SoC algorithm
+   1. SoE algorithm
+   1. SoF algorithm
+   1. SoH algorithm
+1. Current sensor
+1. Insulation Measurement Device
 
-The helper script refreshes each copied configuration file's `LastWriteTimeUtc`
-instead of retaining the source timestamp preserved by `Copy-Item`.
-This is required because Windows Git can consider a file unchanged when its
-size and modification timestamp match the cached index metadata, even if its
-contents differ.
-In that case, `git diff` can report no changes and a subsequent checkout can
-leave the variant configuration in place on a reused CI runner.
+Therefore for a **FreeRTOS** based build, using an **LTC 6813-1**
+AFE, with **voltage-based balancing**, with **coulomb counting** as
+basis for **SoC and SoE**, with **trapezoid** for **SoF**, with
+**no SoH** estimation, with a **Isabellenhuette IVT-S** current sensor
+**without IMD**, the bms configuration file must be named:
 
-For example, the default and LTC6806 variant `battery_system_cfg.json` files
-differ only in the cell count, `18` versus `36`, and have the same size.
-A hidden variant configuration can therefore produce a freshly generated
-36-cell header while the selected driver has already been restored to LTC6813.
-Refreshing destination timestamps makes Git detect the configuration changes
-so that subsequent checkouts restore the defaults.
+``freertos_ltc-6813-1_vbb_cc-cc-tr-none_isabellenhuette-ivt-s_none-none.json``
 
-## Validate directory names
+If a build uses TCP/IP, it shall add ``_tcp`` as last suffix prior to the file
+extension.
 
-Use [`validate-directory-names.py`](./validate-directory-names.py) to verify
-that all variant directory names match the required format (`c_` or `p_`
-prefix and the first 16 hash characters):
-
-```powershell
-python tests/variants/validate-directory-names.py
-```
-
-The script exits with status code 0 on success and 1 if mismatches are found.
+For more complex build variants a directory must be created the all required
+files must be placed in that directory.
+See the library build in ``lib-build`` to see how it can be done.

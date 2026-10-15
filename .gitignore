@@ -1,5 +1,4 @@
 **/.vscode/
-**/artifacts/
 /build/
 /build-tools-tests/
 /*build/
@@ -10,7 +9,10 @@
 !docs/tools/fox/build/fox_waf.rst
 !tests/cli/cmd_build/__init__.py
 !tests/cli/cmd_build/test_build_impl.py
-!tests\variants\*\lib-build.patch
+!tests/variants/lib-build/README.md
+!tests/variants/lib-build/lib-build.ps1
+!tests/variants/lib-build/lib-build_cc-options.yaml
+!tests/variants/lib-build/lib-build_main.c
 
 /conf/hcg/include/*
 /conf/hcg/source/*
@@ -79,9 +81,6 @@ __pycache__
 *.~$*
 ~$*
 
-**/foxbms_spa_report*.json
-spa-artifacts/
-
 *.o
 *.obj
 *.exe
@@ -115,5 +114,5 @@ codeInfo.*
 
 **/temp_data_fox_cli*/*
 
-**/*_autosummary/*
-**/*_autosummary_hash.json
+**/_autosummary/*
+**/_autosummary_hash.json

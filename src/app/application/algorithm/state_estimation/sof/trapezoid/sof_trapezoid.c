@@ -43,8 +43,8 @@
  * @file    sof_trapezoid.c
  * @author  foxBMS Team
  * @date    2020-10-07 (date of creation)
- * @updated 2026-10-06 (date of last update)
- * @version v1.12.0
+ * @updated 2026-04-20 (date of last update)
+ * @version v1.11.0
  * @ingroup APPLICATION_CONFIGURATION
  * @prefix  SOF
  *
@@ -55,8 +55,9 @@
 /*========== Includes =======================================================*/
 #include "sof_trapezoid.h"
 
-#include "battery_cell_cfg_types.h"
-#include "battery_system_cfg_types.h"
+#include "battery_cell_cfg.h"
+#include "battery_system_cfg.h"
+
 #include "bms.h"
 #include "database.h"
 #include "foxmath.h"
@@ -167,9 +168,9 @@ static void SOF_CalculateCurves(const SOF_CONFIG_s *pConfigurationValues, SOF_CU
         0.0f -
         (pCalculatedSofCurveValues->slopeLowTemperatureCharge * pConfigurationValues->limitLowTemperatureCharge_ddegC);
 
-    pCalculatedSofCurveValues->slopeHighTemperatureCharge  = (0.0f - pConfigurationValues->maximumChargeCurrent_mA) /
-                                                             (pConfigurationValues->limitHighTemperatureCharge_ddegC -
-                                                              pConfigurationValues->cutoffHighTemperatureCharge_ddegC);
+    pCalculatedSofCurveValues->slopeHighTemperatureCharge = (0.0f - pConfigurationValues->maximumChargeCurrent_mA) /
+                                                            (pConfigurationValues->limitHighTemperatureCharge_ddegC -
+                                                             pConfigurationValues->cutoffHighTemperatureCharge_ddegC);
     pCalculatedSofCurveValues->offsetHighTemperatureCharge = 0.0f -
                                                              (pCalculatedSofCurveValues->slopeHighTemperatureCharge *
                                                               pConfigurationValues->limitHighTemperatureCharge_ddegC);
@@ -372,14 +373,14 @@ extern void SOF_Calculation(void) {
         /* Calculate allowed current if string is connected */
         if (BMS_IsStringClosed(s) == true) {
             SOF_CalculateVoltageBasedCurrentLimit(
-                sof_tableMinimumMaximumValues.minimumCellVoltage_mV[s],
-                sof_tableMinimumMaximumValues.maximumCellVoltage_mV[s],
+                (float_t)sof_tableMinimumMaximumValues.minimumCellVoltage_mV[s],
+                (float_t)sof_tableMinimumMaximumValues.maximumCellVoltage_mV[s],
                 &voltageBasedSof,
                 &sof_recommendedCurrent,
                 &sof_curveRecommendedOperatingCurrent);
             SOF_CalculateTemperatureBasedCurrentLimit(
-                sof_tableMinimumMaximumValues.minimumTemperature_ddegC[s],
-                sof_tableMinimumMaximumValues.maximumTemperature_ddegC[s],
+                (float_t)sof_tableMinimumMaximumValues.minimumTemperature_ddegC[s],
+                (float_t)sof_tableMinimumMaximumValues.maximumTemperature_ddegC[s],
                 &temperatureBasedSof,
                 &sof_recommendedCurrent,
                 &sof_curveRecommendedOperatingCurrent);

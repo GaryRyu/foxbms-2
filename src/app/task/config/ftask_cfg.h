@@ -43,24 +43,20 @@
  * @file    ftask_cfg.h
  * @author  foxBMS Team
  * @date    2019-08-26 (date of creation)
- * @updated 2026-10-06 (date of last update)
- * @version v1.12.0
+ * @updated 2026-04-20 (date of last update)
+ * @version v1.11.0
  * @ingroup TASK_CONFIGURATION
  * @prefix  FTSK
  *
  * @brief   Task configuration header
- * @details This header defines the static task configuration.
- *          It defines stack sizes, priorities, phases, cycle times, and the
- *          user-code entry points for the configured tasks.
+ * @details TODO
  */
 
 #ifndef FOXBMS__FTASK_CFG_H_
 #define FOXBMS__FTASK_CFG_H_
 
 /*========== Includes =======================================================*/
-#include "foxbms_config_bms_slave.h"
-#include "foxbms_config_debug.h"
-#include "foxbms_config_rtos.h"
+#include "foxbms_config.h"
 
 #include "os.h"
 
@@ -172,7 +168,7 @@
 /** @brief pvParameters of the continuously running task for I2C  */
 #define FTSK_TASK_I2C_PV_PARAMETERS (NULL_PTR)
 
-#if defined(FOXBMS_AFE_DRIVER_TYPE_NO_FSM) && (FOXBMS_AFE_DRIVER_TYPE_NO_FSM == 1)
+#if (FOXBMS_AFE_DRIVER_TYPE_NO_FSM == 1)
 /** @brief Stack size of continuously running task for AFEs */
 #define FTSK_TASK_AFE_STACK_SIZE_IN_BYTES (4096u)
 
@@ -189,7 +185,7 @@
 #define FTSK_TASK_AFE_PV_PARAMETERS (NULL_PTR)
 #endif
 
-#if defined(FOXBMS_UART_SUPPORT) && (FOXBMS_UART_SUPPORT == 1)
+#if defined(FOXBMS_UART_SUPPORT) && FOXBMS_UART_SUPPORT == 1
 /** @brief Stack size of continuously running task for UART */
 #define FTSK_TASK_UART_STACK_SIZE_IN_BYTES (1024u)
 
@@ -206,7 +202,7 @@
 #define FTSK_TASK_UART_PV_PARAMETERS (NULL_PTR)
 #endif
 
-#if defined(FOXBMS_TCP_SUPPORT) && (FOXBMS_TCP_SUPPORT == 1)
+#if (defined(FOXBMS_TCP_SUPPORT) && (FOXBMS_TCP_SUPPORT == 1))
 /** @brief Stack size of the task for EMAC */
 #define FTSK_TASK_EMAC_STACK_SIZE_IN_BYTES (2048u)
 
@@ -260,7 +256,7 @@ extern OS_TASK_DEFINITION_s ftsk_taskDefinitionCyclicAlgorithm100ms;
  */
 extern OS_TASK_DEFINITION_s ftsk_taskDefinitionI2c;
 
-#if defined(FOXBMS_AFE_DRIVER_TYPE_NO_FSM) && (FOXBMS_AFE_DRIVER_TYPE_NO_FSM == 1)
+#if (FOXBMS_AFE_DRIVER_TYPE_NO_FSM == 1)
 /**
  * @brief   Task configuration of the continuously running task for AFEs
  * @details Continuously running task for AFEs
@@ -268,7 +264,7 @@ extern OS_TASK_DEFINITION_s ftsk_taskDefinitionI2c;
 extern OS_TASK_DEFINITION_s ftsk_taskDefinitionAfe;
 #endif
 
-#if defined(FOXBMS_UART_SUPPORT) && (FOXBMS_UART_SUPPORT == 1)
+#if defined(FOXBMS_UART_SUPPORT) && FOXBMS_UART_SUPPORT == 1
 /**
  * @brief   Task configuration of the task for UART flow control
  * @details task for UART flow control handling
@@ -289,21 +285,21 @@ extern OS_TASK_DEFINITION_s ftsk_taskDefinitionEmac;
  */
 extern OS_TASK_HANDLE ftsk_taskHandleI2c;
 
-#if defined(FOXBMS_AFE_DRIVER_TYPE_NO_FSM) && (FOXBMS_AFE_DRIVER_TYPE_NO_FSM == 1)
+#if (FOXBMS_AFE_DRIVER_TYPE_NO_FSM == 1)
 /**
  * @brief Definition of task handles
  */
 extern OS_TASK_HANDLE ftsk_taskHandleAfe;
 #endif
 
-#if defined(FOXBMS_UART_SUPPORT) && (FOXBMS_UART_SUPPORT == 1)
+#if defined(FOXBMS_UART_SUPPORT) && FOXBMS_UART_SUPPORT == 1
 /**
  * @brief Definition of task handles
  */
 extern OS_TASK_HANDLE ftsk_taskHandleUart;
 #endif
 
-#if defined(FOXBMS_TCP_SUPPORT) && (FOXBMS_TCP_SUPPORT == 1)
+#if (defined(FOXBMS_TCP_SUPPORT) && (FOXBMS_TCP_SUPPORT == 1))
 /**
  * @brief Definition of task handles
  */
@@ -341,30 +337,25 @@ extern void FTSK_InitializeUserCodePreCyclicTasks(void);
 
 /**
  * @brief   Cyclic 1 ms task
- * @details Executes the user code that has to run every 1 ms.
- *          This is the highest-frequency cyclic task in the application.
+ * @details TODO
  */
 extern void FTSK_RunUserCodeCyclic1ms(void);
 
 /**
  * @brief   Cyclic 10 ms task
- * @details Executes the user code that has to run every 10 ms.
- *          This task is used for medium-frequency periodic processing.
+ * @details TODO
  */
 extern void FTSK_RunUserCodeCyclic10ms(void);
 
 /**
  * @brief   Cyclic 100 ms task
- * @details Executes the user code that has to run every 100 ms.
- *          This task is intended for lower-frequency periodic processing.
+ * @details TODO
  */
 extern void FTSK_RunUserCodeCyclic100ms(void);
 
 /**
  * @brief   Cyclic 100 ms task for algorithms
- * @details Executes the algorithm-specific user code that has to run every
- *          100 ms.
- *          It separates algorithm execution from the general 100 ms task.
+ * @details TODO
  */
 extern void FTSK_RunUserCodeCyclicAlgorithm100ms(void);
 
@@ -374,7 +365,7 @@ extern void FTSK_RunUserCodeCyclicAlgorithm100ms(void);
  */
 extern void FTSK_RunUserCodeI2c(void);
 
-#if defined(FOXBMS_AFE_DRIVER_TYPE_NO_FSM) && (FOXBMS_AFE_DRIVER_TYPE_NO_FSM == 1)
+#if (FOXBMS_AFE_DRIVER_TYPE_NO_FSM == 1)
 /**
  * @brief   Continuously running task for AFEs
  * @details Implements the communications with AFEs without state machine.
@@ -382,9 +373,9 @@ extern void FTSK_RunUserCodeI2c(void);
 extern void FTSK_RunUserCodeAfe(void);
 #endif
 
-#if defined(FOXBMS_UART_SUPPORT) && (FOXBMS_UART_SUPPORT == 1)
+#if defined(FOXBMS_UART_SUPPORT) && FOXBMS_UART_SUPPORT == 1
 /**
- * @brief   Continuously running task for UART
+ * @brief   Continuously running task for Uart
  * @details Implements the software flow control for UART
  */
 extern void FTSK_RunUserCodeUart(void);

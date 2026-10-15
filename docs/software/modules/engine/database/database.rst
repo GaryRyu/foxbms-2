@@ -1,10 +1,10 @@
 .. include:: ../../../../macros.txt
 .. include:: ../../../../units.txt
 
-.. _DATABASE_ENGINE:
+.. _DATABASE_MODULE:
 
-Database
-========
+Database Module
+===============
 
 Module Files
 ------------
@@ -40,7 +40,8 @@ Afterwards, it can be used by multiple consumers while the data integrity is
 always ensured.
 The concept is shown in :numref:`sw-database-concept`.
 
-.. figure:: ../../../../../build/docs/docs/software/modules/engine/database/img/sw-database-concept.svg
+.. drawio-figure:: img/sw-database-concept.drawio
+   :format: svg
    :alt: Database Concept
    :name: sw-database-concept
    :width: 800px
@@ -57,4 +58,4 @@ The concept is shown in :numref:`sw-database-concept`.
 Further Reading
 ---------------
 
-A How-to is found in :ref:`HOW_TO_USE_THE_DATABASE_ENGINE`.
+A How-to is found in :ref:`HOW_TO_USE_THE_DATABASE_MODULE`.

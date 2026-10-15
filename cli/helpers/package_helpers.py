@@ -45,17 +45,34 @@ Attributes:
 """
 
 from collections.abc import Callable
-from json import loads
-from pathlib import Path
 from typing import Any
 
-from .project_context import ROOT_IS_PROJECT
+from .misc import ROOT_IS_PROJECT
 
-PACKAGE_COMMANDS = loads(
-    Path(__file__)
-    .parent.joinpath("supported_commands.json")
-    .read_text(encoding="utf-8")
-)
+PACKAGE_COMMANDS = {
+    "supported": [
+        "bms",
+        "bootloader",
+        "com-test",
+        "db",
+        "etl",
+        "gui",
+        "log",
+        "plot",
+        "run-program",
+        "run-script",
+    ],
+    "unsupported": [
+        "ci",
+        "ceedling",
+        "cli-unittest",
+        "ide",
+        "install",
+        "misc",
+        "pre-commit",
+        "waf",
+    ],
+}
 
 
 def check_project[F](fun: Callable[..., F]) -> Callable[..., F | None]:

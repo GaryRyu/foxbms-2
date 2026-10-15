@@ -1,10 +1,10 @@
 .. include:: ../../../../macros.txt
 .. include:: ../../../../units.txt
 
-.. _SYSTEM_MONITORING_ENGINE:
+.. _SYSTEM_MONITORING_MODULE:
 
-System Monitoring
-=================
+System Monitoring Module
+========================
 
 Module Files
 ------------
@@ -74,7 +74,7 @@ Diagnosis entries
 
 When monitoring is enabled for a task and when the task violates its timings,
 a diagnosis entry of type ``DIAG_ID_SYSTEM_MONITORING`` is created in the
-:ref:`DIAGNOSIS_ENGINE`.
+:ref:`DIAGNOSIS_MODULE`.
 The diagnosis handler for this ID sets the appropriate error flags in the
 ``DATA_BLOCK_ERROR_STATE_s`` database table.
 
@@ -86,7 +86,7 @@ Error recording
 ^^^^^^^^^^^^^^^
 
 If enabled, the system monitoring sets flags in persistent memory.
-This is handled through the :ref:`FRAM_DRIVER` module.
+This is handled through the :ref:`FRAM` module.
 Flags are written to the ``FRAM_SYS_MON_RECORD_s`` entry and committed to
 persistent memory through a handler that is called from the 10 millisecond
 task.

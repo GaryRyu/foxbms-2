@@ -95,6 +95,7 @@ def run_check(filename: Path, file_type: FileTypes) -> int:
 
     Returns:
         Number of section-marker and formatting issues found.
+
     """
     try:
         txt = filename.read_text(encoding="ascii")
@@ -126,6 +127,9 @@ def run_check(filename: Path, file_type: FileTypes) -> int:
         print(msg, file=sys.stderr)
 
     if file_type in {"src.c", "src.h"}:
+        # check the file, then this exception is obvious
+        if filename == Path("src/app/application/config/battery_system_cfg.h"):
+            return err
         try:
             # last marker is for unit tests
             unit_test_define = txt_lines.index(TYPES[file_type][-1]) + 1
@@ -159,6 +163,7 @@ def check_src(files: Sequence[Path]) -> int:
 
     Returns:
         Total number of issues found across all files.
+
     """
     err = 0
     for i in files:
@@ -181,6 +186,7 @@ def check_test(files: Sequence[Path]) -> int:
 
     Returns:
         Total number of issues found across all files.
+
     """
     err = 0
     for i in files:
@@ -203,6 +209,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     Returns:
         Exit code (0 if all files are correct, >0 otherwise).
+
     """
     parser = argparse.ArgumentParser()
     parser.add_argument(

@@ -39,47 +39,34 @@
 
 
 from waflib import Logs, Utils
-from waflib.Build import BuildContext
 
 
-def build(bld: BuildContext) -> None:
+def build(bld):
     op = f"{bld.env.APPNAME.lower()}-object-"
     lp = f"{bld.env.APPNAME.lower()}-"
-    ip = f"{bld.env.APPNAME.lower()}-incpath-"
 
     includes = [
-        bld.srcnode.find_node("src/app/driver/config"),
-        bld.srcnode.find_node("src/app/driver/emac"),
-        bld.srcnode.find_node("src/app/main/include"),
+        "../driver/config",
+        "../driver/emac",
+        "../main/include",
     ]
     source = "app-hl_notification"
-    use = [
-        f"{ip}hal",
-        "foxbms_config",
-    ]
     bld.objects(
         source=f"{source}.c",
-        includes=includes,
-        preinclude_deps=[
-            bld.bldnode.find_or_declare("foxbms_config_rtos.h"),
-            bld.bldnode.find_or_declare("foxbms_config_debug.h"),
-        ],
-        use=use,
         target=f"{op}{source}",
+        includes=includes,
+        idx=1,
     )
 
-    bld(
-        export_includes=[bld.path.get_bld().find_or_declare("include")],
-        target=f"{ip}hal",
-    )
-
+    cflags = bld.env.CFLAGS_HAL
+    bld.env.append_unique("HCG_GEN_HAL_INC_PATHS", [bld.path.get_bld().relpath()])
     source = None
     remove = None
     startup_hash = None
     if Utils.is_win32 or bld.env.HALCOGEN:
         startup_hash = bld.path.find_node("app-startup.hash")
-        remove = bld.srcnode.find_node("conf/hcg/app-remove.yml")
-        source = [bld.srcnode.find_node("conf/hcg/app.hcg")]
+        remove = bld.path.find_node("../../../conf/hcg/app-remove.yml")
+        source = ["../../../conf/hcg/app.hcg"]
     else:
         hal_src_dir = bld.path.get_bld().find_dir("source")
         hal_inc_dir = bld.path.get_bld().find_dir("include")
@@ -88,27 +75,21 @@ def build(bld: BuildContext) -> None:
             f"Assuming HAL sources are available at {hal_src_dir} and {hal_inc_dir}."
         )
         if hal_src_dir:
-            c_sources = list(hal_src_dir.ant_glob("*.c"))
-            asm_sources = list(hal_src_dir.ant_glob("*.asm"))
-            source = c_sources + asm_sources
+            source = hal_src_dir.ant_glob("*.c") + hal_src_dir.ant_glob("*.asm")
     if source:
-        use = [
-            f"{op}app-hl_notification",
-            "foxbms_config",
-        ]
         if bld.env.FOXBMS_TCP_SUPPORT:
-            use.append(f"{ip}rtos-kernel")
-            use.append(f"{ip}rtos-tcp")
+            includes.extend(
+                bld.env.FOXBMS_INCLUDES_RTOS_KERNEL
+                + bld.env.FOXBMS_INCLUDES_RTOS_KERNEL_ADDONS
+            )
+
         bld(
-            features="asm c cstlib",
+            features="c cstlib",
             source=source,
-            preinclude_deps=[
-                bld.bldnode.find_or_declare("foxbms_config_rtos.h"),
-                bld.bldnode.find_or_declare("foxbms_config_debug.h"),
-            ],
-            use=use,
-            uselib="HAL",
+            cflags=cflags,
+            use=f"{op}app-hl_notification",
+            target=f"{lp}hal",
             startup_hash=startup_hash,
             remove=remove,
-            target=f"{lp}hal",
+            idx=1,
         )

@@ -37,6 +37,7 @@
 # - "This product includes parts of foxBMS®"
 # - "This product is derived from foxBMS®"
 
+
 """Wrapper to call into the cli module that is implemented in the repository
 root.
 The wrapper ensures that the fox.py wrapper is run as expected, i.e.,
@@ -51,10 +52,9 @@ import sys
 # - f-strings (requires >=3.6)
 # - Union Type (requires >=10)
 # - PEPs 701 f-strings (requires >=12)
-# - subscriptable 'Queue' (requires >=14)
 
-if not (sys.version_info.major == 3 and sys.version_info.minor == 14):
-    sys.exit("Running 'fox.py' requires Python3.14.")
+if not (sys.version_info.major == 3 and sys.version_info.minor == 12):
+    sys.exit("Running 'fox.py' requires Python3.12.")
 
 from pathlib import Path  # pylint: disable=wrong-import-position
 

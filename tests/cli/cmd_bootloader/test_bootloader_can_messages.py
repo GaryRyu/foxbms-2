@@ -63,17 +63,17 @@ except ModuleNotFoundError:
 class TestBootloaderCanMessages(unittest.TestCase):
     """Class to test the class BootloaderCanMessages."""
 
-    def setUp(self) -> None:  # noqa: D102
+    def setUp(self):
         self.messages = Messages()
 
-    def test_init_files_does_not_exist(self, *_: object) -> None:
+    def test_init_files_does_not_exist(self, *_):
         """Test invalid initialization due to a non existing file."""
         # Case 1: the input dbc file is not valid
         with self.assertRaises(SystemExit) as cm:
             Messages(dbc_file=Path("fake"))
         self.assertEqual(cm.exception.code, "File 'fake' does not exist.")
 
-    def test_init_files_database_is_empty(self, *_: object) -> None:
+    def test_init_files_database_is_empty(self, *_):
         """Test invalid initialization due to invalid database file."""
         with self.assertRaises(SystemExit) as cm:
             Messages(dbc_file=Path(Path(__file__).parent / "invalid.dbc"))
@@ -83,9 +83,7 @@ class TestBootloaderCanMessages(unittest.TestCase):
 
     @patch("cli.cmd_bootloader.bootloader_can_messages.Path.is_file", return_value=True)
     @patch("cli.cmd_bootloader.bootloader_can_messages.database.load_file")
-    def test_init_files_wrong_database_type(
-        self, blu: MagicMock, *_: MagicMock
-    ) -> None:
+    def test_init_files_wrong_database_type(self, blu: MagicMock, *_):
         """Test invalid initialization due to wrong type of database file."""
         blu.return_value = create_autospec(database.diagnostics.database.Database)
         with self.assertRaises(SystemExit) as cm:
@@ -95,7 +93,7 @@ class TestBootloaderCanMessages(unittest.TestCase):
             r"Expected '.*' to contain a CAN database, but type is '.*'\.",
         )
 
-    def test_get_message(self, *_: object) -> None:
+    def test_get_message(self, *_):
         """Function to test function _get_message()."""
         # Case 2: cannot find the message in the dbc file
         with self.assertRaises(SystemExit) as cm:
@@ -136,7 +134,7 @@ class TestBootloaderCanMessages(unittest.TestCase):
             "The value of the signal 'BootloaderAction' is not in the corresponding enum.",
         )
 
-    def test_check_range(self, *_: object) -> None:
+    def test_check_range(self, *_):
         """Function to test function _check_range()."""
         msg = self.messages.db.get_message_by_name("f_BootloaderData8Bytes")
         signal = msg.get_signal_by_name("Data")
@@ -157,7 +155,7 @@ class TestBootloaderCanMessages(unittest.TestCase):
         )
         # pylint: enable=protected-access
 
-    def test_check_enum(self, *_: object) -> None:
+    def test_check_enum(self, *_):
         """Function to test function _check_enum()."""
         msg = self.messages.db.get_message_by_name("f_BootloaderActionRequest")
         signal = msg.get_signal_by_name("BootloaderAction")
@@ -172,7 +170,7 @@ class TestBootloaderCanMessages(unittest.TestCase):
         )
         # pylint: enable=protected-access
 
-    def test_get_message_request_msg(self, *_: object) -> None:
+    def test_get_message_request_msg(self, *_):
         """Function to test function get_message_request_msg()."""
         request_code = BootloaderAction.CmdToTransferProgram
         msg = self.messages.get_message_request_msg(request_code)
@@ -180,7 +178,7 @@ class TestBootloaderCanMessages(unittest.TestCase):
             msg == {"Name": "f_BootloaderActionRequest", "BootloaderAction": 1}
         )
 
-    def test_get_message_transfer_program_info(self, *_: object) -> None:
+    def test_get_message_transfer_program_info(self, *_):
         """Function to test function get_message_transfer_program_info()."""
         len_of_program_in_bytes = 100
         num_of_transfer_loops = 200
@@ -196,7 +194,7 @@ class TestBootloaderCanMessages(unittest.TestCase):
             },
         )
 
-    def test_get_message_data_8_bytes(self, *_: MagicMock) -> None:
+    def test_get_message_data_8_bytes(self, *_):
         """Function to test function get_message_data_8_bytes."""
         data_8_bytes = 0xFFFFFFFFFFFFFFFF
         msg = self.messages.get_message_data_8_bytes(data_8_bytes)
@@ -204,7 +202,7 @@ class TestBootloaderCanMessages(unittest.TestCase):
             msg, {"Name": "f_BootloaderData8Bytes", "Data": 0xFFFFFFFFFFFFFFFF}
         )
 
-    def test_get_message_crc_8_bytes(self, *_: MagicMock) -> None:
+    def test_get_message_crc_8_bytes(self, *_):
         """Function to test function get_message_crc_8_bytes."""
         crc_8_bytes = 0xFFFFFFFFFFFFFFFF
         msg = self.messages.get_message_crc_8_bytes(crc_8_bytes)
@@ -212,7 +210,7 @@ class TestBootloaderCanMessages(unittest.TestCase):
             msg, {"Name": "f_BootloaderCrc8Bytes", "Crc": 0xFFFFFFFFFFFFFFFF}
         )
 
-    def test_get_message_loop_info(self, *_: MagicMock) -> None:
+    def test_get_message_loop_info(self, *_):
         """Function to test function get_message_loop_info."""
         num_of_loop = 100
         msg = self.messages.get_message_loop_info(num_of_loop)

@@ -6,7 +6,7 @@ bms
 ===
 
 ..
-   cspell:ignore getrtc mcuid mculotnumber mcuwaferinfo softwarereset softwareversion boottimestamp buildconfig
+   cspell:ignore getrtc mcuid mculotnumber mcuwaferinfo
 
 The bms tool provides a shell that enables communication with the |foxbms|
 through a CAN bus.
@@ -53,7 +53,8 @@ There are the following commands:
 Structure
 ---------
 
-.. figure:: ../../../../build/docs/docs/tools/fox/bms/img/bms_overview.svg
+.. drawio-figure:: ./img/bms_overview.drawio
+   :format: svg
    :alt: bms tool overview
    :name: bms-tool-overview
    :width: 60 %
@@ -61,7 +62,8 @@ Structure
 
    Overview of the bms tool
 
-.. figure:: ../../../../build/docs/docs/tools/fox/bms/img/bms_processes.svg
+.. drawio-figure:: ./img/bms_processes.drawio
+   :format: svg
    :alt: bms tool processes
    :name: bms-tool-processes
    :width: 70 %

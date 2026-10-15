@@ -37,10 +37,9 @@
 # - "This product includes parts of foxBMS®"
 # - "This product is derived from foxBMS®"
 
-"""Define all CAN message enums and functions to get specified CAN messages
-from a dict.
-The members of the Enum classes that end with 'Str' have the string type of
-value.
+"""This file contains all enums of CAN messages and functions to get specfied
+can messages in dict. The members of the Enum classes that end with 'Str' have
+the string type of value.
 """
 
 from enum import Enum
@@ -49,7 +48,7 @@ from typing import TypedDict
 
 from cantools import database
 
-from ..helpers.project_context import BOOTLOADER_DBC_FILE
+from ..helpers.misc import BOOTLOADER_DBC_FILE
 
 
 class YesNoFlag(Enum):
@@ -129,7 +128,7 @@ class BootFsmState(Enum):
 
 
 class AcknowledgeMessageType(TypedDict):
-    """Specify the type of the received acknowledge message."""
+    """This class specify the type of the received acknowledge message."""
 
     AcknowledgeFlag: str
     AcknowledgeMessage: str
@@ -138,13 +137,13 @@ class AcknowledgeMessageType(TypedDict):
 
 
 class DataTransferInfoType(TypedDict):
-    """Specify the type of the received data transfer info message."""
+    """This class specify the type of the received data transfer info message."""
 
     CurrentLoopNumber: int
 
 
 class BootloaderVersionInfoType(TypedDict):
-    """Specify the type of the received bootloader version info message."""
+    """This class specify the type of the received bootloader version info message."""
 
     DirtyFlag: int
     MajorVersionNumber: int
@@ -156,14 +155,14 @@ class BootloaderVersionInfoType(TypedDict):
 
 
 class BootloaderFsmStatesType(TypedDict):
-    """Specify the type of the bootloader FSM states."""
+    """This class specify the type of the bootloader FSM states."""
 
     CanFsmState: str
     BootFsmState: str
 
 
 class Messages:
-    """Provide methods to get valid messages."""
+    """This class provides the methods to get valid messages"""
 
     def __init__(self, dbc_file: Path = BOOTLOADER_DBC_FILE) -> None:
         if not dbc_file.is_file():
@@ -186,7 +185,6 @@ class Messages:
 
         Args:
             name: name of this CAN message.
-            **kwargs: signal name/value pairs used to populate the CAN message.
 
         Returns:
             A valid CAN message.

@@ -43,8 +43,8 @@
  * @file    beta.h
  * @author  foxBMS Team
  * @date    2020-01-17 (date of creation)
- * @updated 2026-10-06 (date of last update)
- * @version v1.12.0
+ * @updated 2026-04-20 (date of last update)
+ * @version v1.11.0
  * @ingroup DRIVERS
  * @prefix  BETA
  *
@@ -77,8 +77,6 @@
 
 /*========== Includes =======================================================*/
 
-#include "bms-slave_cfg.h"
-
 #include <math.h>
 #include <stdint.h>
 
@@ -94,7 +92,7 @@
 #define BETA_POSITION_IN_RESISTOR_DIVIDER_IS_R_1 (false)
 
 /** Resistor divider supply voltage in volt */
-#define BETA_RESISTOR_DIVIDER_SUPPLY_VOLTAGE_V (SLV_NTC_TEMPERATURE_SENSOR_REFERENCE_VOLTAGE_V)
+#define BETA_RESISTOR_DIVIDER_SUPPLY_VOLTAGE_V (4.096f)
 
 /**
  * Resistance value of the other resistor (not the NTC) in the resistor

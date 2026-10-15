@@ -1,7 +1,7 @@
 .. include:: ../../../../macros.txt
 .. include:: ../../../../units.txt
 
-.. _HOW_TO_USE_THE_FTASK_TASK:
+.. _HOW_TO_USE_THE_FTASK_MODULE:
 
 How to Use the FTASK Module
 ===========================
@@ -24,4 +24,4 @@ variable:
 Further Reading
 ---------------
 
-Implementation details of the FTASK module are found in :ref:`FTASK_TASK`.
+Implementation details of the FTASK module are found in :ref:`FTASK_MODULE`.

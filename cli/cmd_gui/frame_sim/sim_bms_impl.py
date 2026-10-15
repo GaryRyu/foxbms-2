@@ -39,25 +39,25 @@
 
 """Implements the BMS simulation"""
 
-from queue import Queue
+from collections.abc import Callable
 
 from ...com.can_com import CAN
 
 
-def sim_bms(can_com: CAN, log_queue: Queue[str]) -> None:
-    """Implementation of the BMS simulation."""
+def sim_bms(can_com: CAN, write_text: Callable[[str], None]) -> None:
+    """Implementation of the BMS simulation"""
     try:
         can_com.start()
     except OSError as e:
-        log_queue.put(str(e) + "\n")
+        write_text(f"{e}\n")
         return
-    log_queue.put("CAN Bus BMS is running.\n")
+    write_text("CAN Bus BMS is running.\n")
     while can_com.is_alive():
         try:
             if msg := can_com.read(block=True, timeout=1):
-                log_queue.put(f"BMS received msg: {msg!s}\n")
+                write_text(f"BMS received msg: {msg!s}\n")
         except RuntimeError:
             break
-    log_queue.put(f"End of communication of {can_com.name}.\n")
+    write_text(f"End of communication of {can_com.name}.\n")
     can_com.shutdown(block=True, timeout=1)
     return

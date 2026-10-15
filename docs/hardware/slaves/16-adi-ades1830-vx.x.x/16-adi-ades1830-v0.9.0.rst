@@ -6,7 +6,7 @@
 .. |local_bms_slave_identifier_short| replace:: |adi-ades1830|\ -based 16-Cell |bms-slave|
 .. |local_bms_slave_identifier_full| replace:: |local_bms_slave_identifier_short| |local_bms_slave_version|
 
-.. _ADI_ADES1830_BASED_16_CELL_BMS_SLAVE_V0_9_0:
+.. _ADI_ADES1830___BASED_16_CELL_BMS_SLAVE___V0_9_0_:
 
 |local_bms_slave_identifier_full|
 =================================
@@ -39,14 +39,15 @@ The pinout of this |bms-slave| is shown in the
 :numref:`pinout-overview-for-16-adi-ades1830-v0.9.0_pinout-img` and
 :numref:`pinout-overview-for-16-adi-ades1830-v0.9.0_pinout-table`.
 
-.. figure:: ../../../../build/docs/docs/hardware/slaves/16-adi-ades1830-vx.x.x/16-adi-ades1830-v0.9.0/16-adi-ades1830-v0.9.0_pinout.svg
+.. drawio-figure:: 16-adi-ades1830-v0.9.0/16-adi-ades1830-v0.9.0_pinout.drawio
+   :format: svg
    :alt: pinout-overview-for-16-adi-ades1830-v0.9.0_pinout-img
    :name: pinout-overview-for-16-adi-ades1830-v0.9.0_pinout-img
    :width: 800px
 
    Connector placement of the |local_bms_slave_identifier_full|.
 
-.. csv-table:: |local_bms_slave_identifier_full| connectors description
+.. csv-table:: |bms-master| connectors description
    :file: 16-adi-ades1830-v0.9.0/16-adi-ades1830-v0.9.0_pinout.csv
    :name: pinout-overview-for-16-adi-ades1830-v0.9.0_pinout-table
    :header-rows: 1
@@ -67,7 +68,7 @@ No sense lines have been connected for this measurement (as the impact of cell
 voltage sensing is negligible on the current consumption).
 
 .. csv-table:: Electrical Ratings
-   :name: adi_ades1830_slave_16cell_v0.9.0_electrical_ratings
+   :name: adi_ades1830_slave_18cell_v0.9.0_electrical_ratings
    :header-rows: 1
    :delim: ;
    :file: ./16-adi-ades1830-v0.9.0/16-adi-ades1830-v0.9.0_electrical-ratings.csv
@@ -77,7 +78,7 @@ Mechanical Dimensions
 ^^^^^^^^^^^^^^^^^^^^^
 
 .. csv-table:: Mechanical Dimensions
-   :name: adi_ades1830_slave_16cell_v0.9.0_mechanical_dimensions
+   :name: adi_ades1830_slave_18cell_v0.9.0_mechanical_dimensions
    :header-rows: 1
    :delim: ;
    :file: ./16-adi-ades1830-v0.9.0/16-adi-ades1830-v0.9.0_mechanical-dimensions.csv
@@ -87,11 +88,12 @@ Block Diagram
 ^^^^^^^^^^^^^
 
 The block diagram of the |bms-slave| is shown in
-:numref:`block_diagram_adi_ades1830_slave_16cell_v0.9.0`.
+:numref:`block_diagram_adi_ades1830_slave_18cell_v0.9.0`.
 
-.. _block_diagram_adi_ades1830_slave_16cell_v0.9.0:
-.. figure:: ../../../../build/docs/docs/hardware/slaves/16-adi-ades1830-vx.x.x/16-adi-ades1830-v0.9.0/16-adi-ades1830-v0.9.0.svg
+.. _block_diagram_adi_ades1830_slave_18cell_v0.9.0:
+.. drawio-figure:: ./16-adi-ades1830-v0.9.0/16-adi-ades1830-v0.9.0.drawio
    :width: 80 %
+   :format: svg
    :align: center
 
    |bms-slave| 16-Cell Block Diagram
@@ -115,7 +117,8 @@ The cell voltage sense lines are input on the connector J400.
 The pinout is described in
 :numref:`Table %s <adi_ades1830_slave_16cell_v0.9.0_cell_sense_connector>`.
 
-.. figure:: ../../../../build/docs/docs/hardware/img/connectors_molex_micro_fit_24pins.svg
+.. drawio-figure:: ./../../img/connectors_molex_micro_fit_24pins.drawio
+   :format: svg
    :width: 300px
 
 .. csv-table:: Cell voltage sense connector
@@ -157,7 +160,8 @@ The cell temperature sensors are connected to the connectors J403.
 The pinout is described in
 :numref:`Table %s <adi_ades1830_slave_16cell_v0.9.0_temp_sense_connector>`.
 
-.. figure:: ../../../../build/docs/docs/hardware/img/connectors_molex_micro_fit_20pins.svg
+.. drawio-figure:: ./../../img/connectors_molex_micro_fit_20pins.drawio
+   :format: svg
    :width: 300px
 
 .. csv-table:: Temperature sensor connector
@@ -177,32 +181,33 @@ from VREF2.
 
 Each 10 temperature sensors are connected to an GPIO pin of the |adi-ades1830|.
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-|isospi| Daisy Chain Connection
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+isoSPI Daisy Chain Connection
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The data transmission between the slaves and between the slaves and |bms-master|
-uses the |isospi| interface.
-The |isospi| signals are input/output on the connectors J501/J402.
-The |isospi| ports are bidirectional, that means they can be used in forward and
+uses the isoSPI interface.
+The isoSPI signals are input/output on the connectors J501/J402.
+The isoSPI ports are bidirectional, that means they can be used in forward and
 reverse direction.
-The |isospi| connections are isolated galvanically using pulse transformers
+The isoSPI connections are isolated galvanically using pulse transformers
 (T500/T501).
 
-The pinout of the |isospi| connectors is described in
+The pinout of the isoSPI connectors is described in
 :numref:`Table %s <adi_ades1830_slave_16cell_v0.9.0_daisy_input_connectors>`
 and
 :numref:`Table %s <adi_ades1830_slave_16cell_v0.9.0_daisy_output_connectors>`.
 
-.. figure:: ../../../../build/docs/docs/hardware/img/connectors_molex_micro_fit_02pins.svg
+.. drawio-figure:: ./../../img/connectors_molex_micro_fit_02pins.drawio
+   :format: svg
    :width: 300px
-.. csv-table:: |isospi| Daisy Chain Input Connectors
+.. csv-table:: isoSPI Daisy Chain Input Connectors
    :name: adi_ades1830_slave_16cell_v0.9.0_daisy_input_connectors
    :header-rows: 1
    :delim: ;
    :file: ./16-adi-ades1830-v0.9.0/16-adi-ades1830-v0.9.0_daisy-input-connectors.csv
 
-.. csv-table:: |isospi| Daisy Chain Output Connectors
+.. csv-table:: isoSPI Daisy Chain Output Connectors
    :name: adi_ades1830_slave_16cell_v0.9.0_daisy_output_connectors
    :header-rows: 1
    :delim: ;

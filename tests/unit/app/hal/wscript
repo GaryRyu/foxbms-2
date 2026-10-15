@@ -43,6 +43,17 @@ from waflib.Build import BuildContext
 
 
 def build(bld: BuildContext) -> None:
+    bld(
+        features="c cprogram test",
+        source=[
+            bld.srcnode.find_node("src/app/hal/app-hl_notification.c"),
+            bld.path.find_node("test_app-hl_notification.c"),
+        ],
+        target="test-app-app-hl_notification",
+        mocks=[
+            bld.srcnode.find_node("src/app/main/include/infinite-loop-helper.h"),
+        ],
+    )
     source = None
     remove = None
     startup_hash = None
@@ -52,14 +63,14 @@ def build(bld: BuildContext) -> None:
         source = [bld.srcnode.find_node("conf/hcg/app.hcg")]
         bld(
             source=source,
-            target=f"{bld.env.APPNAME.lower()}-hal",
+            target="foxbms-app-hal",
             startup_hash=startup_hash,
             remove=remove,
             export_includes=[bld.path.get_bld().find_or_declare("include")],
         )
     else:
         bld(
-            target=f"{bld.env.APPNAME.lower()}-hal",
+            target="foxbms-app-hal",
             export_includes=[bld.path.get_bld().find_or_declare("include")],
         )
         hal_src_dir = bld.path.get_bld().find_dir("source")

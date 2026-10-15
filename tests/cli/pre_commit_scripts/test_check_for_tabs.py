@@ -44,7 +44,6 @@ import sys
 import unittest
 from contextlib import redirect_stderr
 from pathlib import Path
-from typing import ClassVar
 
 try:
     from cli.pre_commit_scripts import check_for_tabs
@@ -56,19 +55,17 @@ except ModuleNotFoundError:
 class TestForTabs(unittest.TestCase):
     """Testing "forbid tabs" script"""
 
-    tests_dir: ClassVar[Path]
-
     @classmethod
-    def setUpClass(cls) -> None:  # noqa: D102
+    def setUpClass(cls):
         cls.tests_dir = Path(__file__).parent / Path(__file__).stem
 
-    def test_ok(self) -> None:
+    def test_ok(self):
         """Line starts with comment"""
         test = "no-tabs.txt"
         result = check_for_tabs.main([str(self.tests_dir / test)])
         self.assertEqual(result, 0)
 
-    def test_not_ok_0(self) -> None:
+    def test_not_ok_0(self):
         """No tabs"""
         test = "tabs_0.txt"
         err = io.StringIO()
@@ -82,7 +79,7 @@ class TestForTabs(unittest.TestCase):
         )
         self.assertEqual(std_out, err.getvalue())
 
-    def test_not_ok_1(self) -> None:
+    def test_not_ok_1(self):
         """ASCII file with tabs"""
         test = "tabs_1.txt"
         err = io.StringIO()
@@ -98,7 +95,7 @@ class TestForTabs(unittest.TestCase):
         )
         self.assertEqual(std_out, err.getvalue())
 
-    def test_not_ok_2(self) -> None:
+    def test_not_ok_2(self):
         """UTF-16-LE file with tabs"""
         test = "tabs_2.txt"
         err = io.StringIO()

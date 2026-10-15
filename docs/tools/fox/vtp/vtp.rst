@@ -16,7 +16,8 @@ measurement data via the interface.
 Based on this input (measurement data and state request) the BMS derives it
 internal state and communicates it via CAN.
 
-.. figure:: ../../../../build/docs/docs/tools/fox/vtp/virtual-bms.svg
+.. drawio-figure:: virtual-bms.drawio
+   :format: svg
    :alt: Workflow and purpose of the Virtual Testing Platform (VTP)
    :name: virtual-bms-workflow-and-purpose
    :width: 800px

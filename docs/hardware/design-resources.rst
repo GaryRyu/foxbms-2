@@ -8,11 +8,9 @@ Design Resources
 ################
 
 The hardware design packages for the
-
 - |foxbms-bms-master|,
 - |bms-interface| and the
 - |bms-slaves| are available from the
-
 |foxbms_repository|.
 
 The packages include:

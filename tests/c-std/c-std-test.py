@@ -37,6 +37,7 @@
 # - "This product includes parts of foxBMS®"
 # - "This product is derived from foxBMS®"
 
+
 """Template for Python scripts"""
 
 import argparse
@@ -61,7 +62,7 @@ except InvalidGitRepositoryError:
 
 
 def main() -> int:  # pylint: disable=too-many-locals
-    """Compile the C standard test suite and run the tests."""
+    """This script compiles the c standard test suite and runs the tests"""
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-v",
@@ -111,7 +112,7 @@ def main() -> int:  # pylint: disable=too-many-locals
         err = [
             i.strip()
             for i in err.decode("utf-8").splitlines()
-            if "#warning" in i.strip()
+            if i.strip().startswith("#warning")
         ]
         outs[i] = err
 
@@ -131,7 +132,7 @@ def main() -> int:  # pylint: disable=too-many-locals
     test_errors = 0
     for std, warning in outs.items():
         expected_warning = expected_output[std]
-        if "\n".join(expected_warning) not in "\n".join(warning):
+        if warning != expected_warning:
             logging.error("Warning did not match for %s.", std)
             logging.error("Expected: %s", warning)
             logging.error("Got:      %s", expected_warning)

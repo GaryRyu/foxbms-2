@@ -37,10 +37,8 @@
 # - "This product includes parts of foxBMS®"
 # - "This product is derived from foxBMS®"
 
-from waflib.Build import BuildContext
 
-
-def build(bld: BuildContext) -> None:
+def build(bld):
     op = f"{bld.env.APPNAME.lower()}-object-"
     lp = f"{bld.env.APPNAME.lower()}-"
 

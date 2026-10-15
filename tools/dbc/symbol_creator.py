@@ -60,7 +60,7 @@ def sym_hex(number: int) -> str:
 
 
 def main() -> None:
-    """Produce a symbol file for cell voltages and temperatures."""
+    """This script produces a symbol file for cell voltages and temperatures"""
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-v",
@@ -92,7 +92,7 @@ def main() -> None:
         logging.basicConfig(level=logging.DEBUG)
     else:
         logging.basicConfig(level=logging.ERROR)
-    logging.debug(args)  # noqa: LOG015
+    logging.debug(args)
 
     invalid = "-m /e:f_ValidInvalidFlag"
     # cell voltages

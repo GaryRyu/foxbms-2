@@ -40,6 +40,7 @@
 """Testing file 'cli/cmd_etl/cmds/can_decode_helper.py'."""
 
 import io
+import os
 import sys
 import unittest
 from contextlib import redirect_stderr, redirect_stdout
@@ -119,7 +120,7 @@ class TestGetCantoolsDatabase(unittest.TestCase):
         self.assertEqual(
             "CurrentSensor_SIG_Current", can_db.messages[0].signals[0].name
         )
-        Path(temp_path).unlink()
+        os.remove(temp_path)
 
     def test_get_cantools_database_invalid_dbc(self) -> None:
         """Tests the get_cantools_database with an invalid .dbc file"""
@@ -134,7 +135,7 @@ class TestGetCantoolsDatabase(unittest.TestCase):
             get_cantools_database(Path(temp_path))
         self.assertEqual(buf.getvalue(), "Invalid DBC file.\n")
         self.assertEqual(cm.exception.code, 1)
-        Path(temp_path).unlink()
+        os.remove(temp_path)
 
     def test_get_cantools_database_dbc_not_found(self) -> None:
         """Tests the get_cantools_database with a non-existing .dbc file"""
@@ -221,7 +222,7 @@ class TestValidateDecodeConfig(unittest.TestCase):
 class TestRunDecode2Stdout(unittest.TestCase):
     """Tests for run_decode2stdout method"""
 
-    def setUp(self) -> None:
+    def setUp(self):
         """Setup needed Mocks"""
         self.decode_obj = Mock()
 
@@ -276,17 +277,15 @@ class TestRunDecode2Stdout(unittest.TestCase):
 class TestRunDecode2File(unittest.TestCase):
     """Tests for run_decode2file method"""
 
-    def setUp(self) -> None:
+    def setUp(self):
         """Creates temporary directory"""
         self.temp_dir = mkdtemp()
 
-    def tearDown(self) -> None:
+    def tearDown(self):
         """Delete temporary directory"""
-        Path(self.temp_dir).rmdir()
+        os.rmdir(self.temp_dir)
 
-    def test_run_decode2file_invalid_output_directory(
-        self, _: StringIO, __: Mock
-    ) -> None:
+    def test_run_decode2file_invalid_output_directory(self, _: StringIO, __: Mock):
         """Tests the run_decode2file with an invalid output directory"""
         err = io.StringIO()
         with redirect_stderr(err), self.assertRaises(SystemExit) as cm:

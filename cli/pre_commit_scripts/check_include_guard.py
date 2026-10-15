@@ -66,6 +66,7 @@ def run_check(filename: Path) -> int:
 
     Returns:
         Number of detected include guard issues.
+
     """
     txt = filename.read_text(encoding="ascii")
     txt_lines = txt.splitlines()
@@ -113,6 +114,7 @@ def check_include_guard(files: Sequence[Path]) -> int:
 
     Returns:
         Total number of issues found.
+
     """
     err = 0
     for i in files:
@@ -130,6 +132,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     Returns:
         Number of include guard violations found (exit code).
+
     """
     parser = argparse.ArgumentParser()
     parser.add_argument("files", nargs="*", help="Files to check")

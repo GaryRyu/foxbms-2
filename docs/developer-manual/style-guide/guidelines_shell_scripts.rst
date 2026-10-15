@@ -6,8 +6,7 @@
 Shell Coding Guidelines
 =======================
 
-These coding guidelines **MUST** be applied to all PowerShell and shell
-scripts.
+These coding guidelines **MUST** be applied to all pwsh and shell scripts.
 
 .. _rules_pwsh:
 
@@ -30,7 +29,7 @@ The following rules apply for filenames of PowerShell scripts.
      :numref:`rule_general_filenames`).
    - Shell scripts **MUST** use ``.ps1`` as file extension.
 
-For example, valid file names for PowerShell scripts are:
+For example the valid file names for shell scripts are
 
 - ``hello.ps1``
 - ``my-script.ps1``
@@ -72,7 +71,7 @@ The following rules apply for filenames of shell scripts.
      :numref:`rule_general_filenames`).
    - Shell scripts **MUST** use ``.sh`` as file extension.
 
-For example, valid file names for shell scripts are:
+For example the valid file names for shell scripts are
 
 - ``hello.sh``
 - ``my-script.sh``
@@ -96,10 +95,8 @@ Header (``SHELL:002``)
 File Templates
 --------------
 
-The file templates below show how these rules are correctly applied.
+These file templates below show how these rules are correctly applied.
 They **SHOULD** be used as basis for new files.
 
-- PowerShell script
-  :download:`pwsh_script.ps1 <../../../conf/tpl/pwsh_script.ps1>`
-- Shell script
-  :download:`shell_script.sh <../../../conf/tpl/shell_script.sh>`
+- Shell script :download:`pwsh_script.ps1 <../../../conf/tpl/pwsh_script.ps1>`
+- Shell script :download:`shell_script.sh <../../../conf/tpl/shell_script.sh>`

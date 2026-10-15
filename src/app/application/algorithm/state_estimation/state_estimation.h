@@ -43,8 +43,8 @@
  * @file    state_estimation.h
  * @author  foxBMS Team
  * @date    2020-10-14 (date of creation)
- * @updated 2026-10-06 (date of last update)
- * @version v1.12.0
+ * @updated 2026-04-20 (date of last update)
+ * @version v1.11.0
  * @ingroup APPLICATION
  * @prefix  SE
  *
@@ -60,7 +60,7 @@
 
 /*========== Includes =======================================================*/
 
-#include "database_cfg.h"
+#include "database.h"
 
 #include <math.h>
 #include <stdbool.h>
@@ -156,9 +156,6 @@ extern void SE_CalculateStateOfHealth(DATA_BLOCK_SOH_s *pSohValues);
 
 /*========== Externalized Static Functions Prototypes (Unit Test) ===========*/
 #ifdef UNITY_UNIT_TEST
-extern DATA_BLOCK_SOC_s *TEST_SE_GetTableSocEstimation(void);
-extern DATA_BLOCK_SOH_s *TEST_SE_GetTableSohEstimation(void);
-extern DATA_BLOCK_SOE_s *TEST_SE_GetTableSoeEstimation(void);
-#endif /* UNITY_UNIT_TEST */
+#endif
 
 #endif /* FOXBMS__STATE_ESTIMATION_H_ */

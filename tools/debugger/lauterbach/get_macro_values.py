@@ -60,12 +60,12 @@ except InvalidGitRepositoryError:
 
 def get_ppm_files() -> list[Path]:
     """Creates a generator for all relevant macro files in the build directory"""
-    build_dir = REPO_ROOT / "build/app_ti_arm_cgt"
+    build_dir = REPO_ROOT / "build/app_embedded"
     return build_dir.rglob("*.ppm")
 
 
 def main() -> None:
-    """Extract macro values from the build output."""
+    """This script does this and that"""
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-v",
@@ -116,23 +116,23 @@ def main() -> None:
             try:
                 line = line.split(" ", maxsplit=1)[1]
             except IndexError as err:
-                logging.debug(err)  # noqa: LOG015
+                logging.debug(err)
                 continue
             try:
                 macro, value = line.split(" ", maxsplit=1)
             except ValueError:
-                logging.debug("%s has no value. Ignoring...", line)  # noqa: LOG015
+                logging.debug("%s has no value. Ignoring...", line)
                 continue
             if not value.startswith("("):
                 value = f"({value})"
             macros.append((macro, value))
     macros = list({tuple(i) for i in macros})
-    logging.info("Adding %s macro(s).", len(macros))  # noqa: LOG015
+    logging.info("Adding %s macro(s).", len(macros))
 
     macro_cmm_file_in = REPO_ROOT / "tools/debugger/lauterbach/load_macro_values.cmm.in"
     if not macro_cmm_file_in.is_file():
         sys.exit(f"Could not find file {macro_cmm_file_in}.")
-    logging.info("Reading configuration file '%s'", macro_cmm_file_in)  # noqa: LOG015
+    logging.info("Reading configuration file '%s'", macro_cmm_file_in)
     txt = macro_cmm_file_in.read_text(encoding="utf-8")
     replacement = "\n".join(
         [f"sYmbol.CREATE.MACRO {macro} {value}" for macro, value in macros]
@@ -140,9 +140,9 @@ def main() -> None:
     macro_cmm_file_out = REPO_ROOT / "build/load_macro_values.cmm"
     REPO_ROOT.mkdir(exist_ok=True)
     txt = txt.replace("@{MACROS_AND_VALUES}", replacement)
-    logging.info("Writing configuration file '%s'", macro_cmm_file_out)  # noqa: LOG015
+    logging.info("Writing configuration file '%s'", macro_cmm_file_out)
     macro_cmm_file_out.write_text(txt, encoding="utf-8")
-    logging.info("Done...")  # noqa: LOG015
+    logging.info("Done...")
 
 
 if __name__ == "__main__":

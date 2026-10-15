@@ -66,14 +66,7 @@ class GraphDrawerFactory(GraphDrawerFactoryInterface):  # pylint: disable=too-fe
     """Class that implements the interface GraphDrawerFactory"""
 
     def get_object(self, graph_config: dict) -> LineGraphDrawer:
-        """Create a LineGraphDrawer object from the given configuration.
-
-        Args:
-            graph_config: The configuration dictionary for the graph.
-
-        Returns:
-            A LineGraphDrawer object based on the provided configuration.
-        """
+        """Creates a LineGraphDrawer object from the given configuration."""
         graph_type = GraphDrawerFactory._get_graph_type(graph_config)
         match graph_type:
             case GraphTypes.LINE:

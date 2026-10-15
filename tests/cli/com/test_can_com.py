@@ -45,7 +45,7 @@ import sys
 import time
 import unittest
 from pathlib import Path
-from threading import Event, Thread
+from threading import Thread
 from unittest.mock import MagicMock, Mock, patch
 
 from can import CanInitializationError, CanOperationError, Message
@@ -74,8 +74,8 @@ class TestCANInit(unittest.TestCase):
         can = mod.CAN(name="TestCAN", parameter=CanBusConfig(interface="pcan"))
 
         mock_can_process.assert_called_once()
+        # pylint: disable=W0212
         self.assertEqual(can.name, "TestCAN")
-        # pylint: disable-next=protected-access
         self.assertIs(can._processes[mock_can_process.__name__], mock_can_process())
 
 
@@ -161,7 +161,8 @@ class TestCANProcessConnect(unittest.TestCase):
         control = ComControl()
         mock_asdict.return_value = {"channel": "can0", "bustype": "socketcan"}
         p = CANProcess("P", control, self.param)
-        bus = p._connect()  # pylint: disable=protected-access
+        # pylint: disable=W0212
+        bus = p._connect()
         mock_bus.assert_called_once_with(channel="can0", bustype="socketcan")
         self.assertIs(bus, mock_bus())
 
@@ -174,7 +175,8 @@ class TestCANProcessConnect(unittest.TestCase):
         mock_bus.side_effect = CanInitializationError("init failed")
         p = CANProcess("P", control, self.param)
         with patch.object(p, "shutdown") as mock_shutdown:
-            bus2 = p._connect()  # pylint: disable=protected-access
+            # pylint: disable=W0212
+            bus2 = p._connect()
             mock_recho.assert_called_with("Could not initialize CAN bus.")
             mock_shutdown.assert_called_once()
             self.assertIsNone(bus2)
@@ -193,22 +195,20 @@ class TestCANProcessRun(unittest.TestCase):
         proc = CANProcess("Runner", control, CanBusConfig(interface="kvaser"))
 
         fake_bus = Mock()
-        with (
-            patch.object(proc, "_connect", return_value=fake_bus),
-            patch.object(mod, "logger") as mock_logger,
-            patch.object(proc, "_write_can_messages") as mock_write,
-        ):
-            t_instance = MagicMock()
-            mock_thread.return_value = t_instance
+        with patch.object(proc, "_connect", return_value=fake_bus):
+            with patch.object(mod, "logger") as mock_logger:
+                with patch.object(proc, "_write_can_messages") as mock_write:
+                    t_instance = MagicMock()
+                    mock_thread.return_value = t_instance
 
-            proc.run()
+                    proc.run()
 
-            mock_add_q_handler.assert_called_once_with(control.logger)
-            mock_logger.setLevel.assert_called_once_with(control.log_level)
-            self.assertTrue(control.ready.is_set())
-            mock_thread.assert_called_once()
-            t_instance.start.assert_called_once()
-            mock_write.assert_called_once()
+                    mock_add_q_handler.assert_called_once_with(control.logger)
+                    mock_logger.setLevel.assert_called_once_with(control.log_level)
+                    self.assertTrue(control.ready.is_set())
+                    mock_thread.assert_called_once()
+                    t_instance.start.assert_called_once()
+                    mock_write.assert_called_once()
 
     def test_run_but_bus_is_none(
         self, mock_add_q_handler: Mock, mock_thread: Mock
@@ -217,14 +217,12 @@ class TestCANProcessRun(unittest.TestCase):
         control = ComControl()
         proc = CANProcess("Runner", control, CanBusConfig(interface="kvaser"))
 
-        with (
-            patch.object(proc, "_connect", return_value=None),
-            patch.object(mod, "logger") as mock_logger,
-        ):
-            proc.run()
-            mock_add_q_handler.assert_called_once_with(control.logger)
-            mock_logger.setLevel.assert_called_once_with(control.log_level)
-            mock_thread.assert_not_called()
+        with patch.object(proc, "_connect", return_value=None):
+            with patch.object(mod, "logger") as mock_logger:
+                proc.run()
+                mock_add_q_handler.assert_called_once_with(control.logger)
+                mock_logger.setLevel.assert_called_once_with(control.log_level)
+                mock_thread.assert_not_called()
 
 
 class TestLoadDatabase(unittest.TestCase):
@@ -247,7 +245,8 @@ class TestLoadDatabase(unittest.TestCase):
         """Should return a database object when load_file succeeds."""
         fake_db = Mock()
         mock_load_file.return_value = fake_db
-        result = self.proc._load_database()  # pylint: disable=protected-access
+        # pylint: disable=W0212
+        result = self.proc._load_database()
         self.assertIs(result, fake_db)
         self.proc.shutdown.assert_not_called()
         mock_recho.assert_not_called()
@@ -257,13 +256,13 @@ class TestLoadDatabase(unittest.TestCase):
     @patch("cli.com.can_com.database.load_file")
     def test_unsupported_format_calls_shutdown_and_returns_none(
         self, mock_load_file: Mock, mock_recho: Mock
-    ) -> None:
+    ):
         """Should handle UnsupportedDatabaseFormatError by logging and shutting down."""
         mock_load_file.side_effect = UnsupportedDatabaseFormatError(
             e_arxml=None, e_dbc="bad_format", e_kcd=None, e_sym=None, e_cdd=None
         )
-
-        result = self.proc._load_database()  # pylint: disable=protected-access
+        # pylint: disable=W0212
+        result = self.proc._load_database()
         self.assertIsNone(result)
         self.proc.shutdown.assert_called_once()
         mock_recho.assert_called_once_with("DBC format is not valid!")
@@ -272,10 +271,11 @@ class TestLoadDatabase(unittest.TestCase):
     @patch("cli.com.can_com.database.load_file")
     def test_file_not_found_calls_shutdown_and_returns_none(
         self, mock_load_file: Mock, mock_recho: Mock
-    ) -> None:
+    ):
         """Should handle FileNotFoundError by logging and shutting down."""
         mock_load_file.side_effect = FileNotFoundError("not found")
-        result = self.proc._load_database()  # pylint: disable=protected-access
+        # pylint: disable=W0212
+        result = self.proc._load_database()
         self.assertIsNone(result)
         self.proc.shutdown.assert_called_once()
         mock_recho.assert_called_once_with("DBC file is not found!")
@@ -287,14 +287,14 @@ class TestGetCanMsg(unittest.TestCase):
     def test_returns_same_message_object(self) -> None:
         """Ensure that passing a Message instance returns it unchanged."""
         input_msg = Message(arbitration_id=0x123, data=b"\x01\x02")
-        # pylint: disable-next=protected-access
+        # pylint: disable=W0212
         result = CANProcess._get_can_msg(input_msg, start_time=0.0, dbc=None)
         self.assertIs(result, input_msg)
 
     def test_constructs_message_from_raw_dict_data(self) -> None:
         """Ensure that dict with raw bytes is converted into a Message."""
         msg_dict = {"id": 0x321, "data": b"\xaa\xbb\xcc"}
-        # pylint: disable-next=protected-access
+        # pylint: disable=W0212
         result = CANProcess._get_can_msg(msg_dict, start_time=0.0, dbc=None)
         self.assertIsInstance(result, Message)
         self.assertEqual(result.arbitration_id, 0x321)
@@ -304,7 +304,7 @@ class TestGetCanMsg(unittest.TestCase):
     def test_returns_none_when_dict_data_requires_dbc_but_none_provided(self) -> None:
         """If dict data is a field dict and no DBC is given, it should return None."""
         msg_dict = {"id": 0x111, "data": {"field1": 1, "field2": 2}}
-        # pylint: disable-next=protected-access
+        # pylint: disable=W0212
         result = CANProcess._get_can_msg(msg_dict, start_time=0.0, dbc=None)
         self.assertIsNone(result)
 
@@ -322,7 +322,7 @@ class TestGetCanMsg(unittest.TestCase):
             7,
             8,
         ]
-        # pylint: disable-next=protected-access
+        # pylint: disable=W0212
         result = CANProcess._get_can_msg(msg_dict, start_time=0.0, dbc=fake_dbc)
         self.assertIsInstance(result, Message)
         self.assertEqual(result.arbitration_id, 0x555)
@@ -336,29 +336,24 @@ class TestCANProcessWriteCanMessages(unittest.TestCase):
     def test_sends_message_instances_and_dict_messages(self) -> None:
         """Sends direct Message instances and builds Message from dicts (list and dict data)."""
         control = ComControl()
+        control.shutdown.is_set = Mock(return_value=False)
         proc = CANProcess(
             "Writer", control, CanBusConfig(interface="pcan", dbc="file.dbc")
         )
         # CANProcess._get_can_msg = Mock(side_effect=["test", "test", "test", KeyError])
-        proc._bus = MagicMock()  # pylint: disable=protected-access
-        proc._bus.__enter__.return_value = Mock()  # pylint: disable=protected-access
+        # pylint: disable=W0212
+        proc._bus = MagicMock()
+        proc._bus.__enter__.return_value = Mock()
         with patch.object(proc, "_load_database") as mock_load_file:
             control.input.put(
                 Message(arbitration_id=123, is_extended_id=False, data=[1, 2, 3])
             )
             control.input.put({"id": 123, "data": [1, 2, 3]})
             control.input.put({"id": 0x7E0, "data": {"SignalA": 1}})
-            # pylint: disable-next=protected-access
             t = Thread(target=proc._write_can_messages, daemon=True)
             t.start()
-            for _ in range(20):
-                # pylint: disable-next=protected-access, no-member
-                if proc._bus.__enter__.return_value.send.call_count >= 3:
-                    break
-                time.sleep(0.05)
-            control.shutdown.set()
-            t.join(timeout=1)
-            # pylint: disable-next=protected-access, no-member
+            t.join(timeout=0.5)
+            # pylint: disable=E1101
             self.assertEqual(proc._bus.__enter__.return_value.send.call_count, 3)
             mock_load_file.assert_called_once()
 
@@ -369,44 +364,39 @@ class TestCANProcessWriteCanMessages(unittest.TestCase):
         proc = CANProcess(
             "Writer", control, CanBusConfig(interface="pcan", dbc="file.dbc")
         )
+        # pylint: disable=W0212
         with patch("cli.com.can_com.sleep") as mock_sleep:
-            proc._write_can_messages()  # pylint: disable=protected-access
+            t = Thread(target=proc._write_can_messages, daemon=True)
+            t.start()
+            t.join(timeout=0.1)
             mock_sleep.assert_not_called()
         # case with dbc file is none
         proc = CANProcess("Writer", control, CanBusConfig(interface="pcan"))
-        proc._bus = MagicMock()  # pylint: disable=protected-access
-        proc._bus.__enter__.return_value = Mock()  # pylint: disable=protected-access
+        proc._bus = MagicMock()
         with patch.object(proc, "_load_database") as mock_load_file:
-            # pylint: disable-next=protected-access
             t = Thread(target=proc._write_can_messages, daemon=True)
             t.start()
-            time.sleep(0.1)
-            control.shutdown.set()
-            t.join(timeout=1)
+            t.join(timeout=0.1)
             mock_load_file.assert_not_called()
 
     @patch("cli.com.can_com.logger")
     def test_message_invalid_type(self, mock_logger: Mock) -> None:
         """Testcase with a CAN message with invalid type."""
         control = ComControl()
+        control.shutdown.is_set = Mock(side_effect=[False, True])
         proc = CANProcess(
             "Writer", control, CanBusConfig(interface="pcan", dbc="file.dbc")
         )
-        proc._bus = MagicMock()  # pylint: disable=protected-access
-        proc._bus.__enter__.return_value = Mock()  # pylint: disable=protected-access
+        # pylint: disable=W0212
+        proc._bus = MagicMock()
+        proc._bus.__enter__.return_value = Mock()
         with patch.object(proc, "_load_database"):
             control.input.put([1, 2, 3])
             while control.input.empty():
                 time.sleep(0.1)
-                # pylint: disable-next=protected-access
             t = Thread(target=proc._write_can_messages, daemon=True)
             t.start()
-            for _ in range(20):
-                if mock_logger.debug.called:
-                    break
-                time.sleep(0.05)
-            control.shutdown.set()
-            t.join(timeout=1)
+            t.join(timeout=0.1)
             mock_logger.debug.assert_called_once_with(
                 "Message '%s' is ignored. DBC file not valid or it "
                 "is not a dict or Message object.",
@@ -417,28 +407,27 @@ class TestCANProcessWriteCanMessages(unittest.TestCase):
     def test_message_key_error(self, mock_logger: Mock) -> None:
         """Test message with missing keys"""
         control = ComControl()
+        control.shutdown.is_set = Mock(side_effect=[False, True])
         proc = CANProcess(
             "Writer", control, CanBusConfig(interface="pcan", dbc="file.dbc")
         )
-        proc._bus = MagicMock()  # pylint: disable=protected-access
-        proc._bus.__enter__.return_value = Mock()  # pylint: disable=protected-access
-        with (
-            patch.object(proc, "_load_database"),
-            patch.object(CANProcess, "_get_can_msg", side_effect=KeyError),
-        ):
-            control.input.put({"data": [1, 2, 3]})
-            # Ensure empty returns correct status of the queue
-            while control.input.empty():
-                time.sleep(0.1)
-                # pylint: disable-next=protected-access
-            t = Thread(target=proc._write_can_messages, daemon=True)
-            t.start()
-            t.join(timeout=2.0)
-            mock_logger.error.assert_called_once_with(
-                "Provided json dictionary does not contain at "
-                "least one mandatory key id or data in the in "
-                "the defined CAN message."
-            )
+        # pylint: disable=W0212
+        proc._bus = MagicMock()
+        proc._bus.__enter__.return_value = Mock()
+        with patch.object(proc, "_load_database"):
+            with patch.object(CANProcess, "_get_can_msg", side_effect=KeyError):
+                control.input.put({"data": [1, 2, 3]})
+                # Ensure empty returns correct status of the queue
+                while control.input.empty():
+                    time.sleep(0.1)
+                t = Thread(target=proc._write_can_messages, daemon=True)
+                t.start()
+                t.join(timeout=0.1)
+                mock_logger.error.assert_called_once_with(
+                    "Provided json dictionary does not contain at "
+                    "least one mandatory key id or data in the in "
+                    "the defined CAN message."
+                )
 
 
 class TestCANProcessReceiveCanMessages(unittest.TestCase):
@@ -449,15 +438,19 @@ class TestCANProcessReceiveCanMessages(unittest.TestCase):
         """Accumulates operation errors and triggers shutdown when threshold is reached."""
         control = ComControl()
         proc = CANProcess("Receiver", control, CanBusConfig(interface="pcan"))
-        proc._bus = MagicMock()  # pylint: disable=protected-access
-        proc._bus.__enter__.return_value = Mock()  # pylint: disable=protected-access
+        # pylint: disable=W0212
+        proc._bus = MagicMock()
+        proc._bus.__enter__.return_value = Mock()
         op_error = CanOperationError("err")
-        side_effect = [op_error, op_error, op_error]
         with (
-            patch.object(proc, "_receive_can_message", side_effect=side_effect),
+            patch.object(
+                proc, "_receive_can_message", side_effect=[op_error, op_error, op_error]
+            ),
             patch("cli.com.can_com.MAX_CAN_OPERATION_ERRORS_PER_HOUR", 3),
         ):
-            proc._receive_can_messages()  # pylint: disable=protected-access
+            t = Thread(target=proc._receive_can_messages, daemon=True)
+            t.start()
+            t.join(timeout=2)
 
         self.assertTrue(control.shutdown.is_set())
         mock_recho.assert_called_with(
@@ -469,8 +462,8 @@ class TestCANProcessReceiveCanMessages(unittest.TestCase):
         """Test receive_can_messages method with no bus"""
         control = ComControl()
         proc = CANProcess("Receiver", control, CanBusConfig(interface="pcan"))
-        proc._bus = None  # pylint: disable=protected-access
-        # pylint: disable-next=protected-access
+        # pylint: disable=W0212
+        proc._bus = None
         t = Thread(target=proc._receive_can_messages, daemon=True)
         t.start()
         t.join(timeout=2)
@@ -480,20 +473,14 @@ class TestCANProcessReceiveCanMessages(unittest.TestCase):
 class TestCANProcessReceiveCanMessage(unittest.TestCase):
     """Tests for CANProcess._receive_can_message in isolation."""
 
-    def _new_control(self) -> ComControl:
-        """Create control object and ensure queue resources are closed after test."""
-        control = ComControl()
-        self.addCleanup(control.close)
-        return control
-
     def test_puts_received_messages_on_output_queue(self) -> None:
         """Receives a message from bus and forwards it to output until shutdown."""
         bus = Mock()
         bus.recv = Mock(return_value="CAN_MSG")
-        control = self._new_control()
+        control = ComControl()
         proc = CANProcess("RecvOne", control, CanBusConfig(interface="pcan"))
-
-        t = Thread(  # pylint: disable-next=protected-access
+        # pylint: disable=W0212
+        t = Thread(
             name="test", target=proc._receive_can_message, daemon=True, args=[bus]
         )
         t.start()
@@ -508,12 +495,11 @@ class TestCANProcessReceiveCanMessage(unittest.TestCase):
         """Receives a message from bus and forwards it to output until shutdown."""
         bus = Mock()
         bus.recv = Mock(return_value=None)
-        control = MagicMock()
-        control.shutdown = Event()
-        control.output = MagicMock()
+        control = ComControl()
         proc = CANProcess("RecvOne", control, CanBusConfig(interface="pcan"))
+        # pylint: disable=W0212
         with patch.object(control.output, "put") as mock_put:
-            t = Thread(  # pylint: disable-next=protected-access
+            t = Thread(
                 name="test", target=proc._receive_can_message, daemon=True, args=[bus]
             )
             t.start()

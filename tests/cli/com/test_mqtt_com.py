@@ -37,8 +37,6 @@
 # - "This product includes parts of foxBMS®"
 # - "This product is derived from foxBMS®"
 
-# cspell:ignore sslerror
-
 """Testing file 'cli/com/mqtt_com.py'."""
 
 import json
@@ -46,7 +44,6 @@ import socket
 import ssl
 import sys
 import unittest
-import warnings
 from pathlib import Path
 from queue import Empty
 from time import sleep
@@ -72,7 +69,7 @@ class TestMQTTInit(unittest.TestCase):
         parameter: MQTTParameter = MQTTParameter(
             broker="test", port="111", subscribe=["test"]
         )
-        mqtt: MQTT = MQTT("test-name", parameter)
+        mqtt: MQTT = MQTT("testname", parameter)
         self.assertIn("DummyProcess", mqtt._processes)  # pylint: disable=protected-access
         self.assertTrue(hasattr(mqtt, "_processes"))
 
@@ -87,7 +84,7 @@ class TestMQTTRead(unittest.TestCase):
         self.parameter: MQTTParameter = MQTTParameter(
             broker="test", port="111", subscribe=["test"]
         )
-        self.mqtt: MQTT = MQTT("test-name", self.parameter)
+        self.mqtt: MQTT = MQTT("testname", self.parameter)
         self.mqtt.is_alive = MagicMock(return_value=True)
 
     def test_read_returns_dict(self) -> None:
@@ -127,7 +124,7 @@ class TestMQTTWrite(unittest.TestCase):
         self.parameter: MQTTParameter = MQTTParameter(
             broker="test", port="111", subscribe=["test"]
         )
-        self.mqtt: MQTT = MQTT("test-name", self.parameter)
+        self.mqtt: MQTT = MQTT("testname", self.parameter)
         self.mqtt.is_alive = MagicMock(return_value=True)
 
     def test_write_puts_message(self) -> None:
@@ -154,22 +151,11 @@ class TestMQTTStart(unittest.TestCase):
         exception.
         """
         control: ComControl = ComControl()
-        self.addCleanup(control.close)
         parameter: MQTTParameter = MQTTParameter(
             broker="test", port="111", subscribe=["test"]
         )
         proc: MQTTProcess = MQTTProcess("name", control, parameter)
-        with warnings.catch_warnings():
-            warnings.filterwarnings(
-                "ignore",
-                message=(
-                    r"This process .* is multi-threaded, use of fork\(\) "
-                    r"may lead to deadlocks in the child\."
-                ),
-                category=DeprecationWarning,
-                module=r"multiprocessing\.popen_fork",
-            )
-            proc.start()
+        proc.start()
         proc.terminate()
         # Wait until process is dead then call close()
         while proc.is_alive():
@@ -339,14 +325,14 @@ class TestMQTTProcessSetUsernamePwd(unittest.TestCase):
             port="111",
             subscribe=["test"],
             username="user",
-            password="pwd",  # noqa: S106
+            password="pwd",  # noqa
         )
         proc: MQTTProcess = MQTTProcess("test", self.control, parameter)
         # pylint: disable-next=protected-access
         result = proc._set_username_and_pwd(self.dummy_client)
         self.dummy_client.username_pw_set.assert_called_once_with(
             username="user",
-            password="pwd",  # noqa: S106
+            password="pwd",  # noqa
         )
         self.assertEqual(result, self.dummy_client)
 

@@ -93,11 +93,7 @@ class Mapping:  # pylint: disable=too-many-instance-attributes
     end: int | None = None
 
     def __post_init__(self) -> None:
-        """Initialize the LineSettings for the y axes.
-
-        Raises:
-            SystemExit: If the date format is invalid.
-        """
+        """Init the LineSettings for the y axes"""
         for attr in ["y1", "y2", "y3"]:
             if isinstance(self.__getattribute__(attr), dict):
                 setattr(self, attr, LinesSettings(**self.__getattribute__(attr)))

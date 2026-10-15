@@ -70,7 +70,8 @@ multiple fragments.
 :numref:`initialization-emac-dma` shows the buffer descriptors
 after their Initialization.
 
-.. figure:: ../../../../../build/docs/docs/software/modules/driver/emac/img/data_processing_emac_initialize_dma.svg
+.. drawio-figure:: img/data_processing_emac_initialize_dma.drawio
+   :format: svg
    :alt: Initialization of |emac| DMA Module
    :name: initialization-emac-dma
    :width: 800px
@@ -132,7 +133,8 @@ Starting with the first descriptor, they are processed in the
 :ref:`NETWORK_INTERFACE`.
 
 
-.. figure:: ../../../../../build/docs/docs/software/modules/driver/emac/img/data_processing_emac_receive_before.svg
+.. drawio-figure:: img/data_processing_emac_receive_before.drawio
+   :format: svg
    :alt: Reception of Ethernet Packets
    :name: receive-emac-before
    :width: 800px
@@ -163,7 +165,8 @@ chain.
 :numref:`receive-emac-after` describes the linked RX buffer descriptor list
 after the reception.
 
-.. figure:: ../../../../../build/docs/docs/software/modules/driver/emac/img/data_processing_emac_receive_after.svg
+.. drawio-figure:: img/data_processing_emac_receive_after.drawio
+   :format: svg
    :alt: Reception of Ethernet Packets
    :name: receive-emac-after
    :width: 800px
@@ -176,7 +179,8 @@ Transmit
 :numref:`transmit-emac` describes the buffer descriptors during data
 transmission.
 
-.. figure:: ../../../../../build/docs/docs/software/modules/driver/emac/img/data_processing_emac_transmit.svg
+.. drawio-figure:: img/data_processing_emac_transmit.drawio
+   :format: svg
    :alt: Transmission of Ethernet Packets
    :name: transmit-emac
    :width: 800px
@@ -197,8 +201,8 @@ The last packet is the ``pActiveTail``.
 See Also
 --------
 
-- :ref:`PHY_DRIVER`
+- :ref:`PHY_MODULE`
 - :ref:`NETWORK_INTERFACE`
-- :ref:`ETHERNET_APPLICATION`
+- :ref:`ETHERNET_MODULE`
 - :ref:`HOW_TO_IMPLEMENT_ETHERNET_PORT`
 - :ref:`HOW_TO_TEST_TCP_IP`

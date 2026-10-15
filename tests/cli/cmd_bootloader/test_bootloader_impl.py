@@ -70,14 +70,14 @@ try:
         run_app,
     )
     from cli.helpers.fcan import CanBusConfig
-    from cli.helpers.path_options import FoxbmsFiles
-    from cli.helpers.project_context import (
+    from cli.helpers.misc import (
         APP_DBC_FILE,
         BOOTLOADER_DBC_FILE,
         FOXBMS_APP_CRC_FILE,
         FOXBMS_APP_INFO_FILE,
         FOXBMS_BIN_FILE,
     )
+    from cli.helpers.path_options import FoxbmsFiles
 
 except ModuleNotFoundError:
     sys.path.insert(0, str(Path(__file__).parents[3]))
@@ -93,14 +93,14 @@ except ModuleNotFoundError:
         run_app,
     )
     from cli.helpers.fcan import CanBusConfig
-    from cli.helpers.path_options import FoxbmsFiles
-    from cli.helpers.project_context import (
+    from cli.helpers.misc import (
         APP_DBC_FILE,
         BOOTLOADER_DBC_FILE,
         FOXBMS_APP_CRC_FILE,
         FOXBMS_APP_INFO_FILE,
         FOXBMS_BIN_FILE,
     )
+    from cli.helpers.path_options import FoxbmsFiles
 
 PROGRAM = {
     "len_of_program_in_bytes": 16,
@@ -158,22 +158,20 @@ RETURN_HASH = "1691115346d2814fcf79829becdc0fa096dac126695b7901907fec2e1b11c389"
 class TestBootloaderImpl(unittest.TestCase):
     """Class to test the module bootloader_impl."""
 
-    def setUp(self) -> None:  # noqa: D102
+    def setUp(self):
         self.foxbms_files = FoxbmsFiles(
             foxbms_app_crc_file=FOXBMS_APP_CRC_FILE,
             foxbms_app_info_file=FOXBMS_APP_INFO_FILE,
             foxbms_bin_file=FOXBMS_BIN_FILE,
         )
 
-    def tearDown(self) -> None:  # noqa: D102
+    def tearDown(self):
         pass
 
     @patch.object(json, "loads")
     @patch.object(Bootloader, "check_target")
     # pylint: disable=too-many-statements
-    def test_check_bootloader(
-        self, mock_check_target: MagicMock, mock_load: MagicMock, *_: MagicMock
-    ) -> None:
+    def test_check_bootloader(self, mock_check_target, mock_load, *_):
         """Function to test function check_bootloader()."""
         mock_load.return_value = PROGRAM
 
@@ -199,19 +197,16 @@ class TestBootloaderImpl(unittest.TestCase):
         )
 
         _err, _out = io.StringIO(), io.StringIO()
-        with (
-            redirect_stderr(_err),
-            redirect_stdout(_out),
-            can.interface.Bus("test", interface="virtual") as can_bus,
-        ):
-            interface = BootloaderInterfaceCan(can_bus=can_bus)
-            bd = Bootloader(interface=interface)
-            ret = check_bootloader(
-                bd,
-                app_dbc=APP_DBC_FILE,
-                bootloader_dbc=BOOTLOADER_DBC_FILE,
-                foxbms_files=self.foxbms_files,
-            )
+        with redirect_stderr(_err), redirect_stdout(_out):
+            with can.interface.Bus("test", interface="virtual") as can_bus:
+                interface = BootloaderInterfaceCan(can_bus=can_bus)
+                bd = Bootloader(interface=interface)
+                ret = check_bootloader(
+                    bd,
+                    app_dbc=APP_DBC_FILE,
+                    bootloader_dbc=BOOTLOADER_DBC_FILE,
+                    foxbms_files=self.foxbms_files,
+                )
         err, out = _err.getvalue(), _out.getvalue()
 
         self.assertEqual(0, ret)
@@ -227,19 +222,16 @@ class TestBootloaderImpl(unittest.TestCase):
         )
 
         _err, _out = io.StringIO(), io.StringIO()
-        with (
-            redirect_stderr(_err),
-            redirect_stdout(_out),
-            can.interface.Bus("test", interface="virtual") as can_bus,
-        ):
-            interface = BootloaderInterfaceCan(can_bus=can_bus)
-            bd = Bootloader(interface=interface)
-            ret = check_bootloader(
-                bd,
-                app_dbc=APP_DBC_FILE,
-                bootloader_dbc=BOOTLOADER_DBC_FILE,
-                foxbms_files=self.foxbms_files,
-            )
+        with redirect_stderr(_err), redirect_stdout(_out):
+            with can.interface.Bus("test", interface="virtual") as can_bus:
+                interface = BootloaderInterfaceCan(can_bus=can_bus)
+                bd = Bootloader(interface=interface)
+                ret = check_bootloader(
+                    bd,
+                    app_dbc=APP_DBC_FILE,
+                    bootloader_dbc=BOOTLOADER_DBC_FILE,
+                    foxbms_files=self.foxbms_files,
+                )
         err, out = _err.getvalue(), _out.getvalue()
 
         self.assertEqual(1, ret)
@@ -252,19 +244,16 @@ class TestBootloaderImpl(unittest.TestCase):
         mock_check_target.return_value = (2, BootloaderStatus(None, None, None))
 
         _err, _out = io.StringIO(), io.StringIO()
-        with (
-            redirect_stderr(_err),
-            redirect_stdout(_out),
-            can.interface.Bus("test", interface="virtual") as can_bus,
-        ):
-            interface = BootloaderInterfaceCan(can_bus=can_bus)
-            bd = Bootloader(interface=interface)
-            ret = check_bootloader(
-                bd,
-                app_dbc=APP_DBC_FILE,
-                bootloader_dbc=BOOTLOADER_DBC_FILE,
-                foxbms_files=self.foxbms_files,
-            )
+        with redirect_stderr(_err), redirect_stdout(_out):
+            with can.interface.Bus("test", interface="virtual") as can_bus:
+                interface = BootloaderInterfaceCan(can_bus=can_bus)
+                bd = Bootloader(interface=interface)
+                ret = check_bootloader(
+                    bd,
+                    app_dbc=APP_DBC_FILE,
+                    bootloader_dbc=BOOTLOADER_DBC_FILE,
+                    foxbms_files=self.foxbms_files,
+                )
         err, out = _err.getvalue(), _out.getvalue()
 
         self.assertEqual(2, ret)
@@ -279,19 +268,16 @@ class TestBootloaderImpl(unittest.TestCase):
         mock_check_target.return_value = (3, BootloaderStatus(None, None, None))
 
         _err, _out = io.StringIO(), io.StringIO()
-        with (
-            redirect_stderr(_err),
-            redirect_stdout(_out),
-            can.interface.Bus("test", interface="virtual") as can_bus,
-        ):
-            interface = BootloaderInterfaceCan(can_bus=can_bus)
-            bd = Bootloader(interface=interface)
-            ret = check_bootloader(
-                bd,
-                app_dbc=APP_DBC_FILE,
-                bootloader_dbc=BOOTLOADER_DBC_FILE,
-                foxbms_files=self.foxbms_files,
-            )
+        with redirect_stderr(_err), redirect_stdout(_out):
+            with can.interface.Bus("test", interface="virtual") as can_bus:
+                interface = BootloaderInterfaceCan(can_bus=can_bus)
+                bd = Bootloader(interface=interface)
+                ret = check_bootloader(
+                    bd,
+                    app_dbc=APP_DBC_FILE,
+                    bootloader_dbc=BOOTLOADER_DBC_FILE,
+                    foxbms_files=self.foxbms_files,
+                )
         err, out = _err.getvalue(), _out.getvalue()
 
         self.assertEqual(3, ret)
@@ -302,19 +288,16 @@ class TestBootloaderImpl(unittest.TestCase):
         mock_check_target.return_value = (4, (None, None, None))
 
         _err, _out = io.StringIO(), io.StringIO()
-        with (
-            redirect_stderr(_err),
-            redirect_stdout(_out),
-            can.interface.Bus("test", interface="virtual") as can_bus,
-        ):
-            interface = BootloaderInterfaceCan(can_bus=can_bus)
-            bd = Bootloader(interface=interface)
-            ret = check_bootloader(
-                bd,
-                app_dbc=APP_DBC_FILE,
-                bootloader_dbc=BOOTLOADER_DBC_FILE,
-                foxbms_files=self.foxbms_files,
-            )
+        with redirect_stderr(_err), redirect_stdout(_out):
+            with can.interface.Bus("test", interface="virtual") as can_bus:
+                interface = BootloaderInterfaceCan(can_bus=can_bus)
+                bd = Bootloader(interface=interface)
+                ret = check_bootloader(
+                    bd,
+                    app_dbc=APP_DBC_FILE,
+                    bootloader_dbc=BOOTLOADER_DBC_FILE,
+                    foxbms_files=self.foxbms_files,
+                )
         err, out = _err.getvalue(), _out.getvalue()
 
         self.assertEqual(4, ret)
@@ -463,12 +446,12 @@ class TestBootloaderImpl(unittest.TestCase):
     @patch("cli.cmd_bootloader.bootloader_impl.check_bootloader")
     def test_run_app(
         self,
-        mock_check_bootloader: MagicMock,
-        mock_run_app: MagicMock,
-        mock_echo: MagicMock,
-        mock_load: MagicMock,
-        *_: MagicMock,
-    ) -> None:
+        mock_check_bootloader,
+        mock_run_app,
+        mock_echo,
+        mock_load,
+        *_,
+    ):
         """Function to test function run_app()."""
         can_bus_config = CanBusConfig(interface="virtual", channel=None, bitrate=None)
         mock_echo.return_value = None
@@ -551,12 +534,8 @@ class TestBootloaderImpl(unittest.TestCase):
     @patch.object(Bootloader, "check_target")
     @patch.object(Bootloader, "reset_bootloader")
     def test_reset_bootloader(
-        self,
-        mock_reset_bootloader: MagicMock,
-        mock_check_target: MagicMock,
-        mock_load: MagicMock,
-        *_: MagicMock,
-    ) -> None:
+        self, mock_reset_bootloader, mock_check_target, mock_load, *_
+    ):
         """Function to test function run_app()."""
         can_bus_config = CanBusConfig(interface="virtual", channel=None, bitrate=None)
 
@@ -695,12 +674,12 @@ class TestBootloaderImpl(unittest.TestCase):
     # pylint: disable-next=too-many-statements
     def test_load_app(
         self,
-        mock_send_app_binary: MagicMock,
-        mock_check_target: MagicMock,
-        mock_progressbar: MagicMock,
-        mock_load: MagicMock,
-        *_: MagicMock,
-    ) -> None:
+        mock_send_app_binary,
+        mock_check_target,
+        mock_progressbar,
+        mock_load,
+        *_,
+    ):
         """Function to test function run_app()."""
         mock_progressbar.return_value.__enter__.return_value = MagicMock()
 
@@ -920,17 +899,17 @@ class TestBootloaderImpl(unittest.TestCase):
 
 @patch("cli.cmd_bootloader.bootloader_impl.BootloaderInterfaceCan")
 @patch("cli.cmd_bootloader.bootloader_impl.Bootloader")
-class TestBootloaderImpl_InstantiateBootloader(unittest.TestCase):  # noqa: N801
+class TestBootloaderImpl_InstantiateBootloader(unittest.TestCase):
     """Test '_instantiate_bootloader' function"""
 
-    def setUp(self) -> None:  # noqa: D102
+    def setUp(self):
         self.foxbms_files = FoxbmsFiles(
             foxbms_app_crc_file=FOXBMS_APP_CRC_FILE,
             foxbms_app_info_file=FOXBMS_APP_INFO_FILE,
             foxbms_bin_file=FOXBMS_BIN_FILE,
         )
 
-    def test(self, _: MagicMock, bic: MagicMock) -> None:
+    def test(self, _: MagicMock, bic: MagicMock):
         """Call function under test"""
         bus = MagicMock()
         ret = _instantiate_bootloader(
@@ -938,7 +917,7 @@ class TestBootloaderImpl_InstantiateBootloader(unittest.TestCase):  # noqa: N801
             app_dbc=APP_DBC_FILE,
             bootloader_dbc=BOOTLOADER_DBC_FILE,
             foxbms_files=self.foxbms_files,
-        )
+        )  # type:ignore
         self.assertIn("Bootloader()", str(ret))
         bic.assert_called_once_with(
             can_bus=bus, app_dbc=APP_DBC_FILE, bootloader_dbc=BOOTLOADER_DBC_FILE
@@ -947,23 +926,23 @@ class TestBootloaderImpl_InstantiateBootloader(unittest.TestCase):  # noqa: N801
 
 @patch("cli.cmd_bootloader.bootloader_impl.Bootloader")
 @patch("cli.cmd_bootloader.bootloader_impl.time")
-class TestBootloaderImpl_CheckBootloaderStatus(unittest.TestCase):  # noqa: N801
+class TestBootloaderImpl_CheckBootloaderStatus(unittest.TestCase):
     """Test '_check_bootloader_status' function"""
 
-    def test_timeout(self, t: MagicMock, *_args: MagicMock) -> None:
+    def test_timeout(self, t: MagicMock, *_: MagicMock):
         """Timeout when checking the bootloader status"""
         t.time.side_effect = [0.0, 21.0]
 
         _err, _out = io.StringIO(), io.StringIO()
         with redirect_stderr(_err), redirect_stdout(_out):
-            ret = _check_bootloader_status(None)
+            ret = _check_bootloader_status(None)  # type:ignore
         err, out = _err.getvalue(), _out.getvalue()
 
         self.assertEqual((5, BootloaderStatus(None, None, None)), ret)
         self.assertEqual(err, "Timeout, abort.\n")
         self.assertEqual(out, "")
 
-    def test_bootloader_online(self, t: MagicMock, bl: MagicMock) -> None:
+    def test_bootloader_online(self, t: MagicMock, bl: MagicMock):
         """Bootloader is online"""
         t.time.side_effect = [0.0, 1.0]
         bl.check_target.return_value = (
@@ -983,7 +962,7 @@ class TestBootloaderImpl_CheckBootloaderStatus(unittest.TestCase):  # noqa: N801
         self.assertEqual(err, "")
         self.assertEqual(out, "Bootloader is online.\n")
 
-    def test_bootloader_wait_for_power_on(self, t: MagicMock, bl: MagicMock) -> None:
+    def test_bootloader_wait_for_power_on(self, t: MagicMock, bl: MagicMock):
         """Bootloader is not attached, wait for it to be powered on."""
         t.time.side_effect = [0.0, 1.0, 2.0, 21.0]
         bl.check_target.return_value = (
@@ -1000,7 +979,7 @@ class TestBootloaderImpl_CheckBootloaderStatus(unittest.TestCase):  # noqa: N801
         self.assertEqual(err, "Timeout, abort.\n")
         self.assertEqual(out, "Waiting for the bootloader to be powered on...\n")
 
-    def test_bootloader_app_running(self, t: MagicMock, bl: MagicMock) -> None:
+    def test_bootloader_app_running(self, t: MagicMock, bl: MagicMock):
         """Bootloader is online"""
         t.time.side_effect = [0.0, 1.0]
         bl.check_target.return_value = (2, BootloaderStatus(None, None, None))
@@ -1013,7 +992,7 @@ class TestBootloaderImpl_CheckBootloaderStatus(unittest.TestCase):  # noqa: N801
         self.assertEqual(err, "")
         self.assertEqual(out, "The foxBMS 2 application is running, aborting.\n")
 
-    def test_bootloader_unknown_state(self, t: MagicMock, bl: MagicMock) -> None:
+    def test_bootloader_unknown_state(self, t: MagicMock, bl: MagicMock):
         """Unknown bootloader state"""
         t.time.side_effect = [0.0, 1.0]
         bl.check_target.return_value = (99, BootloaderStatus(None, None, None))
@@ -1026,7 +1005,7 @@ class TestBootloaderImpl_CheckBootloaderStatus(unittest.TestCase):  # noqa: N801
         self.assertEqual(err, "Unknown check value, aborting.\n")
         self.assertEqual(out, "")
 
-    def test_bootloader_multi_check(self, t: MagicMock, bl: MagicMock) -> None:
+    def test_bootloader_multi_check(self, t: MagicMock, bl: MagicMock):
         """Need a few tries"""
         t.time.side_effect = [0.0, 1.0, 2.0, 3.0, 4.0, 21]
         bl.check_target.return_value = (
@@ -1053,10 +1032,10 @@ class TestBootloaderImpl_CheckBootloaderStatus(unittest.TestCase):  # noqa: N801
 
 
 @patch("cli.cmd_bootloader.bootloader_impl.Bootloader")
-class TestBootloaderImpl_CheckBootloader(unittest.TestCase):  # noqa: N801
+class TestBootloaderImpl_CheckBootloader(unittest.TestCase):
     """Testing '_check_bootloader' function."""
 
-    def test__check_bootloader_ok(self, mock_bl: MagicMock) -> None:
+    def test__check_bootloader_ok(self, mock_bl: MagicMock):
         """Bootloader is running"""
         mock_bl.check_target.return_value = (
             0,
@@ -1075,9 +1054,7 @@ class TestBootloaderImpl_CheckBootloader(unittest.TestCase):  # noqa: N801
             "Checking if the bootloader is online...\nBootloader is running.\n",
         )
 
-    def test__check_bootloader_bl_runs_but_undefined_error(
-        self, mock_bl: MagicMock
-    ) -> None:
+    def test__check_bootloader_bl_runs_but_undefined_error(self, mock_bl: MagicMock):
         """Bootloader is running, but something undefined is wrong."""
         mock_bl.check_target.return_value = (
             1,
@@ -1095,7 +1072,7 @@ class TestBootloaderImpl_CheckBootloader(unittest.TestCase):  # noqa: N801
         )
         self.assertEqual(out, "Checking if the bootloader is online...\n")
 
-    def test__check_bootloader_app_running(self, mock_bl: MagicMock) -> None:
+    def test__check_bootloader_app_running(self, mock_bl: MagicMock):
         """Application is running"""
         mock_bl.check_target.return_value = (2, BootloaderStatus(None, None, None))
 
@@ -1112,7 +1089,7 @@ class TestBootloaderImpl_CheckBootloader(unittest.TestCase):  # noqa: N801
             "foxBMS 2 application is running.\n",
         )
 
-    def test__check_bootloader_not_reachable(self, mock_bl: MagicMock) -> None:
+    def test__check_bootloader_not_reachable(self, mock_bl: MagicMock):
         """Bootloader is not reachable"""
         mock_bl.check_target.return_value = (3, BootloaderStatus(None, None, None))
 
@@ -1125,7 +1102,7 @@ class TestBootloaderImpl_CheckBootloader(unittest.TestCase):  # noqa: N801
         self.assertEqual(err, "Bootloader is not reachable.\n")
         self.assertEqual(out, "Checking if the bootloader is online...\n")
 
-    def test__check_bootloader_undefined_error(self, mock_bl: MagicMock) -> None:
+    def test__check_bootloader_undefined_error(self, mock_bl: MagicMock):
         """Check unknown return value behavior"""
         mock_bl.check_target.return_value = (12, BootloaderStatus(None, None, None))
 
@@ -1144,14 +1121,14 @@ class TestBootloaderImpl_CheckBootloader(unittest.TestCase):  # noqa: N801
 class TestBootloaderImplCheckBootloader(unittest.TestCase):
     """Testing 'check_bootloader' function."""
 
-    def setUp(self) -> None:  # noqa: D102
+    def setUp(self):
         self.foxbms_files = FoxbmsFiles(
             foxbms_app_crc_file=FOXBMS_APP_CRC_FILE,
             foxbms_app_info_file=FOXBMS_APP_INFO_FILE,
             foxbms_bin_file=FOXBMS_BIN_FILE,
         )
 
-    def test_check_bootloader_bootloader_object(self, mock_cb: MagicMock) -> None:
+    def test_check_bootloader_bootloader_object(self, mock_cb: MagicMock):
         """Check case a Bootloader object is passed as argument."""
         mock_cb.return_value = 1
         mock_bl = create_autospec(Bootloader)
@@ -1172,7 +1149,7 @@ class TestBootloaderImplCheckBootloader(unittest.TestCase):
         bus: MagicMock,
         _: MagicMock,
         _check_bootloader: MagicMock,
-    ) -> None:
+    ):
         """Check case a CanBusConfig object is passed as argument."""
         _check_bootloader.return_value = 1
         bus.return_value.__enter__.return_value = MagicMock()
@@ -1186,7 +1163,7 @@ class TestBootloaderImplCheckBootloader(unittest.TestCase):
         )
         self.assertEqual(1, ret)
 
-    def test_check_bootloader_invalid_object(self, *_: tuple[MagicMock]) -> None:
+    def test_check_bootloader_invalid_object(self, *_: tuple[MagicMock]):
         """Invalid bootloader configuration."""
         _err, _out = io.StringIO(), io.StringIO()
         with redirect_stderr(_err), redirect_stdout(_out):
@@ -1195,7 +1172,7 @@ class TestBootloaderImplCheckBootloader(unittest.TestCase):
                 app_dbc=APP_DBC_FILE,
                 bootloader_dbc=BOOTLOADER_DBC_FILE,
                 foxbms_files=self.foxbms_files,
-            )
+            )  # type: ignore
         err, out = _err.getvalue(), _out.getvalue()
         self.assertEqual(99, ret)
         self.assertEqual(err, "Invalid bootloader configuration.\n")
@@ -1209,7 +1186,7 @@ class TestBootloaderImplCheckBootloader(unittest.TestCase):
 class TestBootloaderImplRunApp(unittest.TestCase):
     """Testing 'run_app' function."""
 
-    def setUp(self) -> None:  # noqa: D102
+    def setUp(self):
         self.foxbms_files = FoxbmsFiles(
             foxbms_app_crc_file=FOXBMS_APP_CRC_FILE,
             foxbms_app_info_file=FOXBMS_APP_INFO_FILE,
@@ -1222,7 +1199,7 @@ class TestBootloaderImplRunApp(unittest.TestCase):
         _instantiate_bootloader: MagicMock,
         bus: MagicMock,
         _: MagicMock,
-    ) -> None:
+    ):
         """Run of the app fails."""
         bus.return_value.__enter__.return_value = MagicMock()
         mock_bl = MagicMock()
@@ -1255,7 +1232,7 @@ class TestBootloaderImplRunApp(unittest.TestCase):
         _instantiate_bootloader: MagicMock,
         bus: MagicMock,
         _: MagicMock,
-    ) -> None:
+    ):
         """Start of the application is successful."""
         bus.return_value.__enter__.return_value = MagicMock()
         mock_bl = MagicMock()
@@ -1288,7 +1265,7 @@ class TestBootloaderImplRunApp(unittest.TestCase):
         _instantiate_bootloader: MagicMock,
         bus: MagicMock,
         _: MagicMock,
-    ) -> None:
+    ):
         """Start of the application is successful."""
         bus.return_value.__enter__.return_value = MagicMock()
         mock_bl = MagicMock()
@@ -1323,7 +1300,7 @@ class TestBootloaderImplRunApp(unittest.TestCase):
 class TestBootloaderImplResetBootloader(unittest.TestCase):
     """Testing 'reset_bootloader' function."""
 
-    def setUp(self) -> None:  # noqa: D102
+    def setUp(self):
         self.foxbms_files = FoxbmsFiles(
             foxbms_app_crc_file=FOXBMS_APP_CRC_FILE,
             foxbms_app_info_file=FOXBMS_APP_INFO_FILE,
@@ -1336,7 +1313,7 @@ class TestBootloaderImplResetBootloader(unittest.TestCase):
         _instantiate_bootloader: MagicMock,
         bus: MagicMock,
         _: MagicMock,
-    ) -> None:
+    ):
         """Status check of the bootloader fails"""
         bus.return_value.__enter__.return_value = MagicMock()
         _instantiate_bootloader.return_value = MagicMock()
@@ -1366,7 +1343,7 @@ class TestBootloaderImplResetBootloader(unittest.TestCase):
         _instantiate_bootloader: MagicMock,
         bus: MagicMock,
         _: MagicMock,
-    ) -> None:
+    ):
         """Rest of the bootloader is successful."""
         bus.return_value.__enter__.return_value = MagicMock()
         mock_bl = MagicMock()
@@ -1405,7 +1382,7 @@ class TestBootloaderImplResetBootloader(unittest.TestCase):
         _instantiate_bootloader: MagicMock,
         bus: MagicMock,
         _: MagicMock,
-    ) -> None:
+    ):
         """Rest of the bootloader is successful."""
         bus.return_value.__enter__.return_value = MagicMock()
         mock_bl = MagicMock()
@@ -1443,7 +1420,7 @@ class TestBootloaderImplResetBootloader(unittest.TestCase):
 class TestBootloaderImplLoadApp(unittest.TestCase):
     """Testing 'load_app' function."""
 
-    def setUp(self) -> None:  # noqa: D102
+    def setUp(self):
         self.foxbms_files = FoxbmsFiles(
             foxbms_app_crc_file=FOXBMS_APP_CRC_FILE,
             foxbms_app_info_file=FOXBMS_APP_INFO_FILE,
@@ -1452,7 +1429,7 @@ class TestBootloaderImplLoadApp(unittest.TestCase):
 
     def test_bus_initialization_error_base_init_exception(
         self, _1: MagicMock, _2: MagicMock, mock_can_bus: MagicMock, _3: MagicMock
-    ) -> None:
+    ):
         """Initialization of the provided CAN bus is not successful."""
         mock_can_bus.return_value.__enter__.side_effect = CanInitializationError("foo")
 
@@ -1479,7 +1456,7 @@ class TestBootloaderImplLoadApp(unittest.TestCase):
 
     def test_bus_initialization_error_base_init_exception_library_missing(
         self, _1: MagicMock, _2: MagicMock, mock_can_bus: MagicMock, _3: MagicMock
-    ) -> None:
+    ):
         """Initialization of the provided CAN bus is not successful."""
         mock_can_bus.return_value.__enter__.side_effect = NameError("foo")
 
@@ -1507,7 +1484,7 @@ class TestBootloaderImplLoadApp(unittest.TestCase):
 
     def test_bus_initialization_error_vendor_specific_init_exception(
         self, _1: MagicMock, _2: MagicMock, mock_can_bus: MagicMock, _3: MagicMock
-    ) -> None:
+    ):
         """Initialization of the provided CAN bus is not successful."""
         mock_can_bus.return_value.__enter__.side_effect = PcanCanInitializationError(
             "foo"
@@ -1539,7 +1516,7 @@ class TestBootloaderImplLoadApp(unittest.TestCase):
         _instantiate_bootloader: MagicMock,
         mock_can_bus: MagicMock,
         _: MagicMock,
-    ) -> None:
+    ):
         """Catch invalid bootloader status."""
         _instantiate_bootloader.return_value = MagicMock()
         _check_bootloader_status.return_value = (-1, BootloaderStatus(None, None, None))
@@ -1568,7 +1545,7 @@ class TestBootloaderImplLoadApp(unittest.TestCase):
         _instantiate_bootloader: MagicMock,
         mock_can_bus: MagicMock,
         _: MagicMock,
-    ) -> None:
+    ):
         """Upload of the binary to the target works."""
         _check_bootloader_status.return_value = (
             0,
@@ -1610,7 +1587,7 @@ class TestBootloaderImplLoadApp(unittest.TestCase):
         _instantiate_bootloader: MagicMock,
         mock_can_bus: MagicMock,
         _: MagicMock,
-    ) -> None:
+    ):
         """Upload of the binary to the target does not work."""
         _check_bootloader_status.return_value = (
             0,

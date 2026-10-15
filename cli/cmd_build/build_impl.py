@@ -45,7 +45,7 @@ from sys import executable
 
 from ..helpers.host_platform import get_platform
 from ..helpers.logger import logger
-from ..helpers.project_context import PROJECT_ROOT
+from ..helpers.misc import PROJECT_ROOT
 from ..helpers.spr import SubprocessResult, run_process
 
 WAF_BIN = PROJECT_ROOT / "tools/waf"
@@ -74,8 +74,7 @@ def run_waf(
         stderr: Optional stream configuration for standard error.
 
     Returns:
-        A :class:`cli.helpers.spr.SubprocessResult` containing command
-        execution details.
+        A :class:`SubprocessResult` containing command execution details.
     """
     cmd = WAF_BASE_CMD + args
     logger.debug("%s", " ".join(cmd))
@@ -98,7 +97,6 @@ def run_top_level_waf(
         stderr: Optional stream configuration for standard error.
 
     Returns:
-        A :class:`cli.helpers.spr.SubprocessResult` containing command
-        execution details.
+        A :class:`SubprocessResult` containing command execution details.
     """
     return run_waf(args, cwd=WAF_DEFAULT_CWD, stdout=stdout, stderr=stderr)

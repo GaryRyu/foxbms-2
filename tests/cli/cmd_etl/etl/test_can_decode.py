@@ -40,6 +40,7 @@
 """Testing file 'cli/cmd_etl/etl/can_decode.py'."""
 
 import logging  # noqa: TID251
+import os
 import sys
 import unittest
 from pathlib import Path
@@ -116,7 +117,7 @@ class TestDecodeMsg(unittest.TestCase):
                 self.assertTrue(i["logging"] in al.output[0])
                 self.assertEqual(msg_name, None)
                 self.assertEqual(decoded_msg, None)
-        Path(temp_path).unlink()
+        os.remove(temp_path)
 
 
 class TestHandleDecoding(unittest.TestCase):
@@ -144,7 +145,7 @@ class TestHandleDecoding(unittest.TestCase):
             decoded_msg,
             '{"Timestamp": 925.201998,"0x35C_CurrentSensor_SIG_Current_mA":-2908}\n',
         )
-        Path(temp_path).unlink()
+        os.remove(temp_path)
 
     def test_handle_decoding_multiplexed_message(self) -> None:
         """Tests the handle_decoding method of the CANDecode class with a
@@ -186,7 +187,7 @@ class TestHandleDecoding(unittest.TestCase):
         )
         self.assertEqual(msg_name, "f_StringMinimumMaximumValues_Mux_0")
         self.assertEqual(decoded_msg, expected_decoded_msg)
-        Path(temp_path).unlink()
+        os.remove(temp_path)
 
     def test_handle_decoding_two_can_messages_different_id(self) -> None:
         """Tests the handle_decoding method of the CANDecode class with two CAN
@@ -215,7 +216,7 @@ class TestHandleDecoding(unittest.TestCase):
             decoded_msg,
             '{"Timestamp": 925.201998,"0x33E_CurrentSensor_SIG_Current_mA":-2908}\n',
         )
-        Path(temp_path).unlink()
+        os.remove(temp_path)
 
 
 class TestDataFormat(unittest.TestCase):

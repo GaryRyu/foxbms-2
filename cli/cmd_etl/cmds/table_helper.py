@@ -46,16 +46,15 @@ import pyarrow as pa
 import pyarrow.compute as pc
 
 from ...helpers.click_helpers import recho
-from ...helpers.config import read_config
-from ..etl import OutputFormats
-from ..etl.table import Table
+from ..etl.table import OutputFormats, Table
+from . import read_config
 
 
 def table_setup(config_path: Path) -> Table:
-    """Read config file and create the Table object
+    """Reads config file and creates the Table object
 
     Args:
-        config_path: Path to the configuration file
+        config: Path to the configuration file
 
     Returns:
         Table object
@@ -83,7 +82,8 @@ def table_setup(config_path: Path) -> Table:
 
 
 def convert_start_date(start_date: str) -> pa.TimestampScalar:
-    """Convert a string in UTC format to a pyarrow TimestampScalar
+    """This method converts a string in UTC format to a pyarrow
+    TimestampScalar
 
     Args:
         start_date: Start date of the measurement as UTC string
@@ -92,18 +92,16 @@ def convert_start_date(start_date: str) -> pa.TimestampScalar:
         Converted start date
     """
     try:
-        return pc.strptime(  # type: ignore[attr-defined]
-            start_date,
-            format="%Y-%m-%dT%H:%M:%S",
-            unit="us",
-        ).cast(options=pc.CastOptions(target_type=pa.timestamp(unit="us", tz="+00:00")))
+        return pc.strptime(start_date, format="%Y-%m-%dT%H:%M:%S", unit="us").cast(
+            options=pc.CastOptions(target_type=pa.timestamp(unit="us", tz="+00:00"))
+        )
     except ValueError:
         recho("Passed start_date is not in the correct UTC format.")
         sys.exit(1)
 
 
 def get_output_format_enum(output_format: str) -> OutputFormats:
-    """Return the enum value for the passed output format
+    """Returns the enum value for the passed output format
 
     Args:
         output_format: The output format as string (csv, parquet)
@@ -119,10 +117,10 @@ def get_output_format_enum(output_format: str) -> OutputFormats:
 
 
 def validate_table_config(config: dict) -> None:
-    """Validate the configuration file of the table subcommand
+    """Validates the configuration file of the table subcommand
 
     Args:
-        config: Dictionary with configurations to validate
+        config_dict: Dictionary with configurations to validate
     """
     if "start_date" not in config:
         recho("Configuration file is missing 'start_date' parameter.")
@@ -149,7 +147,7 @@ def validate_table_config(config: dict) -> None:
 
 
 def run_table(table: Table, data: Path, output: Path) -> None:
-    """Execute the table creation step
+    """Executes the table creation step
 
     Args:
         table: Object which handles the creation

@@ -14,8 +14,7 @@
       "manufacturer": "isabellenhuette",
       "model": "ivt-s"
     },
-    "insulation-monitoring-device": "none",
-    "redundant-v-t-measurement": false
+    "insulation-monitoring-device": "none"
   },
   "debug": {
     "interfaces": []
@@ -23,9 +22,6 @@
   "rtos": {
     "name": "freertos",
     "addons": []
-  },
-  "mcu": {
-    "use-cache": false
   },
   "bms-slave": {
     "analog-front-end": {

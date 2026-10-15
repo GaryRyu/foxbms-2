@@ -43,5 +43,5 @@ from .gui_impl import run_gui
 
 
 def gui_main() -> None:
-    """Run the GUI."""
+    """Wrapper to run the GUI"""
     run_gui()

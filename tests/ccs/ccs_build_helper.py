@@ -72,7 +72,7 @@ ROOT = Path(get_git_root(os.path.realpath(__file__)))
 
 
 def main() -> None:
-    """Build the CCS test project."""
+    """This script does this and that"""
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-v",
@@ -97,6 +97,7 @@ def main() -> None:
             "ccs1100-c99",
             "ccs1200",
             "ccs1281",
+            "expect-failure",
         ],
         help="set the CCS version",
     )
@@ -120,15 +121,19 @@ def main() -> None:
         sys.exit("Unsupported platform.")
     logging.debug("Platform: %s", plat)
 
-    sources = [
+    srcs = [
+        ROOT / f"tests/ccs/{args.ccs_version}/{args.ccs_version}_cc-options.yaml",
         ROOT / f"tests/ccs/{args.ccs_version}/{args.ccs_version}_remarks.txt",
+        ROOT / f"tests/ccs/{args.ccs_version}/{args.ccs_version}_env.json",
         ROOT / f"tests/ccs/{args.ccs_version}/{args.ccs_version}_paths_{plat}.txt",
     ]
-    destinations = [
+    dests = [
+        ROOT / "conf/cc/cc-options.yaml",
         ROOT / "conf/cc/remarks.txt",
+        ROOT / "conf/env/env.json",
         ROOT / f"conf/env/paths_{plat}.txt",
     ]
-    for src, dest in zip(sources, destinations, strict=False):
+    for src, dest in zip(srcs, dests, strict=False):
         shutil.copy(src, dest)
 
 

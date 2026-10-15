@@ -59,6 +59,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     Returns:
         Number of detected tab characters, capped to ``255``.
+
     """
     parser = argparse.ArgumentParser()
     parser.add_argument("files", nargs="*", help="Files to check")

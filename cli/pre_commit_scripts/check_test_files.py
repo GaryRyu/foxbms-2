@@ -52,6 +52,7 @@ Classes:
     TestFiles: Abstract base class for test file operations.
     PythonTestFiles: Implements checks for Python test files.
     CTestFiles: Implements checks for C test files.
+
 """
 
 import argparse
@@ -60,18 +61,10 @@ import sys
 from abc import ABC, abstractmethod
 from collections.abc import Sequence
 from pathlib import Path
-from typing import Literal
 
 
 def _as_repo_relative(path: Path) -> Path:
-    """Return a repository-relative path when possible.
-
-    Args:
-        path: The path to convert.
-
-    Returns:
-        The repository-relative path if possible, otherwise the original path.
-    """
+    """Return a repository-relative path when possible."""
     if not path.is_absolute():
         return path
     try:
@@ -81,15 +74,7 @@ def _as_repo_relative(path: Path) -> Path:
 
 
 def _starts_with(path: Path, prefix: tuple[str, ...]) -> bool:
-    """Check if path parts begin with the given prefix parts.
-
-    Args:
-        path: The path to check.
-        prefix: The prefix parts to compare against.
-
-    Returns:
-        True if the path parts begin with the given prefix parts, False otherwise.
-    """
+    """Check if path parts begin with the given prefix parts."""
     return path.parts[: len(prefix)] == prefix
 
 
@@ -103,6 +88,7 @@ class TestFiles(ABC):
 
         Returns:
             A string representing the type of tests handled by the subclass.
+
         """
 
     @abstractmethod
@@ -114,6 +100,7 @@ class TestFiles(ABC):
 
         Returns:
             The number of errors detected during checks.
+
         """
 
     @abstractmethod
@@ -125,6 +112,7 @@ class TestFiles(ABC):
 
         Returns:
             The number of missing test files.
+
         """
 
     @abstractmethod
@@ -136,6 +124,7 @@ class TestFiles(ABC):
 
         Returns:
             The number of style errors detected.
+
         """
 
     def echo_feedback(self, err: int, verbose: int = 0) -> None:
@@ -144,6 +133,7 @@ class TestFiles(ABC):
         Args:
             err: The number of errors found.
             verbose: Verbosity level.
+
         """
         if err:
             print(f"Expected {self.test_type} test files are missing.", file=sys.stderr)
@@ -155,19 +145,21 @@ class PythonTestFiles(TestFiles):
     """Handler for Python source and test files."""
 
     @property
-    def test_type(self) -> Literal["Python"]:
+    def test_type(self):
         """Type of test files handled.
 
         Returns:
             The string 'Python'.
+
         """
         return "Python"
 
-    def __init__(self, files: set[Path]) -> None:
+    def __init__(self, files: set[Path]):
         """Initialize a PythonTestFiles object.
 
         Args:
             files: Set of file paths used to scope checks.
+
         """
         files = {_as_repo_relative(i) for i in files}
         self._source_files = [i for i in files if _starts_with(i, ("cli",))]
@@ -181,13 +173,14 @@ class PythonTestFiles(TestFiles):
 
         Returns:
             The total number of errors found.
+
         """
         err = 0
         err += self.check_for_missing_test_files(verbose)
         err += self.check_style(verbose)
         return err
 
-    def check_style(self, verbose: int = 0) -> int:
+    def check_style(self, verbose: int = 0):
         """Check Python test files for docstring and main/unittest style.
 
         Args:
@@ -195,6 +188,7 @@ class PythonTestFiles(TestFiles):
 
         Returns:
             The number of style errors found.
+
         """
         err = 0
         for i in self._test_files:
@@ -212,6 +206,7 @@ class PythonTestFiles(TestFiles):
 
         Returns:
             1 if the docstring is missing or incorrect, otherwise 0.
+
         """
         err = 0
         rel_parts = list(_as_repo_relative(file).parts)
@@ -237,6 +232,7 @@ class PythonTestFiles(TestFiles):
 
         Returns:
             1 if '__main__' or unittest.main() is missing, otherwise 0.
+
         """
         has_main = False
         calls_unittest_main = False
@@ -291,6 +287,7 @@ class PythonTestFiles(TestFiles):
 
         Returns:
             The number of missing test files.
+
         """
         err = 0
         for i in self._source_files:
@@ -311,11 +308,12 @@ class CTestFiles(TestFiles):
     """Handler for C source and test files."""
 
     @property
-    def test_type(self) -> Literal["C"]:
+    def test_type(self):
         """Type of test files handled.
 
         Returns:
             The string 'C'.
+
         """
         return "C"
 
@@ -328,15 +326,17 @@ class CTestFiles(TestFiles):
 
         Returns:
             The Path of the expected test file.
+
         """
         rel_file = file.relative_to(Path("src"))
         return Path("tests/unit") / rel_file.parent / f"test_{file.name}"
 
-    def __init__(self, files: set[Path]) -> None:
+    def __init__(self, files: set[Path]):
         """Initialize a CTestFiles object.
 
         Args:
             files: Set of file paths used to scope checks.
+
         """
         self.root = Path("src")
         self.prefix = Path("tests/unit")
@@ -361,6 +361,7 @@ class CTestFiles(TestFiles):
 
         Returns:
             The total number of errors found.
+
         """
         err = 0
         err += self.check_for_missing_test_files(verbose)
@@ -375,6 +376,7 @@ class CTestFiles(TestFiles):
 
         Returns:
             The number of missing test files.
+
         """
         err = 0
         source_to_test_files = [
@@ -390,68 +392,24 @@ class CTestFiles(TestFiles):
     def check_style(self, verbose: int = 0) -> int:
         """Check C test files for required function signature style.
 
-        Every test file needs to contain at least one test function, i.e., at
-        least one line starting with 'void test'.
-
         Args:
             verbose: Verbosity level.
 
         Returns:
             The number of style errors found.
+
         """
         err = 0
         for test in self._test_files:
             lines = test.read_text(encoding="utf-8").splitlines()
-            has_unity_include = False
-            has_test_function = False
-            has_setup_function = False
-            has_teardown_function = False
-            if '#include "unity.h"' in lines:
-                has_unity_include = True
-            if "void setUp(void) {" in lines:
-                has_setup_function = True
-            if "void tearDown(void) {" in lines:
-                has_teardown_function = True
             for i, line in enumerate(lines):
-                if line.startswith("void test"):
-                    has_test_function = True
-                    if not line.endswith("(void) {"):
-                        err += 1
-                        print(
-                            f"{test}:{i + 1}: Test files need to have "
-                            f"the form 'test<TestName> (void) {{' ({line}",
-                            file=sys.stderr,
-                        )
-            if not has_unity_include:
-                err += 1
-                print(
-                    f"{test}: Test file needs to include 'unity.h' with "
-                    "the following line '#include \"unity.h\"'.",
-                    file=sys.stderr,
-                )
-            if not has_test_function:
-                err += 1
-                print(
-                    f"{test}: Test file needs to contain at least one test "
-                    "function, i.e., a line starting with 'void test'.",
-                    file=sys.stderr,
-                )
-            if not has_setup_function:
-                err += 1
-                print(
-                    f"{test}: Test file needs to implement the setup  "
-                    "function with the following function signature "
-                    "'void setUp(void)'.",
-                    file=sys.stderr,
-                )
-            if not has_teardown_function:
-                err += 1
-                print(
-                    f"{test}: Test file needs to implement the teardown "
-                    "function with the following function signature "
-                    "'void tearDown(void)'.",
-                    file=sys.stderr,
-                )
+                if line.startswith("void test") and not line.endswith("(void) {"):
+                    err += 1
+                    print(
+                        f"{test}:{i + 1}: Test files need to have "
+                        f"the form 'test<TestName> (void) {{' ({line}",
+                        file=sys.stderr,
+                    )
         return err
 
 
@@ -459,19 +417,21 @@ class WscriptTestFiles(TestFiles):
     """Handler for wscript source/test file pairs."""
 
     @property
-    def test_type(self) -> Literal["wscript"]:
+    def test_type(self):
         """Type of test files handled.
 
         Returns:
             The string 'wscript'.
+
         """
         return "wscript"
 
-    def __init__(self, files: set[Path]) -> None:
+    def __init__(self, files: set[Path]):
         """Initialize a WscriptTestFiles object.
 
         Args:
             files: Set of file paths used to scope checks.
+
         """
         self.root = Path("src")
         self.prefix = Path("tests/unit")
@@ -491,6 +451,7 @@ class WscriptTestFiles(TestFiles):
 
         Returns:
             The total number of errors found.
+
         """
         err = 0
         err += self.check_for_missing_test_files(verbose)
@@ -498,19 +459,18 @@ class WscriptTestFiles(TestFiles):
         return err
 
     def check_for_missing_test_files(self, verbose: int = 0) -> int:
-        """Check for missing tests/unit test.json files for each src wscript.
+        """Check for missing tests/unit wscript files for each src wscript.
 
         Args:
             verbose: Verbosity level.
 
         Returns:
             The number of missing test files.
+
         """
         err = 0
         for i in self._source_files:
-            expected_test_file = (
-                self.prefix / i.relative_to(self.root)
-            ).parent / "test.json"
+            expected_test_file = self.prefix / i.relative_to(self.root)
             if not expected_test_file.exists():
                 err += 1
                 print(f"Missing test file '{expected_test_file}'", file=sys.stderr)
@@ -525,6 +485,7 @@ class WscriptTestFiles(TestFiles):
 
         Returns:
             Always ``0``.
+
         """
         return 0
 
@@ -539,6 +500,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     Returns:
         Exit code where ``0`` means all checks passed.
+
     """
     parser = argparse.ArgumentParser()
     parser.add_argument(

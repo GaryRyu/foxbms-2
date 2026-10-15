@@ -50,6 +50,7 @@ Attributes:
     DISABLE_LOGGING_FOR_MODULES: List of third-party modules for which logging
         output should be suppressed except for critical errors.
     logger: The main logger instance for the foxBMS tool suite.
+
 """
 
 # we need to import it in this wrapper, so that all other parts can make use of
@@ -91,6 +92,7 @@ def set_logging_level(
         verbosity: Verbosity level (1: WARNING, 2: INFO, 3: DEBUG).
         _format: Logging format style.
         datefmt: Date format style.
+
     """
     if verbosity < 1:
         verbosity = 1
@@ -120,7 +122,7 @@ def set_logging_level(
 
 
 def add_queue_handler(queue: Queue) -> None:
-    """Add a QueueHandler to the logger to enable logging
+    """Adds a QueueHandler to the logger to enable logging
     via a multiprocessing queue.
 
     Args:
@@ -132,7 +134,7 @@ def add_queue_handler(queue: Queue) -> None:
 
 
 def get_listener(queue: Queue) -> QueueListener:
-    """Create and return a QueueListener for handling log records
+    """Creates and returns a QueueListener for handling log records
     from a queue.
 
     Args:

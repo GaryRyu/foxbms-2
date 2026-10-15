@@ -1,7 +1,7 @@
 .. include:: ./../../../../macros.txt
 .. include:: ./../../../../units.txt
 
-.. _PWM_DRIVER:
+.. _PWM:
 
 PWM
 ===
@@ -23,7 +23,7 @@ Configuration
 Unit Test
 ^^^^^^^^^
 
-- ``tests/unit/app/driver/pwm/test_pwm.c``
+- ``tests/unit/app/driver/test_pwm.c``
 
 Description
 -----------

@@ -43,8 +43,8 @@
  * @file    test_vishay_ntcle413e2103f102l.c
  * @author  foxBMS Team
  * @date    2021-11-02 (date of creation)
- * @updated 2026-10-06 (date of last update)
- * @version v1.12.0
+ * @updated 2026-04-20 (date of last update)
+ * @version v1.11.0
  * @ingroup UNIT_TEST_IMPLEMENTATION
  * @prefix  TEST
  *
@@ -61,6 +61,9 @@
 #include "vishay_ntcle413e2103f102l.h"
 
 /*========== Unit Testing Framework Directives ==============================*/
+TEST_INCLUDE_PATH("../../src/app/driver/foxmath")
+TEST_INCLUDE_PATH("../../src/app/driver/ts")
+TEST_INCLUDE_PATH("../../src/app/driver/ts/vishay/ntcle413e2103f102l")
 
 /*========== Definitions and Implementations for Unit Test ==================*/
 
@@ -74,19 +77,19 @@ void tearDown(void) {
 /*========== Test Cases =====================================================*/
 void testTS_Vis02GetTemperatureFromLutFixedValues(void) {
     /* Voltage higher than supply - expected failure - temp on negative boundary */
-    TEST_ASSERT_EQUAL_INT16(INT16_MIN, TS_Vis02GetTemperatureFromLut(4000u, 3.0f));
+    TEST_ASSERT_EQUAL_INT16(INT16_MIN, TS_Vis02GetTemperatureFromLut(4000u));
     /* Voltage is zero - expected failure - temp on positive boundary */
-    TEST_ASSERT_EQUAL_INT16(INT16_MAX, TS_Vis02GetTemperatureFromLut(0u, 3.0f));
+    TEST_ASSERT_EQUAL_INT16(INT16_MAX, TS_Vis02GetTemperatureFromLut(0u));
     /* Resistance is high, slightly out of range - expected failure - temp on negative boundary */
-    TEST_ASSERT_EQUAL_INT16(INT16_MIN, TS_Vis02GetTemperatureFromLut(2855u, 3.0f));
+    TEST_ASSERT_EQUAL_INT16(INT16_MIN, TS_Vis02GetTemperatureFromLut(2855u));
     /* Resistance is low, slightly out of range - expected failure - temp on positive boundary */
-    TEST_ASSERT_EQUAL_INT16(INT16_MAX, TS_Vis02GetTemperatureFromLut(235u, 3.0f));
+    TEST_ASSERT_EQUAL_INT16(INT16_MAX, TS_Vis02GetTemperatureFromLut(235u));
     /* Resistance is in range - expected success - check expected temp */
-    TEST_ASSERT_EQUAL_INT16(-387, TS_Vis02GetTemperatureFromLut(2842u, 3.0f));
-    TEST_ASSERT_EQUAL_INT16(1031, TS_Vis02GetTemperatureFromLut(248u, 3.0f));
+    TEST_ASSERT_EQUAL_INT16(-387, TS_Vis02GetTemperatureFromLut(2842u));
+    TEST_ASSERT_EQUAL_INT16(1031, TS_Vis02GetTemperatureFromLut(248u));
 }
 
 /** Polynomial is not implemented for this sensor */
 void testTS_Vis02GetTemperatureFromPolynomialFixedValues(void) {
-    TEST_ASSERT_FAIL_ASSERT(TS_Vis02GetTemperatureFromPolynomial(1u, 3.0f));
+    TEST_ASSERT_FAIL_ASSERT(TS_Vis02GetTemperatureFromPolynomial(1u));
 }

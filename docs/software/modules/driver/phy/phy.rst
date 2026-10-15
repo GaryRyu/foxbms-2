@@ -1,10 +1,10 @@
 .. include:: ../../../../macros.txt
 .. include:: ../../../../units.txt
 
-.. _PHY_DRIVER:
+.. _PHY_MODULE:
 
-PHY
-===
+PHY Module
+==========
 
 Module Files
 ------------
@@ -101,4 +101,4 @@ See Also
 
 - :ref:`EMAC`
 - :ref:`NETWORK_INTERFACE`
-- :ref:`ETHERNET_APPLICATION`
+- :ref:`ETHERNET_MODULE`

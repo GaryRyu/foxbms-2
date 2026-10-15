@@ -37,7 +37,7 @@
 # - "This product includes parts of foxBMS®"
 # - "This product is derived from foxBMS®"
 
-"""Extract enums from a DBC file and print them."""
+"""This file contains functions to extract enum from dbc file and print them."""
 
 import sys
 from enum import Enum
@@ -47,12 +47,14 @@ from typing import cast
 import cantools
 
 
-def print_enum(enum_variable: Enum) -> None:
+def print_enum(enum_variable):
     """Print an enum"""
     # Print the enum class name
-    print("\nclass " + enum_variable.__name__ + "(Enum):")  # noqa: T201
+    print(
+        "\nclass " + enum_variable.__name__ + "(Enum):",
+    )
     for member in enum_variable:
-        print(f"\t{member.name} = {member.value}")  # noqa: T201
+        print(f"\t{member.name} = {member.value}")
 
 
 def extract_enum_from_dbc_file(enum_name: str, dbc_file: Path) -> Enum:

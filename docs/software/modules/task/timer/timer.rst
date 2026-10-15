@@ -1,10 +1,10 @@
 .. include:: ../../../../macros.txt
 .. include:: ../../../../units.txt
 
-.. _TIMER_TASK:
+.. _TIMER_MODULE:
 
-Timer
-=====
+Timer Module
+============
 
 Module Files
 ------------

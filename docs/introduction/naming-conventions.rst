@@ -11,7 +11,8 @@ When working with battery systems, it is vital to use consistent wording.
 The naming conventions used  throughout this documentation for the parts of a
 battery system are illustrated in :numref:`battery-system-elements-naming`.
 
-.. figure:: ../../build/docs/docs/introduction/img/naming-convention.svg
+.. drawio-figure:: img/naming-convention.drawio
+   :format: svg
    :alt: Naming conventions for battery system elements
    :name: battery-system-elements-naming
    :width: 100 %
@@ -42,7 +43,8 @@ The |bms-slaves| are wired to the battery cells of a module, so that the
 |bms-slaves| are able to measure specific physical quantities on the module
 (see :numref:`bms-components-naming`).
 
-.. figure:: ../../build/docs/docs/introduction/img/bms-components.svg
+.. drawio-figure:: img/bms-components.drawio
+   :format: svg
    :alt: Naming conventions for BMS components
    :name: bms-components-naming
    :width: 80 %

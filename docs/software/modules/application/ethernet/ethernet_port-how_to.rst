@@ -39,7 +39,7 @@ If the |bms-master| is unchanged, these steps can be skipped.
 
    * EMAC Configuration
 
-      * Select an appropriate EMAC Address
+      * Select an appropiate EMAC Address
       * Set the correct Physical Address (1)
       * Enable Transmit, Receive, MII
       * Ensure that Loopback Communication is disabled
@@ -109,8 +109,8 @@ The following functions must be provided:
 See Also
 --------
 
-- :ref:`PHY_DRIVER`
+- :ref:`PHY_MODULE`
 - :ref:`NETWORK_INTERFACE`
 - :ref:`EMAC`
-- :ref:`ETHERNET_APPLICATION`
+- :ref:`ETHERNET_MODULE`
 - :ref:`HOW_TO_TEST_TCP_IP`

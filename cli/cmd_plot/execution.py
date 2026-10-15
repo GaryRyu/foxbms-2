@@ -48,8 +48,7 @@ from yaml import YAMLError
 
 from ..helpers.click_helpers import recho
 from ..helpers.config import read_config
-from ..helpers.misc import file_name_from_current_time
-from ..helpers.project_context import PROJECT_BUILD_ROOT
+from ..helpers.misc import PROJECT_BUILD_ROOT, file_name_from_current_time
 from .data_handling.data_handler_factory import DataHandlerFactory
 from .data_handling.data_source_types import DataSourceTypes
 from .drawer.graph_drawer_factory import GraphDrawerFactory
@@ -138,7 +137,7 @@ class Executor:  # pylint: disable=too-few-public-methods
     def _get_data_source_type(
         data_source_type: str | None, input_data: list[Path]
     ) -> DataSourceTypes:
-        """Determine the data source type depending on the passed input data
+        """Determines the data source type depending on the passed input data
         and the type string
         """
         if data_source_type is None:
@@ -160,7 +159,7 @@ class Executor:  # pylint: disable=too-few-public-methods
     def _handle_pyplot_warnings(
         warning_handle: list, graph_drawer: LineGraphDrawer
     ) -> None:
-        """Handle all warnings coming from pyplot"""
+        """This method should handle all warning coming from pyplot"""
         if warning_handle:
             warning_texts = [str(x.message) for x in warning_handle]
             if any("Tight layout not applied" in x for x in warning_texts):

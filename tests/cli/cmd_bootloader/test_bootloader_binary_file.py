@@ -44,13 +44,13 @@ import sys
 import unittest
 from json import JSONDecodeError
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import numpy as np
 
 try:
     from cli.cmd_bootloader.bootloader_binary_file import BootloaderBinaryFile
-    from cli.helpers.project_context import (
+    from cli.helpers.misc import (
         FOXBMS_APP_CRC_FILE,
         FOXBMS_APP_INFO_FILE,
         FOXBMS_BIN_FILE,
@@ -58,7 +58,7 @@ try:
 except ModuleNotFoundError:
     sys.path.insert(0, str(Path(__file__).parents[3]))
     from cli.cmd_bootloader.bootloader_binary_file import BootloaderBinaryFile
-    from cli.helpers.project_context import (
+    from cli.helpers.misc import (
         FOXBMS_APP_CRC_FILE,
         FOXBMS_APP_INFO_FILE,
         FOXBMS_BIN_FILE,
@@ -68,10 +68,10 @@ except ModuleNotFoundError:
 class TestBootloaderBinaryFile(unittest.TestCase):
     """Class to test the BootloaderBinaryFile class."""
 
-    def setUp(self) -> None:  # noqa: D102
+    def setUp(self):
         pass
 
-    def tearDown(self) -> None:  # noqa: D102
+    def tearDown(self):
         pass
 
     @patch("cli.cmd_bootloader.bootloader_binary_file.get_sha256_file_hash_str")
@@ -80,12 +80,8 @@ class TestBootloaderBinaryFile(unittest.TestCase):
     @patch.object(Path, "read_text")
     # pylint: disable-next=too-many-statements
     def test_init(
-        self,
-        mock_read_text: MagicMock,
-        mock_loads: MagicMock,
-        mock_genfromtxt: MagicMock,
-        mock_get_sha256_file_hash_str: MagicMock,
-    ) -> None:
+        self, mock_read_text, mock_loads, mock_genfromtxt, mock_get_sha256_file_hash_str
+    ):
         """Test the init function"""
         program = {
             "len_of_program_in_bytes": 16,
@@ -151,7 +147,7 @@ class TestBootloaderBinaryFile(unittest.TestCase):
             _ = BootloaderBinaryFile()
         self.assertEqual(
             cm.exception.code,
-            f"{Path(FOXBMS_APP_INFO_FILE)} not found, please run 'waf build_app_ti_arm_cgt' "
+            f"{Path(FOXBMS_APP_INFO_FILE)} not found, please run 'waf build_app_embedded' "
             "command to build the project first/again, exit.",
         )
 
@@ -203,7 +199,7 @@ class TestBootloaderBinaryFile(unittest.TestCase):
             _ = BootloaderBinaryFile()
         self.assertEqual(
             cm.exception.code,
-            f"{FOXBMS_BIN_FILE} not found, please run 'waf build_app_ti_arm_cgt' "
+            f"{FOXBMS_BIN_FILE} not found, please run 'waf build_app_embedded' "
             "command to build the project first/again, exit.",
         )
 
@@ -222,7 +218,7 @@ class TestBootloaderBinaryFile(unittest.TestCase):
             _ = BootloaderBinaryFile()
         self.assertEqual(
             cm.exception.code,
-            f"{FOXBMS_APP_CRC_FILE} not found, please run 'waf build_app_ti_arm_cgt' "
+            f"{FOXBMS_APP_CRC_FILE} not found, please run 'waf build_app_embedded' "
             "command to build the project first/again, exit.",
         )
 
@@ -242,8 +238,8 @@ class TestBootloaderBinaryFile(unittest.TestCase):
         self.assertEqual(
             cm.exception.code,
             f"{FOXBMS_BIN_FILE} does not match {FOXBMS_APP_INFO_FILE}"
-            " Please try to remove all these files using 'waf clean_app_ti_arm_cgt'"
-            " and build them again using 'waf build_app_ti_arm_cgt'. Abort!",
+            " Please try to remove all these files using 'waf clean_app_embedded'"
+            " and build them again using 'waf build_app_embedded'. Abort!",
         )
 
         # Case 8: hash_app_current != hash_app -> early exit
@@ -263,8 +259,8 @@ class TestBootloaderBinaryFile(unittest.TestCase):
         self.assertEqual(
             cm.exception.code,
             f"{FOXBMS_BIN_FILE} does not match {FOXBMS_APP_INFO_FILE}"
-            " Please try to remove all these files using 'waf clean_app_ti_arm_cgt'"
-            " and build them again using 'waf build_app_ti_arm_cgt'. Abort!",
+            " Please try to remove all these files using 'waf clean_app_embedded'"
+            " and build them again using 'waf build_app_embedded'. Abort!",
         )
 
         # Case 9: hash_csv != hash_csv_current -> early exit
@@ -284,8 +280,8 @@ class TestBootloaderBinaryFile(unittest.TestCase):
         self.assertEqual(
             cm.exception.code,
             f"{FOXBMS_BIN_FILE} does not match {FOXBMS_APP_INFO_FILE}"
-            " Please try to remove all these files using 'waf clean_app_ti_arm_cgt'"
-            " and build them again using 'waf build_app_ti_arm_cgt'. Abort!",
+            " Please try to remove all these files using 'waf clean_app_embedded'"
+            " and build them again using 'waf build_app_embedded'. Abort!",
         )
 
         # Test get_crc_and_data_by_index

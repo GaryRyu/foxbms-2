@@ -43,16 +43,13 @@
  * @file    os.c
  * @author  foxBMS Team
  * @date    2019-08-27 (date of creation)
- * @updated 2026-10-06 (date of last update)
- * @version v1.12.0
+ * @updated 2026-04-20 (date of last update)
+ * @version v1.11.0
  * @ingroup OS
  * @prefix  OS
  *
  * @brief   Implementation of the tasks and resources used by the system
- * @details This module implements the operating-system-independent parts of
- *          the foxBMS OS abstraction.
- *          It coordinates scheduler startup, maintains the software timer
- *          counters, and provides helper functions for time-based checks.
+ * @details TODO
  */
 
 /*========== Includes =======================================================*/
@@ -190,7 +187,7 @@ extern STD_RETURN_TYPE_e OS_CheckTimeHasPassedSelfTest(void) {
     return selfCheckReturnValue;
 }
 
-extern OS_TIMER_s OS_GetOsTimer(void) {
+extern OS_TIMER_s OS_GetOsTimer() {
     return os_timer;
 }
 

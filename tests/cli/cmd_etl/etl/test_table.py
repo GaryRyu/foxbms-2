@@ -140,9 +140,7 @@ class TestJoin(unittest.TestCase):
         duration = (
             # The timestamps in a CAN log are converted to a duration in
             # microseconds, therefore the factor 1000000.
-            pc.multiply(  # mypy: ignore[attr-defined]
-                table.column("Timestamp"), 1000000
-            )
+            pc.multiply(table.column("Timestamp"), 1000000)
             .cast(
                 options=pc.CastOptions(
                     target_type=pa.int64(), allow_float_truncate=True
@@ -193,11 +191,11 @@ class TestJoin(unittest.TestCase):
 class TestCanToTable(unittest.TestCase):
     """Tests the can_to_table method of the Table class"""
 
-    def setUp(self) -> None:
+    def setUp(self):
         """Creates the table_obj for the tests"""
         self.table_obj = Table(start_date=convert_start_date("2024-01-01T00:00:00"))
 
-    def test_can_to_table(self) -> None:
+    def test_can_to_table(self):
         """Tests the can_to_table method with not a valid input"""
         temp_f, temp_path = mkstemp()
         with open(temp_f, mode="w", encoding="utf-8") as f:
@@ -216,7 +214,7 @@ class TestCanToTable(unittest.TestCase):
     @patch("cli.cmd_etl.etl.table.Table._add_date")
     def test_can_to_table_valid_input(
         self, add_date_mock: Mock, cast_columns_mock: Mock
-    ) -> None:
+    ):
         """Tests the can_to_table method with valid input
 
         :param add_date_mock: A mock for the _add_date method
@@ -341,7 +339,7 @@ class TestSaveData(unittest.TestCase):
 class TestSearchForTable(unittest.TestCase):
     """Tests the search_for_table method of the Table class"""
 
-    def setUp(self) -> None:
+    def setUp(self):
         """Creates the tables for the tests"""
         timestamps_current = pa.array([0.01, 0.04, 0.06, 0.11, 0.15])
         current_values = pa.array([100, 200, 300, 400, 500])
@@ -400,7 +398,7 @@ class TestAddDate(unittest.TestCase):
 class TestCastColumns(unittest.TestCase):
     """Tests the cast_columns method of the Table class"""
 
-    def setUp(self) -> None:
+    def setUp(self):
         """Creates the table object for the tests"""
         self.table_obj = Table(start_date=convert_start_date("2024-01-01T00:00:00"))
 

@@ -58,12 +58,12 @@ except ModuleNotFoundError:
 class TestRunWaf(unittest.TestCase):
     """Test the 'waf' wrapper."""
 
-    def setUp(self) -> None:  # noqa: D102
+    def setUp(self):
         importlib.reload(build_impl)
         return super().setUp()
 
     @patch("cli.cmd_build.build_impl.run_process")
-    def test_run_waf(self, mock_run_process: MagicMock) -> None:
+    def test_run_waf(self, mock_run_process: MagicMock):
         """Test the 'run_waf' function."""
         mock_run_process.return_value = SubprocessResult(0)
         result = build_impl.run_waf(["--help"])
@@ -78,7 +78,7 @@ class TestRunWaf(unittest.TestCase):
         self.assertEqual(result.returncode, 0)
 
     @patch("cli.cmd_build.build_impl.run_process")
-    def test_run_top_level_waf(self, mock_run_process: MagicMock) -> None:
+    def test_run_top_level_waf(self, mock_run_process: MagicMock):
         """Test the 'run_waf' function."""
         mock_run_process.return_value = SubprocessResult(0)
         result = build_impl.run_top_level_waf(["--help"])
@@ -93,7 +93,7 @@ class TestRunWaf(unittest.TestCase):
         self.assertEqual(result.returncode, 0)
 
     @patch("sys.platform", new="linux")
-    def test_run_waf_linux(self) -> None:
+    def test_run_waf_linux(self):
         """Test the 'run_waf' function on Linux."""
         importlib.reload(build_impl)
         mock_run_process = MagicMock()

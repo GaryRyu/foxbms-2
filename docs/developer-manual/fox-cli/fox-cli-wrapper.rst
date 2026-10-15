@@ -22,7 +22,8 @@ The |fox-cli-package| provides the ``fox-cli`` command to call into the CLI.
 The workflow of the |fox-cli| wrapper is shown in
 :numref:`block-diagram-fox-cli-wrapper`.
 
-.. figure:: ../../../build/docs/docs/developer-manual/fox-cli/fox-cli-wrapper.svg
+.. drawio-figure:: fox-cli-wrapper.drawio
+   :format: svg
    :alt: Block diagram of the fox CLI wrapper
    :name: block-diagram-fox-cli-wrapper
    :width: 520px
@@ -36,7 +37,8 @@ The workflow of the |fox-cli| wrapper is shown in
 The workflow of the |fox-cli| ``.ps1`` wrapper is shown in
 :numref:`block-diagram-fox-cli-ps1-wrapper`.
 
-.. figure:: ../../../build/docs/docs/developer-manual/fox-cli/fox-cli-wrapper.ps1.svg
+.. drawio-figure:: fox-cli-wrapper.ps1.drawio
+   :format: svg
    :alt: Detailed block diagram of the ps1 fox CLI wrapper
    :name: block-diagram-fox-cli-ps1-wrapper
    :width: 600px
@@ -50,7 +52,8 @@ The workflow of the |fox-cli| ``.ps1`` wrapper is shown in
 The workflow of the |fox-cli| ``.sh`` wrapper is shown in
 :numref:`block-diagram-fox-cli-sh-wrapper`.
 
-.. figure:: ../../../build/docs/docs/developer-manual/fox-cli/fox-cli-wrapper.sh.svg
+.. drawio-figure:: fox-cli-wrapper.sh.drawio
+   :format: svg
    :alt: Detailed block diagram of the sh fox CLI wrapper
    :name: block-diagram-fox-cli-sh-wrapper
    :width: 520px
@@ -64,7 +67,8 @@ The workflow of the |fox-cli| ``.sh`` wrapper is shown in
 The purpose of and workflow of the |fox-py| file is shown in
 :numref:`block-diagram-fox-py`.
 
-.. figure:: ../../../build/docs/docs/developer-manual/fox-cli/fox.py.svg
+.. drawio-figure:: fox.py.drawio
+   :format: svg
    :alt: Block diagram of the fox.py wrapper
    :name: block-diagram-fox-py
    :width: 240px
@@ -79,7 +83,8 @@ The ``fox-cli`` command can only be used if the |virtual-python-environment|
 is activated.
 Its workflow is shown in :numref:`block-diagram-fox-cli-package`.
 
-.. figure:: ../../../build/docs/docs/developer-manual/fox-cli/fox-cli-package-entry-point.svg
+.. drawio-figure:: fox-cli-package-entry-point.drawio
+   :format: svg
    :alt: Block diagram of the fox-cli entry point
    :name: block-diagram-fox-cli-package
    :width: 320px

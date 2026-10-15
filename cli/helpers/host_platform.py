@@ -44,15 +44,9 @@ platform ('linux' or 'win32'). Exits if the platform is unsupported.
 """
 
 import sys
-from pathlib import Path
-from typing import Literal
-
-from . import PREFIX_LINUX, PREFIX_WIN32
-
-HostPlatform = Literal["win32", "linux"]
 
 
-def get_platform() -> HostPlatform:
+def get_platform() -> str:
     """Identify the current operating system platform.
 
     Returns:
@@ -60,34 +54,10 @@ def get_platform() -> HostPlatform:
 
     Exits:
         Exits the program with an error message if the platform is unsupported.
+
     """
     if sys.platform.lower() == "linux":
         return "linux"
     if sys.platform.lower() == "win32":
         return "win32"
     sys.exit("Running on an unsupported platform.")
-
-
-def get_platform_prefix(platform: str = get_platform()) -> Path:
-    """Return the installation prefix for a supported platform.
-
-    Args:
-        platform: The name of the platform, either 'linux' or 'win32'.
-
-    Returns:
-        The installation prefix as a Path object.
-
-    Raises:
-        NotImplementedError: If the platform is unsupported.
-    """
-    match platform:
-        case "win32":
-            return Path(PREFIX_WIN32)
-        case "linux":
-            return Path(PREFIX_LINUX)
-        case _:
-            msg = f"Unsupported platform: {platform}"
-            raise NotImplementedError(msg)
-
-
-CURRENT_PREFIX = get_platform_prefix()

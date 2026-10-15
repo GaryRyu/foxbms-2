@@ -71,16 +71,17 @@ class CANFilter:
         self.output = output
 
     def filter_msg(self, msg: str) -> str | None:
-        """Filter the incoming CAN message with.
-
-        Filtering is done with respect to the _ids, _id_pos and _sampling.
-        This function handles only CAN messages with whitespace separated parts.
+        """Filters the incoming CAN message with
+        respect to the _ids, _id_pos and _sampling.
+        This function handles only CAN messages
+        with whitespace separated parts.
 
         Args:
             msg: One CAN messages as string
 
         Returns:
-            One CAN message that fulfills the filter conditions
+            One CAN message that fulfills the
+            filter conditions
         """
         logger.debug("received message %s", msg)
         try:
@@ -101,7 +102,8 @@ class CANFilter:
 
     @staticmethod
     def extend_ids(ids: list[str]) -> list[str]:
-        """Extend the list with CAN ids with respect to the used abbreviations as 201-20F.
+        """Extends the list with CAN ids with
+        respect to the used abbreviations as 201-20F.
 
         This function only accepts only ids in
         hexadecimal.
@@ -126,7 +128,7 @@ class CANFilter:
         return copy_ids
 
     def __str__(self) -> str:
-        """Return a proper string representation of a CANFilter object"""
+        """Returns a proper string representation of a CANFilter object"""
         val = f"ID pos: {self._id_pos}, IDs: {self._ids}, sampling: {self._sampling}"
         if self._sampling:
             val += f", occurrence: {self._occurrence}"

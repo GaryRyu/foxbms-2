@@ -1,10 +1,10 @@
 .. include:: ./../../../../macros.txt
 .. include:: ./../../../../units.txt
 
-.. _MEASUREMENT_DRIVER:
+.. _MEASUREMENT_MODULE:
 
-Measurement
-===========
+Measurement Module
+==================
 
 Module Files
 ------------

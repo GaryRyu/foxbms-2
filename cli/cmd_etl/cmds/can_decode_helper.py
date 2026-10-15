@@ -51,7 +51,7 @@ from ..etl.can_decode import CANDecode
 
 
 def can_decode_setup(config: dict) -> CANDecode:
-    """Read config file and create the CANDecode object
+    """Reads config file and creates the CANDecode object
 
     Args:
         config: Path to the configuration file
@@ -65,7 +65,7 @@ def can_decode_setup(config: dict) -> CANDecode:
 
 
 def get_cantools_database(dbc_path: Path) -> Database:
-    """Load cantools database and return it
+    """Loads cantools database and returns it
 
     Args:
         dbc_path: Path to the dbc file
@@ -88,7 +88,7 @@ def get_cantools_database(dbc_path: Path) -> Database:
 
 
 def validate_decode_config(config: dict) -> None:
-    """Validate the configuration file of the decode subcommand
+    """Validates the configuration file of the decode subcommand
 
     Args:
         config: Dictionary with configurations
@@ -112,7 +112,7 @@ def validate_decode_config(config: dict) -> None:
 
 
 def run_decode2stdout(decode_obj: CANDecode) -> None:
-    """Execute the CAN decode step
+    """Executes the can decode step
 
     Args:
         decode_obj: Object which handles the decoding
@@ -130,7 +130,7 @@ def run_decode2stdout(decode_obj: CANDecode) -> None:
 
 
 def run_decode2file(decode_obj: CANDecode) -> None:
-    """Execute the CAN decode step
+    """Executes the can decode step
 
     Args:
         decode_obj: Object which handles the decoding

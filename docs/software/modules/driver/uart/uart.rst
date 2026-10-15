@@ -1,10 +1,10 @@
 .. include:: ./../../../../macros.txt
 .. include:: ./../../../../units.txt
 
-.. _UART_DRIVER:
+.. _UART_MODULE:
 
-UART
-====
+UART Module
+===========
 
 Module Files
 ------------

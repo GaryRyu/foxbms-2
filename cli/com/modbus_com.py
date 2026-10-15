@@ -121,8 +121,10 @@ class ModbusProcess(ProcessInterface):
 
     - Connects to a Modbus TCP server.
     - Pulls commands from the input queue.
+
     - Executes the appropriate pymodbus method based on 'code'.
     - Pushes results (including 'values') onto the output queue.
+
     """
 
     def __init__(
@@ -142,7 +144,7 @@ class ModbusProcess(ProcessInterface):
         self._client: ModbusTcpClient | None = None
 
     def __del__(self) -> None:
-        """Ensure Modbus client is closed."""
+        """Ensures Modbus client is closed."""
         if isinstance(self._client, ModbusTcpClient):
             self._client.close()
 
@@ -154,6 +156,7 @@ class ModbusProcess(ProcessInterface):
 
         - Connects the Modbus TCP client.
         - Signals readiness, then starts the command execution loop.
+
         """
         signal.signal(signal.SIGINT, signal.SIG_IGN)
         add_queue_handler(self.control.logger)

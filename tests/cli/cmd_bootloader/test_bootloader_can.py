@@ -76,11 +76,12 @@ except ModuleNotFoundError:
     )
 
 
+# pylint: disable=unused-argument
 @patch.object(time, "sleep", return_value=None)
 class TestBootloaderInterfaceCan(unittest.TestCase):
     """Class to test the class BootloaderInterfaceCan."""
 
-    def setUp(self) -> None:  # noqa: D102
+    def setUp(self):
         # Initialize virtual CAN bus instance
         self.can_bus = can.interface.Bus("test", interface="virtual")
         self.can_bus_test = can.interface.Bus("test", interface="virtual")
@@ -88,11 +89,11 @@ class TestBootloaderInterfaceCan(unittest.TestCase):
         # Initialize BootloaderCanBasics instance with virtual CAN bus instance
         self.bl = BootloaderInterfaceCan(can_bus=self.can_bus_test)
 
-    def tearDown(self) -> None:  # noqa: D102
+    def tearDown(self):
         self.can_bus.shutdown()
         self.can_bus_test.shutdown()
 
-    def test_send_crc(self, *_args: object) -> None:
+    def test_send_crc(self, *args):
         """Function to test the function send_crc()."""
         # Case 1: if the input is_crc_of_vector_table is True
         msg = {
@@ -145,7 +146,7 @@ class TestBootloaderInterfaceCan(unittest.TestCase):
             log.output,
         )
 
-    def test_send_program_info(self, *_args: object) -> None:
+    def test_send_program_info(self, *args):
         """Function to test the function send_program_info()."""
         ## Case 1: return True
         # Send beforehand the valid ACK message
@@ -231,19 +232,19 @@ class TestBootloaderInterfaceCan(unittest.TestCase):
             log.output,
         )
 
-    def test_send_loop_number_to_bootloader(self, *_args: MagicMock) -> None:
+    def test_send_loop_number_to_bootloader(self, *args):
         """Function to test the function send_loop_number_to_bootloader()."""
         self.bl.can.send_loop_number_to_bootloader = MagicMock()
         self.bl.can.send_loop_number_to_bootloader.return_value = False
         self.assertFalse(self.bl.send_loop_number_to_bootloader(10))
 
-    def test_send_data_to_bootloader(self, *_args: MagicMock) -> None:
+    def test_send_data_to_bootloader(self, *args):
         """Function to test the function send_data_to_bootloader()."""
         self.bl.can.send_data_to_bootloader = MagicMock()
         self.bl.can.send_data_to_bootloader.return_value = False
         self.assertFalse(self.bl.send_data_to_bootloader(0x1FFFFFFFFFFFFFFF))
 
-    def test_wait_can_ack_msg(self, *_args: MagicMock) -> None:
+    def test_wait_can_ack_msg(self, *args):
         """Function to test the function wait_can_ack_msg()."""
         self.bl.can.wait_can_ack_msg = MagicMock()
         self.bl.can.wait_can_ack_msg.return_value = None
@@ -256,7 +257,7 @@ class TestBootloaderInterfaceCan(unittest.TestCase):
             )
         )
 
-    def test_start_transfer(self, *_args: MagicMock) -> None:
+    def test_start_transfer(self, *args_):
         """Function to test the function start_transfer()."""
         ## Case 1: return True
         # Send beforehand the valid ACK message
@@ -319,7 +320,7 @@ class TestBootloaderInterfaceCan(unittest.TestCase):
             log.output,
         )
 
-    def test_reset_bootloader(self, *_args: object) -> None:
+    def test_reset_bootloader(self, *args):
         """Function to test the function reset_bootloader()."""
         ## Case 1: return True
         # Send beforehand the valid ACK message
@@ -452,7 +453,7 @@ class TestBootloaderInterfaceCan(unittest.TestCase):
             log.output,
         )
 
-    def test_run_app_on_bootloader(self, *_args: object) -> None:
+    def test_run_app_on_bootloader(self, *args):
         """Function to test the function run_app_on_bootloader()."""
         ## Case 1: return True
         # Send beforehand an ACK message to indicate the reception of the the message
@@ -574,14 +575,14 @@ class TestBootloaderInterfaceCan(unittest.TestCase):
             log.output,
         )
 
-    def test_get_foxbms_state(self, *_args: object) -> None:
+    def test_get_foxbms_state(self, *args):
         """Function to test the function get_foxbms_state()."""
         test_message = can.Message(arbitration_id=0x220, data=[0] * 8)
         self.can_bus.send(test_message)
         fsm_state = self.bl.get_foxbms_state()
         self.assertEqual("UNINITIALIZED", fsm_state)
 
-    def test_get_bootloader_state(self, *_args: object) -> None:
+    def test_get_bootloader_state(self, *args):
         """Function to test the function get_bootloader_state()."""
         msg = {
             "BootFsmState": BootFsmState.BootFsmStateWait.value,
@@ -603,7 +604,7 @@ class TestBootloaderInterfaceCan(unittest.TestCase):
             ["ERROR:fox.py:Can not get the state of bootloader."], log.output
         )
 
-    def test_get_current_num_of_loops(self, *_args: object) -> None:
+    def test_get_current_num_of_loops(self, *args):
         """Function to test the function get_current_num_of_loops()."""
         msg = {"CurrentLoopNumber": 1000}
         db_message = self.bl.can.db.get_message_by_name("f_BootloaderDataTransferInfo")
@@ -630,10 +631,10 @@ class TestBootloaderInterfaceCan(unittest.TestCase):
     @patch.object(BootloaderCanBasics, "send_request_to_bootloader")
     def test_get_bootloader_version_num(
         self,
-        mock_send_request_to_bootloader: MagicMock,
-        mock_wait_bootloader_version_info_msg: MagicMock,
-        *_args: MagicMock,
-    ) -> None:
+        mock_send_request_to_bootloader,
+        mock_wait_bootloader_version_info_msg,
+        *args,
+    ):
         """Function to test the function get_bootloader_version_num()."""
         # Case 1: no version number has been received
         mock_send_request_to_bootloader.return_value = None
@@ -664,7 +665,7 @@ class TestBootloaderInterfaceCan(unittest.TestCase):
         self.assertEqual(2, minor)
         self.assertEqual(4, _patch)
 
-    def send_test_ack_message(self, msg: dict, *_args: MagicMock) -> None:
+    def send_test_ack_message(self, msg, *args):
         """Function to send a debug ack message."""
         db_message = self.bl.can.db.get_message_by_name(
             "f_BootloaderAcknowledgeMessage"
@@ -673,7 +674,7 @@ class TestBootloaderInterfaceCan(unittest.TestCase):
         test_message = can.Message(arbitration_id=db_message.frame_id, data=data)
         self.can_bus.send(test_message)
 
-    def send_test_status_message(self, msg: dict, *_args: MagicMock) -> None:
+    def send_test_status_message(self, msg, *args):
         """Function to send a debug status message."""
         db_message = self.bl.can.db.get_message_by_name("f_BootloaderFsmStates")
         data = db_message.encode(msg)

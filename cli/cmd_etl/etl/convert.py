@@ -71,6 +71,7 @@ class ConversionSettings:
             For Gamry DTA reading, the following key is supported:
 
             - "skip_footer": int number of lines to skip at the end of the file.
+
     """
 
     input_format: InputFormats
@@ -95,10 +96,10 @@ class Converter:
 
         Args:
             data_path: Path to a single file to convert or a directory to scan.
-            recursive: If True and data_path is a directory, search
-                subdirectories for matching files.
-            conversion_settings: Configuration specifying input/output formats
-                and reader-specific options.
+            recursive: If True and data_path is a directory, search subdirectories
+                for matching files.
+            conversion_settings: Configuration specifying input/output formats and
+                reader-specific options.
         """
         self._data_path = data_path
         self._recursive = recursive
@@ -115,16 +116,18 @@ class Converter:
 
             - Verifies that the provided data path exists.
             - If it's a file, converts exactly that file.
-            - If it's a directory, collects all files with the expected input
-              suffix.
+
+            - If it's a directory, collects all files with the expected input suffix.
+
               When 'recursive' is True, includes subdirectories.
+
             - For each discovered file, delegates to '_convert'.
 
         Exits:
 
-            - Prints an error and exits with status 1 if the path does not
-              exist or an OS-related error occurs (including permission
-              issues).
+            - Prints an error and exits with status 1 if the path does not exist
+
+              or an OS-related error occurs (including permission issues).
         """
         try:
             if not self._data_path.exists():
@@ -162,13 +165,10 @@ class Converter:
             sys.exit(1)
 
     def _get_data_files(self, data_suffix: str) -> list[Path]:
-        """Retrieve desired data files.
+        """Looks for the desired data files
 
         Args:
             data_suffix: File type considered for the search.
-
-        Returns:
-            A list of Path objects representing the files to convert.
         """
         if self._data_path.is_file():
             return [self._data_path]
@@ -194,8 +194,11 @@ class Converter:
         Side effects:
 
             - Writes the converted file next to the source using the appropriate
+
               extension (.csv or .parquet).
+
             - Logs a success message after writing.
+
         """
         match self._conversion_settings.output_format:
             case OutputFormats.CSV:
@@ -301,6 +304,7 @@ class Converter:
         -----
         - The header offset is fixed at 32 lines; adjust if your export differs.
         - Columns are assumed to include "Date&Time" and "ms".
+
         """
         try:
             if self._conversion_settings.additional["skip"] is not None:

@@ -43,8 +43,8 @@
  * @file    test_sys.c
  * @author  foxBMS Team
  * @date    2020-04-02 (date of creation)
- * @updated 2026-10-06 (date of last update)
- * @version v1.12.0
+ * @updated 2026-04-20 (date of last update)
+ * @version v1.11.0
  * @ingroup UNIT_TEST_IMPLEMENTATION
  * @prefix  TEST
  *
@@ -83,6 +83,30 @@
 #include "test_assert_helper.h"
 
 /*========== Unit Testing Framework Directives ==============================*/
+TEST_SOURCE_FILE("sys.c")
+
+TEST_INCLUDE_PATH("../../src/app/application/algorithm")
+TEST_INCLUDE_PATH("../../src/app/application/algorithm/config")
+TEST_INCLUDE_PATH("../../src/app/application/algorithm/state_estimation")
+TEST_INCLUDE_PATH("../../src/app/application/algorithm/state_estimation/sof/trapezoid")
+TEST_INCLUDE_PATH("../../src/app/application/bal")
+TEST_INCLUDE_PATH("../../src/app/application/bms")
+TEST_INCLUDE_PATH("../../src/app/driver/afe/api")
+TEST_INCLUDE_PATH("../../src/app/driver/can")
+TEST_INCLUDE_PATH("../../src/app/driver/config")
+TEST_INCLUDE_PATH("../../src/app/driver/contactor")
+TEST_INCLUDE_PATH("../../src/app/driver/fram")
+TEST_INCLUDE_PATH("../../src/app/driver/imd")
+TEST_INCLUDE_PATH("../../src/app/driver/interlock")
+TEST_INCLUDE_PATH("../../src/app/driver/meas")
+TEST_INCLUDE_PATH("../../src/app/driver/rtc")
+TEST_INCLUDE_PATH("../../src/app/driver/sbc")
+TEST_INCLUDE_PATH("../../src/app/driver/sbc/fs8x_driver")
+TEST_INCLUDE_PATH("../../src/app/driver/spi")
+TEST_INCLUDE_PATH("../../src/app/driver/sps")
+TEST_INCLUDE_PATH("../../src/app/engine/diag")
+TEST_INCLUDE_PATH("../../src/app/engine/sys")
+TEST_INCLUDE_PATH("../../src/app/task/config")
 
 /*========== Definitions and Implementations for Unit Test ==================*/
 SBC_STATE_s sbc_stateMcuSupervisor;
@@ -111,14 +135,12 @@ void testSYS_RunStateMachine(void) {
     /* state SYS_FSM_STATE_INITIALIZATION, substate SYS_FSM_SUBSTATE_ENTRY */
     TEST_SYS_RunStateMachine(&sys_state);
 
-    /* substate SYS_FSM_CHECK_NON_VOLATILE_STORAGE */
-    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_DEEP_DISCHARGE_FLAG, FRAM_ACCESS_OK);
-    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_FRAM_CALIBRATION, FRAM_ACCESS_OK);
-
+    /* substate SYS_FSM_CHECK_DEEP_DISCHARGE */
+    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_DEEP_DISCHARGE_FLAG, STD_OK);
     TEST_SYS_RunStateMachine(&sys_state);
 
     /* state SYS_FSM_STATE_INITIALIZATION, substate SYS_FSM_SUBSTATE_START_INITIALIZATION_SBC */
-    SBC_SetStateRequest_ExpectAndReturn(&sbc_stateMcuSupervisor, SBC_STATE_INIT_REQUEST, SBC_OK);
+    SBC_SetStateRequest_ExpectAndReturn(&sbc_stateMcuSupervisor, SBC_STATE_INIT_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_state);
     /* substate SYS_FSM_SUBSTATE_WAIT_INITIALIZATION_SBC */
     SBC_GetState_ExpectAndReturn(&sbc_stateMcuSupervisor, SBC_STATEMACHINE_RUNNING);
@@ -146,17 +168,17 @@ void testSYS_RunStateMachine(void) {
     TEST_SYS_RunStateMachine(&sys_state);
 
     /* substate SYS_FSM_SUBSTATE_INITIALIZE_INTERLOCK*/
-    ILCK_SetStateRequest_ExpectAndReturn(ILCK_STATE_INITIALIZATION_REQUEST, ILCK_OK);
+    ILCK_SetStateRequest_ExpectAndReturn(ILCK_STATE_INITIALIZATION_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_state);
 
     /* substate SYS_FSM_SUBSTATE_START_INITIALIZATION_BAL */
-    BAL_SetStateRequest_ExpectAndReturn(BAL_STATE_INIT_REQUEST, BAL_OK);
+    BAL_SetStateRequest_ExpectAndReturn(BAL_STATE_INIT_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_state);
     /* substate SYS_FSM_SUBSTATE_WAIT_INITIALIZATION_BAL */
     BAL_GetInitializationState_ExpectAndReturn(STD_OK);
     TEST_SYS_RunStateMachine(&sys_state);
     /* substate SYS_FSM_SUBSTATE_WAIT_INITIALIZATION_BAL_GLOBAL_ENABLE */
-    BAL_SetStateRequest_ExpectAndReturn(BAL_STATE_GLOBAL_DISABLE_REQUEST, BAL_OK);
+    BAL_SetStateRequest_ExpectAndReturn(BAL_STATE_GLOBAL_DISABLE_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_state);
 
     /* substate SYS_FSM_SUBSTATE_START_FIRST_MEASUREMENT_CYCLE */
@@ -190,7 +212,7 @@ void testSYS_RunStateMachine(void) {
     TEST_SYS_RunStateMachine(&sys_state);
 
     /* substate SYS_FSM_SUBSTATE_START_INITIALIZATION_BMS */
-    BMS_SetStateRequest_ExpectAndReturn(BMS_STATE_INITIALIZATION_REQUEST, BMS_OK);
+    BMS_SetStateRequest_ExpectAndReturn(BMS_STATE_INITIALIZATION_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_state);
 
     /* substate SYS_FSM_SUBSTATE_WAIT_INITIALIZATION_BMS */
@@ -234,14 +256,12 @@ void testSYS_RunStateMachineErrorState(void) {
     /* state SYS_FSM_STATE_INITIALIZATION, substate SYS_ENTRY */
     TEST_SYS_RunStateMachine(&sys_stateSbcError);
 
-    /* substate SYS_FSM_CHECK_NON_VOLATILE_STORAGE */
-    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_DEEP_DISCHARGE_FLAG, FRAM_ACCESS_OK);
-    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_FRAM_CALIBRATION, FRAM_ACCESS_OK);
-
+    /* substate SYS_FSM_CHECK_DEEP_DISCHARGE */
+    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_DEEP_DISCHARGE_FLAG, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateSbcError);
 
     /* substate SYS_ENTRY */
-    SBC_SetStateRequest_ExpectAndReturn(&sbc_stateMcuSupervisor, SBC_STATE_INIT_REQUEST, SBC_OK);
+    SBC_SetStateRequest_ExpectAndReturn(&sbc_stateMcuSupervisor, SBC_STATE_INIT_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateSbcError);
     /* substate SYS_FSM_SUBSTATE_START_INITIALIZATION_SBC */
     for (uint16_t i = 0; i < (SYS_STATE_MACHINE_SBC_INIT_TIMEOUT_MS / SYS_TASK_CYCLE_CONTEXT_MS) + 2; i++) {
@@ -265,14 +285,12 @@ void testSYS_RunStateMachineErrorState(void) {
     /* state SYS_FSM_STATE_INITIALIZATION */
     TEST_SYS_RunStateMachine(&sys_stateBalancingError);
 
-    /* substate SYS_FSM_CHECK_NON_VOLATILE_STORAGE */
-    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_DEEP_DISCHARGE_FLAG, FRAM_ACCESS_OK);
-    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_FRAM_CALIBRATION, FRAM_ACCESS_OK);
-
+    /* substate SYS_FSM_CHECK_DEEP_DISCHARGE */
+    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_DEEP_DISCHARGE_FLAG, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateBalancingError);
 
     /* substate SYS_FSM_SUBSTATE_START_INITIALIZATION_SBC */
-    SBC_SetStateRequest_ExpectAndReturn(&sbc_stateMcuSupervisor, SBC_STATE_INIT_REQUEST, SBC_OK);
+    SBC_SetStateRequest_ExpectAndReturn(&sbc_stateMcuSupervisor, SBC_STATE_INIT_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateBalancingError);
     /* substate SYS_FSM_SUBSTATE_WAIT_INITIALIZATION_SBC */
     SBC_GetState_ExpectAndReturn(&sbc_stateMcuSupervisor, SBC_STATEMACHINE_RUNNING);
@@ -295,11 +313,11 @@ void testSYS_RunStateMachineErrorState(void) {
     TEST_SYS_RunStateMachine(&sys_stateBalancingError);
 
     /* state SYS_FSM_STATE_PRE_RUNNING */
-    ILCK_SetStateRequest_ExpectAndReturn(ILCK_STATE_INITIALIZATION_REQUEST, ILCK_OK);
+    ILCK_SetStateRequest_ExpectAndReturn(ILCK_STATE_INITIALIZATION_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateBalancingError);
 
     /* substate SYS_FSM_SUBSTATE_START_INITIALIZATION_BAL */
-    BAL_SetStateRequest_ExpectAndReturn(BAL_STATE_INIT_REQUEST, BAL_OK);
+    BAL_SetStateRequest_ExpectAndReturn(BAL_STATE_INIT_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateBalancingError);
     /* substate SYS_FSM_SUBSTATE_WAIT_INITIALIZATION_BAL */
     for (uint16_t i = 0; i < (SYS_STATE_MACHINE_BAL_INITIALIZATION_TIMEOUT_MS / SYS_TASK_CYCLE_CONTEXT_MS) + 2; i++) {
@@ -323,14 +341,12 @@ void testSYS_RunStateMachineErrorState(void) {
     /* state SYS_FSM_STATE_INITIALIZATION */
     TEST_SYS_RunStateMachine(&sys_stateGlobalBalancingError);
 
-    /* substate SYS_FSM_CHECK_NON_VOLATILE_STORAGE */
-    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_DEEP_DISCHARGE_FLAG, FRAM_ACCESS_OK);
-    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_FRAM_CALIBRATION, FRAM_ACCESS_OK);
-
+    /* substate SYS_FSM_CHECK_DEEP_DISCHARGE */
+    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_DEEP_DISCHARGE_FLAG, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateGlobalBalancingError);
 
     /* substate SYS_FSM_SUBSTATE_START_INITIALIZATION_SBC */
-    SBC_SetStateRequest_ExpectAndReturn(&sbc_stateMcuSupervisor, SBC_STATE_INIT_REQUEST, SBC_OK);
+    SBC_SetStateRequest_ExpectAndReturn(&sbc_stateMcuSupervisor, SBC_STATE_INIT_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateGlobalBalancingError);
     /* substate SYS_FSM_SUBSTATE_WAIT_INITIALIZATION_SBC */
     SBC_GetState_ExpectAndReturn(&sbc_stateMcuSupervisor, SBC_STATEMACHINE_RUNNING);
@@ -353,18 +369,18 @@ void testSYS_RunStateMachineErrorState(void) {
     TEST_SYS_RunStateMachine(&sys_stateGlobalBalancingError);
 
     /* state SYS_FSM_STATE_PRE_RUNNING */
-    ILCK_SetStateRequest_ExpectAndReturn(ILCK_STATE_INITIALIZATION_REQUEST, ILCK_OK);
+    ILCK_SetStateRequest_ExpectAndReturn(ILCK_STATE_INITIALIZATION_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateGlobalBalancingError);
 
     /* substate SYS_FSM_SUBSTATE_START_INITIALIZATION_BAL */
-    BAL_SetStateRequest_ExpectAndReturn(BAL_STATE_INIT_REQUEST, BAL_OK);
+    BAL_SetStateRequest_ExpectAndReturn(BAL_STATE_INIT_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateGlobalBalancingError);
     /* substate SYS_FSM_SUBSTATE_WAIT_INITIALIZATION_BAL */
     BAL_GetInitializationState_ExpectAndReturn(STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateGlobalBalancingError);
     /* substate SYS_FSM_SUBSTATE_WAIT_INITIALIZATION_BAL_GLOBAL_ENABLE */
     for (uint16_t i = 0; i < (SYS_STATE_MACHINE_INITIALIZATION_TIMEOUT_MS / SYS_TASK_CYCLE_CONTEXT_MS) + 2; i++) {
-        BAL_SetStateRequest_ExpectAndReturn(BAL_STATE_GLOBAL_DISABLE_REQUEST, BAL_BUSY_OK);
+        BAL_SetStateRequest_ExpectAndReturn(BAL_STATE_GLOBAL_DISABLE_REQUEST, STD_NOT_OK);
         TEST_SYS_RunStateMachine(&sys_stateGlobalBalancingError);
     }
     /* state SYS_FSM_STATE_ERROR */
@@ -384,14 +400,12 @@ void testSYS_RunStateMachineErrorState(void) {
     /* state SYS_FSM_STATE_INITIALIZATION */
     TEST_SYS_RunStateMachine(&sys_stateFirstMeasurementError);
 
-    /* substate SYS_FSM_CHECK_NON_VOLATILE_STORAGE */
-    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_DEEP_DISCHARGE_FLAG, FRAM_ACCESS_OK);
-    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_FRAM_CALIBRATION, FRAM_ACCESS_OK);
-
+    /* substate SYS_FSM_CHECK_DEEP_DISCHARGE */
+    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_DEEP_DISCHARGE_FLAG, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateFirstMeasurementError);
 
     /* substate SYS_FSM_SUBSTATE_START_INITIALIZATION_SBC */
-    SBC_SetStateRequest_ExpectAndReturn(&sbc_stateMcuSupervisor, SBC_STATE_INIT_REQUEST, SBC_OK);
+    SBC_SetStateRequest_ExpectAndReturn(&sbc_stateMcuSupervisor, SBC_STATE_INIT_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateFirstMeasurementError);
     /* substate SYS_FSM_SUBSTATE_WAIT_INITIALIZATION_SBC */
     SBC_GetState_ExpectAndReturn(&sbc_stateMcuSupervisor, SBC_STATEMACHINE_RUNNING);
@@ -414,17 +428,17 @@ void testSYS_RunStateMachineErrorState(void) {
     TEST_SYS_RunStateMachine(&sys_stateFirstMeasurementError);
 
     /* state SYS_FSM_STATE_PRE_RUNNING */
-    ILCK_SetStateRequest_ExpectAndReturn(ILCK_STATE_INITIALIZATION_REQUEST, ILCK_OK);
+    ILCK_SetStateRequest_ExpectAndReturn(ILCK_STATE_INITIALIZATION_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateFirstMeasurementError);
 
     /* substate SYS_FSM_SUBSTATE_START_INITIALIZATION_BAL */
-    BAL_SetStateRequest_ExpectAndReturn(BAL_STATE_INIT_REQUEST, BAL_OK);
+    BAL_SetStateRequest_ExpectAndReturn(BAL_STATE_INIT_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateFirstMeasurementError);
     /* substate SYS_FSM_SUBSTATE_WAIT_INITIALIZATION_BAL */
     BAL_GetInitializationState_ExpectAndReturn(STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateFirstMeasurementError);
     /* substate SYS_FSM_SUBSTATE_WAIT_INITIALIZATION_BAL_GLOBAL_ENABLE */
-    BAL_SetStateRequest_ExpectAndReturn(BAL_STATE_GLOBAL_DISABLE_REQUEST, BAL_OK);
+    BAL_SetStateRequest_ExpectAndReturn(BAL_STATE_GLOBAL_DISABLE_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateFirstMeasurementError);
 
     /* substate SYS_FSM_SUBSTATE_START_FIRST_MEASUREMENT_CYCLE */
@@ -453,14 +467,12 @@ void testSYS_RunStateMachineErrorState(void) {
     /* state SYS_FSM_STATE_INITIALIZATION */
     TEST_SYS_RunStateMachine(&sys_stateCurrentSensorError);
 
-    /* substate SYS_FSM_CHECK_NON_VOLATILE_STORAGE */
-    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_DEEP_DISCHARGE_FLAG, FRAM_ACCESS_OK);
-    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_FRAM_CALIBRATION, FRAM_ACCESS_OK);
-
+    /* substate SYS_FSM_CHECK_DEEP_DISCHARGE */
+    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_DEEP_DISCHARGE_FLAG, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateCurrentSensorError);
 
     /* substate SYS_FSM_SUBSTATE_START_INITIALIZATION_SBC */
-    SBC_SetStateRequest_ExpectAndReturn(&sbc_stateMcuSupervisor, SBC_STATE_INIT_REQUEST, SBC_OK);
+    SBC_SetStateRequest_ExpectAndReturn(&sbc_stateMcuSupervisor, SBC_STATE_INIT_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateCurrentSensorError);
     /* substate SYS_FSM_SUBSTATE_WAIT_INITIALIZATION_SBC */
     SBC_GetState_ExpectAndReturn(&sbc_stateMcuSupervisor, SBC_STATEMACHINE_RUNNING);
@@ -483,17 +495,17 @@ void testSYS_RunStateMachineErrorState(void) {
     TEST_SYS_RunStateMachine(&sys_stateCurrentSensorError);
 
     /* state SYS_FSM_STATE_PRE_RUNNING */
-    ILCK_SetStateRequest_ExpectAndReturn(ILCK_STATE_INITIALIZATION_REQUEST, ILCK_OK);
+    ILCK_SetStateRequest_ExpectAndReturn(ILCK_STATE_INITIALIZATION_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateCurrentSensorError);
 
     /* substate SYS_FSM_SUBSTATE_START_INITIALIZATION_BAL */
-    BAL_SetStateRequest_ExpectAndReturn(BAL_STATE_INIT_REQUEST, BAL_OK);
+    BAL_SetStateRequest_ExpectAndReturn(BAL_STATE_INIT_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateCurrentSensorError);
     /* substate SYS_FSM_SUBSTATE_WAIT_INITIALIZATION_BAL */
     BAL_GetInitializationState_ExpectAndReturn(STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateCurrentSensorError);
     /* substate SYS_FSM_SUBSTATE_WAIT_INITIALIZATION_BAL_GLOBAL_ENABLE */
-    BAL_SetStateRequest_ExpectAndReturn(BAL_STATE_GLOBAL_DISABLE_REQUEST, BAL_OK);
+    BAL_SetStateRequest_ExpectAndReturn(BAL_STATE_GLOBAL_DISABLE_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateCurrentSensorError);
 
     /* substate SYS_FSM_SUBSTATE_START_FIRST_MEASUREMENT_CYCLE */
@@ -532,14 +544,12 @@ void testSYS_RunStateMachineErrorState(void) {
     /* state SYS_FSM_STATE_INITIALIZATION */
     TEST_SYS_RunStateMachine(&sys_stateImdError);
 
-    /* Substate SYS_FSM_CHECK_NON_VOLATILE_STORAGE */
-    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_DEEP_DISCHARGE_FLAG, FRAM_ACCESS_OK);
-    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_FRAM_CALIBRATION, FRAM_ACCESS_OK);
-
+    /* Substate SYS_FSM_CHECK_DEEP_DISCHARGE */
+    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_DEEP_DISCHARGE_FLAG, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateImdError);
 
     /* substate SYS_FSM_SUBSTATE_START_INITIALIZATION_SBC */
-    SBC_SetStateRequest_ExpectAndReturn(&sbc_stateMcuSupervisor, SBC_STATE_INIT_REQUEST, SBC_OK);
+    SBC_SetStateRequest_ExpectAndReturn(&sbc_stateMcuSupervisor, SBC_STATE_INIT_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateImdError);
     /* substate SYS_FSM_SUBSTATE_WAIT_INITIALIZATION_SBC */
     SBC_GetState_ExpectAndReturn(&sbc_stateMcuSupervisor, SBC_STATEMACHINE_RUNNING);
@@ -562,17 +572,17 @@ void testSYS_RunStateMachineErrorState(void) {
     TEST_SYS_RunStateMachine(&sys_stateImdError);
 
     /* state SYS_FSM_STATE_PRE_RUNNING */
-    ILCK_SetStateRequest_ExpectAndReturn(ILCK_STATE_INITIALIZATION_REQUEST, ILCK_OK);
+    ILCK_SetStateRequest_ExpectAndReturn(ILCK_STATE_INITIALIZATION_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateImdError);
 
     /* substate SYS_FSM_SUBSTATE_START_INITIALIZATION_BAL */
-    BAL_SetStateRequest_ExpectAndReturn(BAL_STATE_INIT_REQUEST, BAL_OK);
+    BAL_SetStateRequest_ExpectAndReturn(BAL_STATE_INIT_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateImdError);
     /* substate SYS_FSM_SUBSTATE_WAIT_INITIALIZATION_BAL */
     BAL_GetInitializationState_ExpectAndReturn(STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateImdError);
     /* substate SYS_FSM_SUBSTATE_WAIT_INITIALIZATION_BAL_GLOBAL_ENABLE */
-    BAL_SetStateRequest_ExpectAndReturn(BAL_STATE_GLOBAL_DISABLE_REQUEST, BAL_OK);
+    BAL_SetStateRequest_ExpectAndReturn(BAL_STATE_GLOBAL_DISABLE_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateImdError);
 
     /* substate SYS_FSM_SUBSTATE_START_FIRST_MEASUREMENT_CYCLE */
@@ -624,14 +634,12 @@ void testSYS_RunStateMachineErrorState(void) {
     /* state SYS_FSM_STATE_INITIALIZATION */
     TEST_SYS_RunStateMachine(&sys_stateImdInitError);
 
-    /* substate SYS_FSM_CHECK_NON_VOLATILE_STORAGE */
-    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_DEEP_DISCHARGE_FLAG, FRAM_ACCESS_OK);
-    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_FRAM_CALIBRATION, FRAM_ACCESS_OK);
-
+    /* substate SYS_FSM_CHECK_DEEP_DISCHARGE */
+    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_DEEP_DISCHARGE_FLAG, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateImdInitError);
 
     /* substate SYS_FSM_SUBSTATE_START_INITIALIZATION_SBC */
-    SBC_SetStateRequest_ExpectAndReturn(&sbc_stateMcuSupervisor, SBC_STATE_INIT_REQUEST, SBC_OK);
+    SBC_SetStateRequest_ExpectAndReturn(&sbc_stateMcuSupervisor, SBC_STATE_INIT_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateImdInitError);
     /* substate SYS_FSM_SUBSTATE_WAIT_INITIALIZATION_SBC */
     SBC_GetState_ExpectAndReturn(&sbc_stateMcuSupervisor, SBC_STATEMACHINE_RUNNING);
@@ -654,17 +662,17 @@ void testSYS_RunStateMachineErrorState(void) {
     TEST_SYS_RunStateMachine(&sys_stateImdInitError);
 
     /* state SYS_FSM_STATE_PRE_RUNNING */
-    ILCK_SetStateRequest_ExpectAndReturn(ILCK_STATE_INITIALIZATION_REQUEST, ILCK_OK);
+    ILCK_SetStateRequest_ExpectAndReturn(ILCK_STATE_INITIALIZATION_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateImdInitError);
 
     /* substate SYS_FSM_SUBSTATE_START_INITIALIZATION_BAL */
-    BAL_SetStateRequest_ExpectAndReturn(BAL_STATE_INIT_REQUEST, BAL_OK);
+    BAL_SetStateRequest_ExpectAndReturn(BAL_STATE_INIT_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateImdInitError);
     /* substate SYS_FSM_SUBSTATE_WAIT_INITIALIZATION_BAL */
     BAL_GetInitializationState_ExpectAndReturn(STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateImdInitError);
     /* substate SYS_FSM_SUBSTATE_WAIT_INITIALIZATION_BAL_GLOBAL_ENABLE */
-    BAL_SetStateRequest_ExpectAndReturn(BAL_STATE_GLOBAL_DISABLE_REQUEST, BAL_OK);
+    BAL_SetStateRequest_ExpectAndReturn(BAL_STATE_GLOBAL_DISABLE_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateImdInitError);
 
     /* substate SYS_FSM_SUBSTATE_START_FIRST_MEASUREMENT_CYCLE */
@@ -716,14 +724,12 @@ void testSYS_RunStateMachineErrorState(void) {
     /* state SYS_FSM_STATE_INITIALIZATION */
     TEST_SYS_RunStateMachine(&sys_stateBmsInitError);
 
-    /* Substate SYS_FSM_CHECK_NON_VOLATILE_STORAGE */
-    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_DEEP_DISCHARGE_FLAG, FRAM_ACCESS_OK);
-    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_FRAM_CALIBRATION, FRAM_ACCESS_OK);
-
+    /* Substate SYS_FSM_CHECK_DEEP_DISCHARGE */
+    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_DEEP_DISCHARGE_FLAG, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateBmsInitError);
 
     /* substate SYS_FSM_SUBSTATE_START_INITIALIZATION_SBC */
-    SBC_SetStateRequest_ExpectAndReturn(&sbc_stateMcuSupervisor, SBC_STATE_INIT_REQUEST, SBC_OK);
+    SBC_SetStateRequest_ExpectAndReturn(&sbc_stateMcuSupervisor, SBC_STATE_INIT_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateBmsInitError);
     /* substate SYS_FSM_SUBSTATE_WAIT_INITIALIZATION_SBC */
     SBC_GetState_ExpectAndReturn(&sbc_stateMcuSupervisor, SBC_STATEMACHINE_RUNNING);
@@ -746,17 +752,17 @@ void testSYS_RunStateMachineErrorState(void) {
     TEST_SYS_RunStateMachine(&sys_stateBmsInitError);
 
     /* state SYS_FSM_STATE_PRE_RUNNING */
-    ILCK_SetStateRequest_ExpectAndReturn(ILCK_STATE_INITIALIZATION_REQUEST, ILCK_OK);
+    ILCK_SetStateRequest_ExpectAndReturn(ILCK_STATE_INITIALIZATION_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateBmsInitError);
 
     /* substate SYS_FSM_SUBSTATE_START_INITIALIZATION_BAL */
-    BAL_SetStateRequest_ExpectAndReturn(BAL_STATE_INIT_REQUEST, BAL_OK);
+    BAL_SetStateRequest_ExpectAndReturn(BAL_STATE_INIT_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateBmsInitError);
     /* substate SYS_FSM_SUBSTATE_WAIT_INITIALIZATION_BAL */
     BAL_GetInitializationState_ExpectAndReturn(STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateBmsInitError);
     /* substate SYS_FSM_SUBSTATE_WAIT_INITIALIZATION_BAL_GLOBAL_ENABLE */
-    BAL_SetStateRequest_ExpectAndReturn(BAL_STATE_GLOBAL_DISABLE_REQUEST, BAL_OK);
+    BAL_SetStateRequest_ExpectAndReturn(BAL_STATE_GLOBAL_DISABLE_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateBmsInitError);
 
     /* substate SYS_FSM_SUBSTATE_START_FIRST_MEASUREMENT_CYCLE */
@@ -790,7 +796,7 @@ void testSYS_RunStateMachineErrorState(void) {
     TEST_SYS_RunStateMachine(&sys_stateBmsInitError);
 
     /* substate SYS_FSM_SUBSTATE_START_INITIALIZATION_BMS */
-    BMS_SetStateRequest_ExpectAndReturn(BMS_STATE_INITIALIZATION_REQUEST, BMS_OK);
+    BMS_SetStateRequest_ExpectAndReturn(BMS_STATE_INITIALIZATION_REQUEST, STD_OK);
     TEST_SYS_RunStateMachine(&sys_stateBmsInitError);
     /* substate SYS_FSM_SUBSTATE_WAIT_INITIALIZATION_BMS */
     for (uint16_t i = 0; i < (SYS_STATE_MACHINE_INITIALIZATION_TIMEOUT_MS / SYS_TASK_CYCLE_CONTEXT_MS) + 2; i++) {
@@ -1010,7 +1016,7 @@ void testSYS_SetSubstate(void) {
     SYS_STATE_s testState = {
         .timer            = 1u,
         .previousSubstate = SYS_FSM_SUBSTATE_ENTRY,
-        .currentSubstate  = SYS_FSM_CHECK_NON_VOLATILE_STORAGE,
+        .currentSubstate  = SYS_FSM_CHECK_DEEP_DISCHARGE,
         .nextSubstate     = SYS_FSM_SUBSTATE_START_INITIALIZATION_SBC,
     };
     /* ======= RT1/1: Call function under test */
@@ -1018,7 +1024,7 @@ void testSYS_SetSubstate(void) {
     /* ======= RT1/1: Test output verification */
     SYS_STATE_s referenceState = {
         .timer            = 100u,
-        .previousSubstate = SYS_FSM_CHECK_NON_VOLATILE_STORAGE,
+        .previousSubstate = SYS_FSM_CHECK_DEEP_DISCHARGE,
         .currentSubstate  = SYS_FSM_SUBSTATE_START_INITIALIZATION_SBC,
         .nextSubstate     = SYS_FSM_SUBSTATE_DUMMY,
     };
@@ -1149,8 +1155,8 @@ void testSYS_SetState(void) {
  *            - AT2/2: Invalid substate
  *          - Routine validation:
  *            - RT01/10: (TODO:) Case SYS_FSM_SUBSTATE_ENTRY
- *            - RT02/10: Case SYS_FSM_CHECK_NON_VOLATILE_STORAGE no deep discharge
- *            - RT03/10: Case SYS_FSM_CHECK_NON_VOLATILE_STORAGE deep discharge
+ *            - RT02/10: Case SYS_FSM_CHECK_DEEP_DISCHARGE no deep discharge
+ *            - RT03/10: Case SYS_FSM_CHECK_DEEP_DISCHARGE deep discharge
  *            - RT04/10: Case SYS_FSM_SUBSTATE_START_INITIALIZATION_SBC sbc state request ok
  *            - RT05/10: Case SYS_FSM_SUBSTATE_START_INITIALIZATION_SBC sbc state request not ok
  *            - RT06/10: (TODO:) Case SYS_FSM_SUBSTATE_WAIT_INITIALIZATION_SBC
@@ -1171,13 +1177,11 @@ void testSYS_ProcessInitializationState(void) {
     /* ======= Routine tests =============================================== */
     SYS_STATE_s testState = {0};
     /* ======= RT02/10: Test implementation */
-    testState.currentSubstate = SYS_FSM_CHECK_NON_VOLATILE_STORAGE;
+    testState.currentSubstate = SYS_FSM_CHECK_DEEP_DISCHARGE;
     for (uint8_t s = 0u; s < BS_NR_OF_STRINGS; s++) {
         fram_deepDischargeFlags.deepDischargeFlag[s] = false;
     }
-
-    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_DEEP_DISCHARGE_FLAG, FRAM_ACCESS_OK);
-    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_FRAM_CALIBRATION, FRAM_ACCESS_OK);
+    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_DEEP_DISCHARGE_FLAG, 0u);
     /* ======= RT02/10: Call function under test */
     SYS_FSM_STATES_e testResult = TEST_SYS_ProcessInitializationState(&testState);
     /* ======= RT02/10: Test output verification */
@@ -1186,14 +1190,12 @@ void testSYS_ProcessInitializationState(void) {
     TEST_ASSERT_EQUAL(SYS_FSM_SHORT_TIME, testState.timer);
 
     /* ======= RT03/10: Test implementation */
-    testState.currentSubstate = SYS_FSM_CHECK_NON_VOLATILE_STORAGE;
+    testState.currentSubstate = SYS_FSM_CHECK_DEEP_DISCHARGE;
     for (uint8_t s = 0u; s < BS_NR_OF_STRINGS; s++) {
         fram_deepDischargeFlags.deepDischargeFlag[s] = true;
     }
     /* ======= RT03/10: Call function under test */
-    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_DEEP_DISCHARGE_FLAG, FRAM_ACCESS_OK);
-    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_FRAM_CALIBRATION, FRAM_ACCESS_OK);
-
+    FRAM_ReadData_ExpectAndReturn(FRAM_BLOCK_ID_DEEP_DISCHARGE_FLAG, 0u);
     for (uint8_t s = 0u; s < BS_NR_OF_STRINGS; s++) {
         DIAG_Handler_ExpectAndReturn(
             DIAG_ID_DEEP_DISCHARGE_DETECTED, DIAG_EVENT_NOT_OK, DIAG_STRING, s, DIAG_HANDLER_RETURN_OK);

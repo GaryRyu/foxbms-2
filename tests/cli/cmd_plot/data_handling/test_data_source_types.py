@@ -45,7 +45,7 @@ import unittest
 class TestDataSourceTypes(unittest.TestCase):
     """Test of 'data_source_types.py'"""
 
-    def test_dummy(self) -> None:
+    def test_dummy(self):
         """Dummy test"""
         # this test is necessary because otherwise the exit code is non-zero
 

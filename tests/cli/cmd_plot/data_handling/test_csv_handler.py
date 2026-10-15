@@ -65,14 +65,7 @@ class TestGetData(unittest.TestCase):
     def setUp(self) -> None:
         """Creates the needed CSVHandler object for the later tests"""
         self.csv_handler_obj = CSVHandler(
-            {
-                "current": "float",
-                "voltage": "int",
-                "name": "string",
-                "date": "datetime",
-            },
-            0,
-            3,
+            {"current": "float", "date": "datetime"}, 0, 3
         )
 
     def test_get_data_no_tmp(
@@ -85,39 +78,18 @@ class TestGetData(unittest.TestCase):
         file_path = Path("test_file")
         no_tmp = True
         get_tmp_data.return_value = None
-
-        column_mocks = {
-            "current": Mock(name="current"),
-            "voltage": Mock(name="voltage"),
-            "name": Mock(name="name"),
-            "date": Mock(name="date"),
-        }
-        num_columns_mock = Mock()
-        data = mock_read_csv.return_value
-        data.__getitem__.side_effect = lambda key: (
-            column_mocks[key] if isinstance(key, str) else num_columns_mock
-        )
-
         self.csv_handler_obj.get_data(file_path, no_tmp)
-        data.select_dtypes.assert_called_once_with("number")
         mock_read_csv.assert_called_once_with(
             file_path,
-            usecols=["current", "voltage", "name", "date"],
-            dtype={
-                "current": "float",
-                "voltage": "Int64",
-                "name": "string",
-                "date": "string",
-            },
+            usecols=["current", "date"],
+            dtype=self.csv_handler_obj.columns,
             skiprows=self.csv_handler_obj.skip,
             parse_dates=["date"],
             na_values="NULL",
         )
-
-        column_mocks["name"].fillna.assert_called_once_with(
-            self.csv_handler_obj.na_value
+        mock_read_csv.return_value.round.assert_called_once_with(
+            self.csv_handler_obj.precision
         )
-        num_columns_mock.round.assert_called_once_with(self.csv_handler_obj.precision)
         write_tmp_file.assert_called_once()
 
     def test_get_data_with_tmp_data_not_none(
@@ -212,17 +184,17 @@ class TestGetData(unittest.TestCase):
 class TestValidateConfig(unittest.TestCase):
     """Class to test the validate_config method of the CSVHandler class"""
 
-    def setUp(self) -> None:  # noqa: D102
+    def setUp(self):
         self.config = {
             "general": {"skip": 0, "precision": 3},
             "columns": {"Date": "string"},
         }
 
-    def test_validate_success(self) -> None:
+    def test_validate_success(self):
         """Tests the validate_config method with valid config"""
         CSVHandler.validate_config(self.config)
 
-    def test_validate_fail(self) -> None:
+    def test_validate_fail(self):
         """Tests the validate_config method with invalid config"""
         self.config["columns"]["Date"] = 2
         buf = io.StringIO()

@@ -54,14 +54,12 @@ from .parameter import ComControl, FileParameter
 
 
 class File(ComInterface):
-    """Handles file-based communication by reading from and writing to
-    input/output files.
-    Depending on the provided parameters, it initializes processes for file
-    reading and writing.
+    """Handles file-based communication by reading from and writing to input/output files.
+    Depending on the provided parameters, it initializes processes for file reading and writing.
     """
 
     def __init__(self, name: str, parameter: FileParameter) -> None:
-        """Initialize the File communication interface.
+        """Initializes the File communication interface.
 
         Args:
             name (str): The name of the interface.
@@ -80,7 +78,7 @@ class File(ComInterface):
             )
 
     def read(self) -> str | None:
-        """Read data from the output queue if available.
+        """Reads data from the output queue if available.
 
         Returns:
             str | None: The next line of data if available, otherwise None.
@@ -98,7 +96,7 @@ class File(ComInterface):
         return self.control.output.get(block=False)
 
     def write(self, data: str) -> None:
-        """Write string data to the input queue for output processing.
+        """Writes string data to the input queue for output processing.
 
         Args:
             data (str): The data to write.
@@ -112,7 +110,7 @@ class File(ComInterface):
         self.control.input.put(data)
 
     def write_can_message(self, msg: Message) -> None:
-        """Write a CAN message to the input queue for output processing.
+        """Writes a CAN message to the input queue for output processing.
 
         Args:
             msg (Message): The CAN message to write.
@@ -132,7 +130,7 @@ class FileReader(ProcessInterface):
     def __init__(
         self, name: str, control: ComControl, parameter: FileParameter
     ) -> None:
-        """Initialize the FileReader process.
+        """Initializes the FileReader process.
 
         Args:
             name (str): The process name.
@@ -145,7 +143,7 @@ class FileReader(ProcessInterface):
         self.parameter = parameter
 
     def run(self) -> None:
-        """Start the file reading process and read from the input file."""
+        """Starts the file reading process and reads from the input file."""
         signal.signal(signal.SIGINT, signal.SIG_IGN)
         add_queue_handler(self.control.logger)
         logger.setLevel(self.control.log_level)
@@ -153,7 +151,7 @@ class FileReader(ProcessInterface):
         self._read_from_file()
 
     def _read_from_file(self) -> None:
-        """Read lines from the input file and put them into the output queue.
+        """Reads lines from the input file and puts them into the output queue.
 
         Raises:
             FileNotFoundError: If the input file does not exist.
@@ -182,7 +180,7 @@ class FileWriter(ProcessInterface):
     def __init__(
         self, name: str, control: ComControl, parameter: FileParameter
     ) -> None:
-        """Initialize the FileWriter process and CAN logger if required.
+        """Initializes the FileWriter process and CAN logger if required.
 
         Args:
             name (str): The process name.
@@ -216,7 +214,7 @@ class FileWriter(ProcessInterface):
                 sys.exit(1)
 
     def run(self) -> None:
-        """Start the file writing process, either writing CAN logs or standard output."""
+        """Starts the file writing process, either writing CAN logs or standard output."""
         signal.signal(signal.SIGINT, signal.SIG_IGN)
         add_queue_handler(self.control.logger)
         logger.setLevel(self.control.log_level)
@@ -228,7 +226,7 @@ class FileWriter(ProcessInterface):
             self._write_to_file()
 
     def _write_to_file(self) -> None:
-        """Write string messages from the input queue to the output file.
+        """Writes string messages from the input queue to the output file.
 
         Raises:
             TypeError: If the received message is not a string.
@@ -258,7 +256,7 @@ class FileWriter(ProcessInterface):
         self.shutdown()
 
     def _log_can_message(self) -> None:
-        """Log CAN messages from the input queue to a log file, adjusting timestamps.
+        """Logs CAN messages from the input queue to a log file, adjusting timestamps.
 
         Raises:
             TypeError: If the CAN logger is not initialized.

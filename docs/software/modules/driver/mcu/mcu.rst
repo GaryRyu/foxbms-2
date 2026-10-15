@@ -1,7 +1,7 @@
 .. include:: ./../../../../macros.txt
 .. include:: ./../../../../units.txt
 
-.. _MCU_DRIVER:
+.. _MCU:
 
 MCU
 ===

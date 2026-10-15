@@ -37,54 +37,25 @@
 # - "This product includes parts of foxBMS®"
 # - "This product is derived from foxBMS®"
 
-from waflib.Build import BuildContext
 
-
-def build(bld: BuildContext) -> None:
-    op = f"{bld.env.APPNAME.lower()}-object-"
-    lp = f"{bld.env.APPNAME.lower()}-"
-
-    use = [f"{lp}hal", "_L2FMC"]
-    source = "can_helper"
-    includes = [
-        bld.srcnode.find_node("src/bootloader/driver/config"),
-        bld.srcnode.find_node("src/bootloader/engine/config"),
-        bld.srcnode.find_node("src/bootloader/main/include"),
+def build(bld):
+    source = [
+        "can_helper.c",
+        "can.c",
+        "can_bootloader-version-info.c",
+        "../config/can_cfg.c",
     ]
-
-    bld.objects(
-        source=f"{source}.c",
-        includes=includes,
-        use=use,
-        target=f"{op}{source}",
-    )
-
-    source = "can"
     includes = [
-        bld.srcnode.find_node("src/bootloader/driver/config"),
-        bld.srcnode.find_node("src/bootloader/driver/io"),
-        bld.srcnode.find_node("src/bootloader/driver/mcu"),
-        bld.srcnode.find_node("src/bootloader/engine/config"),
-        bld.srcnode.find_node("src/bootloader/main/include"),
+        ".",
+        "../config",
+        "../foxmath",
+        "../io",
+        "../mcu",
+        "../rti",
+        "../../engine/boot",
+        "../../engine/can",
+        "../../main/include",
+        "../../../version",
     ]
-    bld.objects(
-        source=f"{source}.c",
-        includes=includes,
-        use=use,
-        target=f"{op}{source}",
-    )
-
-    source = "can_bootloader-version-info"
-    includes = [
-        bld.srcnode.find_node("src/bootloader/driver/config"),
-        bld.srcnode.find_node("src/bootloader/driver/foxmath"),
-        bld.srcnode.find_node("src/bootloader/engine/config"),
-        bld.srcnode.find_node("src/bootloader/main/include"),
-        bld.srcnode.find_node("src/version"),
-    ]
-    bld.objects(
-        source=f"{source}.c",
-        includes=includes,
-        use=use,
-        target=f"{op}{source}",
-    )
+    target = f"{bld.env.APPNAME.lower()}-bootloader-driver-can-objects"
+    bld.objects(source=source, includes=includes, target=target)

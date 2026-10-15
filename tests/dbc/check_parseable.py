@@ -59,10 +59,9 @@ except InvalidGitRepositoryError:
 
 
 def set_logging_level(verbose: int = 0) -> None:
-    """Sets the module logging level
+    """sets the module logging level
 
-    :param verbose: verbosity level
-    """
+    :param verbose: verbosity level"""
     if verbose == 1:
         logging.basicConfig(level=logging.INFO)
     elif verbose > 1:
@@ -99,17 +98,17 @@ def main(ctx: click.Context, verbose: int, symbol_file: Path, dbc_file: Path) ->
     """Convert symbol file to dbc file"""
     colorama.init()
     set_logging_level(verbose)
-    logging.warning(  # noqa: LOG015
+    logging.warning(
         "Symbol file checking disabled, due to a 'cantools' bug "
         "(https://github.com/cantools/cantools/issues/458)"
     )
     # logging.debug("Parsing symbol file...")
     # cantools.database.load_file(str(symbol_file))
     # logging.debug("done")
-    logging.debug("Parsing dbc file...")  # noqa: LOG015
+    logging.debug("Parsing dbc file...")
     cantools.database.load_file(str(dbc_file))
-    logging.debug("done")  # noqa: LOG015
-    logging.info("%s and %s files are parsable.", symbol_file, dbc_file)  # noqa: LOG015
+    logging.debug("done")
+    logging.info("%s and %s files are parsable.", symbol_file, dbc_file)
     ctx.exit(0)
 
 

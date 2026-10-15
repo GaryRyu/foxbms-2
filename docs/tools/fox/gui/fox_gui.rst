@@ -21,32 +21,27 @@ The **output-field** at the bottom of the GUI logs the console output of the
 Usage
 -----
 
-The GUI can be opened as follows:
+The GUI can be opened via the shortcut ``gui`` in the repository root
+(``gui.lnk`` - Windows only) or through the command line interface using the
+following command:
 
-  .. tabs::
+.. tabs::
 
-     .. group-tab:: Win32/GUI
+   .. group-tab:: Win32/PowerShell
 
-        **Important**: This requires PowerShell to be  available at
-        ``C:\Program Files\PowerShell\7\pwsh.exe``
+      .. code-block:: powershell
 
-        Double-click the shortcut ``gui`` in the repository root (``gui.lnk``).
+         .\fox.ps1 gui
 
-     .. group-tab:: Win32/PowerShell
+   .. group-tab:: Win32/Git bash
 
-        .. code-block:: powershell
+      .. code-block:: shell
 
-           .\fox.ps1 gui
+         ./fox.sh gui
 
-     .. group-tab:: Win32/Git bash
+   .. group-tab:: Linux
 
-        .. code-block:: shell
-
-           ./fox.sh gui
-
-     .. group-tab:: Linux
-
-        The GUI is currently not supported on Linux.
+      The GUI is currently not supported on Linux.
 
 Below is the general help text of the gui command,
 which contains all possible subcommands:

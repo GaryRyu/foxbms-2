@@ -56,14 +56,14 @@ except ModuleNotFoundError:
 class TestFoxCliMainCommandBootloader(unittest.TestCase):
     """Test of the 'bootloader' commands and options."""
 
-    def test_bootloader_help(self) -> None:
+    def test_bootloader_help(self):
         """Test 'fox.py bootloader --help' option."""
         runner = CliRunner()
         result = runner.invoke(main, ["bootloader", "--help"])
         self.assertEqual(0, result.exit_code)
 
     @patch("cli.commands.c_bootloader.bootloader_impl")
-    def test_bootloader_run_app(self, mock_bootloader_impl: MagicMock) -> None:
+    def test_bootloader_run_app(self, mock_bootloader_impl: MagicMock):
         """Test 'fox.py bootloader load-app' command."""
         mock_bootloader_impl.run_app.return_value = 0
         runner = CliRunner()
@@ -88,34 +88,35 @@ class TestFoxCliMainCommandBootloader(unittest.TestCase):
         self.assertEqual(0, result.exit_code)
 
     @patch("cli.commands.c_bootloader.bootloader_impl")
-    def test_bootloader_load_app(self, mock_bootloader_impl: MagicMock) -> None:
+    def test_bootloader_load_app(self, mock_bootloader_impl: MagicMock):
         """Test 'fox.py bootloader load-app' command."""
         mock_bootloader_impl.load_app.return_value = 0
         runner = CliRunner()
-        with runner.isolated_filesystem(), open("dummy", "w", encoding="utf-8") as f:
-            f.write("dummy")
-            f.flush()
-            result = runner.invoke(
-                main,
-                [
-                    "bootloader",
-                    "load-app",
-                    "--bootloader-dbc",
-                    __file__,
-                    "--app-dbc",
-                    __file__,
-                    "--foxbms-app-crc",
-                    __file__,
-                    "--foxbms-app-info",
-                    __file__,
-                    "--foxbms-bin",
-                    __file__,
-                ],
-            )
-            self.assertEqual(0, result.exit_code)
+        with runner.isolated_filesystem():
+            with open("dummy", "w", encoding="utf-8") as f:
+                f.write("dummy")
+                f.flush()
+                result = runner.invoke(
+                    main,
+                    [
+                        "bootloader",
+                        "load-app",
+                        "--bootloader-dbc",
+                        __file__,
+                        "--app-dbc",
+                        __file__,
+                        "--foxbms-app-crc",
+                        __file__,
+                        "--foxbms-app-info",
+                        __file__,
+                        "--foxbms-bin",
+                        __file__,
+                    ],
+                )
+                self.assertEqual(0, result.exit_code)
 
     @patch("cli.commands.c_bootloader.bootloader_impl")
-    def test_bootloader_check(self, mock_bootloader_impl: MagicMock) -> None:
+    def test_bootloader_check(self, mock_bootloader_impl: MagicMock):
         """Test 'fox.py bootloader check' command."""
         mock_bootloader_impl.check_bootloader.return_value = 0
         runner = CliRunner()
@@ -140,7 +141,7 @@ class TestFoxCliMainCommandBootloader(unittest.TestCase):
         self.assertEqual(0, result.exit_code)
 
     @patch("cli.commands.c_bootloader.bootloader_impl")
-    def test_bootloader_reset_bootloader(self, mock_bootloader_impl: MagicMock) -> None:
+    def test_bootloader_reset_bootloader(self, mock_bootloader_impl: MagicMock):
         """Test 'fox.py bootloader reset' command."""
         mock_bootloader_impl.reset_bootloader.return_value = 0
         runner = CliRunner()

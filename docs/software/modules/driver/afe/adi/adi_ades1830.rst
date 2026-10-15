@@ -69,7 +69,7 @@ The ``ADI_ERROR_TABLE_s`` structure contains the error status of the driver:
 Functions to adapt to change environment
 ----------------------------------------
 
-The AFE driver in its current form is designed to work within |foxbms|,
+The AFE driver in its current form is designed to work within foxBMS 2,
 using |freertos|.
 In order to use it in another environment (e.g., bare metal),
 it must be adapted in the following places.
@@ -206,18 +206,18 @@ There are three cases to consider:
     a dummy byte must be sent to wake up the AFE communication interface.
 
 The function ``ADI_AccessToDatabase()`` is used to store and retrieve the
-data from the |foxbms| database.
+data from the foxBMS 2 database.
 If the database is not used, the function content can simply be removed.
 
 The function ``ADI_Wait()`` receives an integer parameter.
 The function must wait for the number of milliseconds passed as parameter.
-In |foxbms|, it blocks the |freertos| task running the AFE driver.
+In foxBMS 2, it blocks the |freertos| task running the AFE driver.
 
 The AFE driver looks for requests to start or stop.
 Requests are made made with the extern function ``ADI_MakeRequest()``.
 The static function ``ADI_GetRequest()`` is used to retrieve the requests
 made to the driver.
-In |foxbms|, a |freertos| queue is used.
+In foxBMS 2, a |freertos| queue is used.
 If this environment is not used, the request mechanism must be adapted
 accordingly and the reference to the queue must be removed if the queue is not
 used.
@@ -234,7 +234,7 @@ is not used.
 Extern functions
 ^^^^^^^^^^^^^^^^
 
-In |foxbms|, a |freertos| queue is used in the function ``ADI_MakeRequest()``.
+In foxBMS 2, a |freertos| queue is used in the function ``ADI_MakeRequest()``.
 If this environment is not used, the request mechanism must be adapted
 accordingly and the reference to the queue must be removed if the queue is
 not used.
@@ -298,10 +298,11 @@ It has four parameters:
 The functions to send commands are illustrated in
 :numref:`send-command-ades1830`.
 
-   .. figure:: ../../../../../../build/docs/docs/software/modules/driver/afe/adi/img/ades1830/adi_ades1830_primitive_send_command.svg
+   .. drawio-figure:: img/ades1830/adi_ades1830_primitive_send_command.drawio
       :alt: Functions used to send commands
       :name: send-command-ades1830
       :align: center
+      :format: svg
       :width: 35 %
 
       Functions used to send commands
@@ -347,10 +348,11 @@ It has three parameters:
 The functions and variables to read registers are illustrated in
 :numref:`read-register-ades1830`.
 
-   .. figure:: ../../../../../../build/docs/docs/software/modules/driver/afe/adi/img/ades1830/adi_ades1830_primitive_read_register.svg
+   .. drawio-figure:: img/ades1830/adi_ades1830_primitive_read_register.drawio
       :alt: Functions and variables used to read registers
       :name: read-register-ades1830
       :align: center
+      :format: svg
       :width: 70 %
 
       Functions and variables used to read registers
@@ -403,9 +405,10 @@ It has three parameters:
 The functions and variables to write registers are illustrated in
 :numref:`write-register-ades1830`.
 
-   .. figure:: ../../../../../../build/docs/docs/software/modules/driver/afe/adi/img/ades1830/adi_ades1830_primitive_write_register.svg
+   .. drawio-figure:: img/ades1830/adi_ades1830_primitive_write_register.drawio
       :alt: Functions and variables used to write registers
       :name: write-register-ades1830
+      :format: svg
       :align: center
       :width: 70 %
 
@@ -523,9 +526,10 @@ In addition, this must be done for each string.
 In :numref:`configuration-tables-ades1830`, the tables are
 represented to ease the comprehension.
 
-   .. figure:: ../../../../../../build/docs/docs/software/modules/driver/afe/adi/img/ades1830/adi_ades1830_configuration_tables.svg
+   .. drawio-figure:: img/ades1830/adi_ades1830_configuration_tables.drawio
       :alt: Tables holding configuration
       :name: configuration-tables-ades1830
+      :format: svg
       :align: center
       :width: 55 %
 
@@ -555,9 +559,10 @@ The functions to change configuration and their interaction with the
 variables are illustrated in
 :numref:`configuration-procedure-ades1830`.
 
-   .. figure:: ../../../../../../build/docs/docs/software/modules/driver/afe/adi/img/ades1830/adi_ades1830_configuration_procedure.svg
+   .. drawio-figure:: img/ades1830/adi_ades1830_configuration_procedure.drawio
       :alt: Functions and variables used to write registers
       :name: configuration-procedure-ades1830
+      :format: svg
       :align: center
       :width: 100 %
 
@@ -599,9 +604,10 @@ In :numref:`configuration-tables-ades1830-modification`, the use of the helper
 functions to modify the configuration tables is represented to ease the
 comprehension.
 
-   .. figure:: ../../../../../../build/docs/docs/software/modules/driver/afe/adi/img/ades1830/adi_ades1830_configuration_tables_modification.svg
+   .. drawio-figure:: img/ades1830/adi_ades1830_configuration_tables_modification.drawio
       :alt: Modification of tables holding configuration
       :name: configuration-tables-ades1830-modification
+      :format: svg
       :align: center
       :width: 55 %
 

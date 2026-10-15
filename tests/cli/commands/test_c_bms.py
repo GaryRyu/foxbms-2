@@ -42,7 +42,7 @@
 import sys
 import unittest
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 from click.testing import CliRunner
 
@@ -57,7 +57,7 @@ class TestFoxCliMainCommandBms(unittest.TestCase):
     """Tests the 'bms' command"""
 
     @patch("cmd.Cmd.cmdloop")
-    def test_bms(self, mock_cmdloop: MagicMock) -> None:
+    def test_bms(self, mock_cmdloop):
         """Test 'fox.py bms' command"""
         runner = CliRunner()
         result = runner.invoke(main, ["bms"])

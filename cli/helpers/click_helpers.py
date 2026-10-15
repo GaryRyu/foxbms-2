@@ -37,6 +37,7 @@
 # - "This product includes parts of foxBMS®"
 # - "This product is derived from foxBMS®"
 
+
 """Miscellaneous helper functions."""
 
 from typing import Literal
@@ -95,8 +96,6 @@ def set_logging_level_cb(
         param: Click parameter metadata (unused).
         value: Verbosity option value provided by Click.
 
-    Returns:
-        The verbosity option value.
     """
     set_logging_level(verbosity=value)
     return value

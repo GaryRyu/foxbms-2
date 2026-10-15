@@ -53,7 +53,7 @@ except ModuleNotFoundError:
 class TestMain(unittest.TestCase):
     """Test of '__main__.py'"""
 
-    def test_dummy(self) -> None:
+    def test_dummy(self):
         """Dummy test"""
         # this test is necessary because otherwise the exit code is non-zero
 

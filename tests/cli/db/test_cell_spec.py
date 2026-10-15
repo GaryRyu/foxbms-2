@@ -43,7 +43,6 @@ import sys
 import unittest
 from dataclasses import FrozenInstanceError
 from pathlib import Path
-from typing import TypedDict
 
 try:
     from cli.db.cell_spec import CellSpec
@@ -52,25 +51,7 @@ except ModuleNotFoundError:
     from cli.db.cell_spec import CellSpec
 
 
-class CellSpecKwargs(TypedDict):
-    """Typed contract for the valid CellSpec keyword arguments."""
-
-    name: str
-    manufacturer: str
-    shape: str
-    chemistry: str
-    height: float
-    length: float
-    width: float
-    weight: float
-    temperature_max: float
-    temperature_min: float
-    voltage_min: float
-    voltage_max: float
-    voltage_nom: float
-
-
-def make_valid_kwargs() -> CellSpecKwargs:
+def make_valid_kwargs():
     """Return a base set of valid kwargs for CellSpec."""
     return {
         "name": "X100",
@@ -101,6 +82,22 @@ class TestCellSpecPostInit(unittest.TestCase):
         self.assertEqual(spec.manufacturer, "Acme")
         self.assertEqual(spec.shape, "prismatic")
         self.assertEqual(spec.voltage_nom, 3.7)
+
+    def test_string_type_validation(self) -> None:
+        """Should raise TypeError if any string field is not a str."""
+        kwargs = make_valid_kwargs()
+        kwargs["manufacturer"] = 123  # not a str
+        with self.assertRaises(TypeError) as ctx:
+            CellSpec(**kwargs)
+        self.assertIn("not a str", str(ctx.exception))
+
+    def test_float_type_validation(self) -> None:
+        """Should raise TypeError if any numeric field is not a float."""
+        kwargs = make_valid_kwargs()
+        kwargs["height"] = 1  # int instead of float
+        with self.assertRaises(TypeError) as ctx:
+            CellSpec(**kwargs)
+        self.assertIn("not a float", str(ctx.exception))
 
     def test_cylindrical_width_length_mismatch(self) -> None:
         """Should raise ValueError if shape is cylindrical and width != length."""
@@ -158,9 +155,7 @@ class TestCellSpecPostInit(unittest.TestCase):
         """Should be immutable: assigning any attribute raises FrozenInstanceError."""
         spec = CellSpec(**make_valid_kwargs())
         with self.assertRaises(FrozenInstanceError):
-            # ignoring immutability check for mypy as this is what the test
-            # shall cover
-            spec.name = "NewName"  # mypy: ignore[misc]
+            spec.name = "NewName"
 
 
 if __name__ == "__main__":

@@ -43,14 +43,13 @@
  * @file    mcu.h
  * @author  foxBMS Team
  * @date    2019-02-19 (date of creation)
- * @updated 2026-10-06 (date of last update)
- * @version v1.12.0
+ * @updated 2026-04-20 (date of last update)
+ * @version v1.11.0
  * @ingroup DRIVERS
  * @prefix  MCU
  *
  * @brief   Headers for the driver for the MCU module.
- * @details Provides target-specific MCU-wide definitions shared by low-level
- *          drivers.
+ * @details TODO
  */
 
 #ifndef FOXBMS__MCU_H_

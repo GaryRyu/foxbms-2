@@ -55,7 +55,7 @@ class ComInterface:
     """
 
     def __init__(self, name: str) -> None:
-        """Initialize the communication interface.
+        """Initializes the communication interface.
 
         Args:
             name (str): Name of the communication interface instance.
@@ -69,8 +69,8 @@ class ComInterface:
         self.log_listener = get_listener(self.control.logger)
 
     def start(self) -> None:
-        """Start all managed processes and wait until they are ready.
-        Also start the logging listener.
+        """Starts all managed processes and waits until they are ready.
+        Also starts the logging listener.
 
         Raises:
             ChildProcessError: If a process terminates during initialization.
@@ -93,7 +93,6 @@ class ComInterface:
                     time.sleep(0.1)
         else:
             recho("No process available")
-            self._finalize_ipc_resources()
 
     def shutdown(self, block: bool = False, timeout: int | None = None) -> None:
         """Signals all processes to shut down and optionally waits until they have finished.
@@ -106,44 +105,15 @@ class ComInterface:
         """
         self.control.shutdown.set()
         start_time = time.time()
-        processes_terminated = False
         if block:
             while True:
-                processes_terminated = not self.is_alive()
-                if processes_terminated:
+                if not self.is_alive():
                     break
                 if timeout and (time.time() - start_time) > timeout:
                     break
-        else:
-            processes_terminated = not self.is_alive()
-
-        if processes_terminated:
-            self._finalize_ipc_resources()
-
-    def _finalize_ipc_resources(self) -> None:
-        """Stop listener thread and close queue endpoints to avoid GC-time warnings."""
-        listener = getattr(self, "log_listener", None)
-        if listener is not None:
-            try:  # noqa: SIM105
-                listener.stop()
-            except (AttributeError, OSError, ValueError):
-                pass
-
-        for queue_name in ("input", "output", "logger"):
-            queue = getattr(self.control, queue_name, None)
-            if queue is None:
-                continue
-            try:  # noqa: SIM105
-                queue.close()
-            except (AttributeError, OSError, ValueError):
-                pass
-            try:  # noqa: SIM105
-                queue.join_thread()
-            except (AttributeError, RuntimeError, OSError, ValueError):
-                pass
 
     def is_alive(self, process_name: str | None = None) -> bool:
-        """Check whether the managed process or all processes are still alive.
+        """Checks whether the managed process or all processes are still alive.
 
         Args:
             process_name (str | None): Name of the process to check. If None, checks all.

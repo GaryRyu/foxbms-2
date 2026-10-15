@@ -43,23 +43,17 @@
  * @file    os_freertos.c
  * @author  foxBMS Team
  * @date    2021-11-18 (date of creation)
- * @updated 2026-10-06 (date of last update)
- * @version v1.12.0
+ * @updated 2026-04-20 (date of last update)
+ * @version v1.11.0
  * @ingroup OS
  * @prefix  OS
  *
  * @brief   FreeRTOS specific implementation of the tasks and resources used by
  *          the system
- * @details This module implements the foxBMS operating-system abstraction for
- *          the FreeRTOS port.
- *          It provides the scheduler startup hooks and the wrappers around
- *          task, notification, queue, semaphore, and timing services used by
- *          the application.
+ * @details TODO
  */
 
 /*========== Includes =======================================================*/
-#include "foxbms_config_mcu.h"
-
 #include "os.h"
 
 #include "HL_sys_core.h"
@@ -81,7 +75,7 @@
 
 /*========== Extern Function Implementations ================================*/
 extern void OS_InitializeScheduler(void) {
-    if (FOXBMS_MCU_USE_CACHE == true) {
+    if (OS_ENABLE_CACHE == true) {
         _cacheEnable_();
     } else {
         _cacheDisable_();
@@ -97,27 +91,24 @@ void OS_StartScheduler(void) {
 void vApplicationGetIdleTaskMemory(
     StaticTask_t **ppxIdleTaskTCBBuffer,
     StackType_t **ppxIdleTaskStackBuffer,
-    configSTACK_DEPTH_TYPE *puxIdleTaskStackSize) {
+    configSTACK_DEPTH_TYPE *pulIdleTaskStackSize) {
     /** Buffer for the Idle Task's structure */
     static StaticTask_t os_idleTask = {0};
     /** @brief Stack for the Idle task */
     static StackType_t os_stackSizeIdle[OS_IDLE_TASK_STACK_SIZE] = {0};
     FAS_ASSERT(ppxIdleTaskTCBBuffer != NULL_PTR);
     FAS_ASSERT(ppxIdleTaskStackBuffer != NULL_PTR);
-    FAS_ASSERT(puxIdleTaskStackSize != NULL_PTR);
+    FAS_ASSERT(pulIdleTaskStackSize != NULL_PTR);
     *ppxIdleTaskTCBBuffer   = &os_idleTask;
     *ppxIdleTaskStackBuffer = &os_stackSizeIdle[0];
-    *puxIdleTaskStackSize   = OS_IDLE_TASK_STACK_SIZE;
+    *pulIdleTaskStackSize   = OS_IDLE_TASK_STACK_SIZE;
 }
 
 #if (configUSE_TIMERS > 0) && (configSUPPORT_STATIC_ALLOCATION == 1)
 void vApplicationGetTimerTaskMemory(
     StaticTask_t **ppxTimerTaskTCBBuffer,
     StackType_t **ppxTimerTaskStackBuffer,
-    configSTACK_DEPTH_TYPE *puxTimerTaskStackSize) {
-    FAS_ASSERT(ppxTimerTaskTCBBuffer != NULL_PTR);
-    FAS_ASSERT(ppxTimerTaskStackBuffer != NULL_PTR);
-    FAS_ASSERT(puxTimerTaskStackSize != NULL_PTR);
+    configSTACK_DEPTH_TYPE *pulTimerTaskStackSize) {
 #if (configUSE_TIMERS > 0) && (configSUPPORT_STATIC_ALLOCATION == 1)
     /** Buffer for the Timer Task's structure */
     static StaticTask_t os_timerTask;
@@ -129,7 +120,7 @@ void vApplicationGetTimerTaskMemory(
 #endif /* configUSE_TIMERS */
     *ppxTimerTaskTCBBuffer   = &os_timerTask;
     *ppxTimerTaskStackBuffer = &os_stackSizeTimer[0];
-    *puxTimerTaskStackSize   = configTIMER_TASK_STACK_DEPTH;
+    *pulTimerTaskStackSize   = configTIMER_TASK_STACK_DEPTH;
 }
 #endif /* configUSE_TIMERS */
 
@@ -156,8 +147,6 @@ void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName) {
        that a stack overflow appeared in one of the FreeRTOS tasks. */
     CANTX_CrashDump(CANTX_FATAL_ERRORS_ACTIONS_STACK_OVERFLOW);
     FAS_ASSERT(FAS_TRAP);
-    (void)xTask;
-    (void)pcTaskName;
 }
 #endif /* configCHECK_FOR_STACK_OVERFLOW */
 

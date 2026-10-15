@@ -26,7 +26,8 @@ receive CAN messages (Msgs) (function ``CAN_ReadRxBuffer()``).
 The ``BMS_Trigger()`` function in the |10ms-task| requires all this data
 and reads it from the database.
 
-.. figure:: ../../../build/docs/docs/software/structure/img/database_concept.svg
+.. drawio-figure:: img/database_concept.drawio
+   :format: svg
    :alt: Database data exchange
    :name: database-data-exchange
    :width: 520px
@@ -36,7 +37,8 @@ and reads it from the database.
 The dependency between the database and the diagnosis module are shown in
 :numref:`dependency-database-diagnosis`.
 
-.. figure:: ../../../build/docs/docs/software/structure/img/database-and-diagnosis.svg
+.. drawio-figure:: img/database-and-diagnosis.drawio
+   :format: svg
    :alt: dependency between database and diagnosis
    :name: dependency-database-diagnosis
    :width: 520px
@@ -50,7 +52,8 @@ Task-Function Mapping
 To get a first overview, how the software works, the task-function mapping is
 shown in :numref:`task-function-mapping`.
 
-.. figure:: ../../../build/docs/docs/software/structure/img/task-function-mapping.svg
+.. drawio-figure:: img/task-function-mapping.drawio
+   :format: svg
    :alt: Task-Function mapping
    :name: task-function-mapping
    :width: 520px
@@ -59,7 +62,8 @@ shown in :numref:`task-function-mapping`.
 
 A very reduced overview of how the ``BMS`` module works is shown below.
 
-.. figure:: ../../../build/docs/docs/software/structure/img/high-level-application-view.svg
+.. drawio-figure:: img/high-level-application-view.drawio
+   :format: svg
    :alt: High-level view of the BMS module
    :name: high-level-application-view
    :width: 520px

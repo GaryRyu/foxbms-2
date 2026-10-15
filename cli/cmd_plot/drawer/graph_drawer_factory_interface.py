@@ -52,18 +52,11 @@ class GraphDrawerFactoryInterface(ABC):  # pylint: disable=too-few-public-method
 
     @abstractmethod
     def get_object(self, graph_config: dict) -> LineGraphDrawer:
-        """Create a LineGraphDrawer object from the given configuration."""
+        """Creates a LineGraphDrawer object from the given configuration."""
 
     @staticmethod
     def _get_graph_type(graph_config: dict) -> GraphTypes:
-        """Determine the graph type and return it.
-
-        Args:
-            graph_config: The configuration dictionary for the graph.
-
-        Returns:
-            The graph type.
-        """
+        """Determines the graph type and returns it"""
         try:
             # The plot configuration is defined as a list of dictionaries and
             # the method _get_graph_type gets one of these dictionaries passed

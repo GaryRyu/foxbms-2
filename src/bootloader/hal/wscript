@@ -39,37 +39,19 @@
 
 
 from waflib import Logs, Utils
-from waflib.Build import BuildContext
 
 
-def build(bld: BuildContext) -> None:
-    op = f"{bld.env.APPNAME.lower()}-object-"
-    lp = f"{bld.env.APPNAME.lower()}-"
-    ip = f"{bld.env.APPNAME.lower()}-incpath-"
-    includes = [
-        bld.srcnode.find_node("src/bootloader/main/include"),
-    ]
-    source = "bootloader-hl_notification"
-    use = [f"{ip}hal", "_L2FMC"]
-    bld.objects(
-        source=f"{source}.c",
-        includes=includes,
-        use=use,
-        target=f"{op}{source}",
-    )
-
-    bld(
-        export_includes=[bld.path.get_bld().find_or_declare("include")],
-        target=f"{ip}hal",
-    )
-
+def build(bld):
+    target = f"{bld.env.APPNAME.lower()}-bootloader-hal"
+    cflags = bld.env.CFLAGS_HAL
+    bld.env.append_unique("HCG_GEN_HAL_INC_PATHS", [bld.path.get_bld().relpath()])
     source = None
     remove = None
     startup_hash = None
     if Utils.is_win32 or bld.env.HALCOGEN:
         startup_hash = bld.path.find_node("bootloader-startup.hash")
-        remove = bld.srcnode.find_node("conf/hcg/bootloader-remove.yml")
-        source = [bld.srcnode.find_node("conf/hcg/bootloader.hcg")]
+        remove = bld.path.find_node("../../../conf/hcg/bootloader-remove.yml")
+        source = ["../../../conf/hcg/bootloader.hcg"]
     else:
         hal_src_dir = bld.path.get_bld().find_dir("source")
         hal_inc_dir = bld.path.get_bld().find_dir("include")
@@ -78,17 +60,21 @@ def build(bld: BuildContext) -> None:
             f"Assuming HAL sources are available at {hal_src_dir} and {hal_inc_dir}."
         )
         if hal_src_dir:
-            c_sources = list(hal_src_dir.ant_glob("*.c"))
-            asm_sources = list(hal_src_dir.ant_glob("*.asm"))
-            source = c_sources + asm_sources
+            source = hal_src_dir.ant_glob("*.c") + hal_src_dir.ant_glob("*.asm")
     if source:
-        use = [f"{op}bootloader-hl_notification"]
+        bld.objects(
+            source="bootloader-hl_notification.c",
+            target="bootloader-hl_notification-object",
+            includes="../main/include",
+            idx=1,
+        )
         bld(
-            features="asm c cstlib",
+            features="c cstlib",
             source=source,
-            use=use,
-            uselib="HAL",
+            cflags=cflags,
+            target=target,
+            use="bootloader-hl_notification-object",
             startup_hash=startup_hash,
             remove=remove,
-            target=f"{lp}hal",
+            idx=1,
         )

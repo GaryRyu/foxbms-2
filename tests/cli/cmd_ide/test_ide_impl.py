@@ -42,7 +42,7 @@
 import sys
 import unittest
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 try:
     from cli.cmd_ide import ide_impl
@@ -57,7 +57,7 @@ class TestIdeImpl(unittest.TestCase):
     """Test"""
 
     @patch("cli.cmd_ide.ide_impl.shutil.which")
-    def test_no_code(self, mock_which: MagicMock) -> None:
+    def test_no_code(self, mock_which):
         """Code not available"""
         mock_which.return_value = None
         with self.assertLogs("fox.py", level="INFO") as cm:
@@ -67,7 +67,7 @@ class TestIdeImpl(unittest.TestCase):
         self.assertEqual(cm.output[0], "ERROR:fox.py:Could not find 'code' binary.")
 
     @patch("cli.cmd_ide.ide_impl.shutil.which")
-    def test_wd_does_not_exist(self, mock_which: MagicMock) -> None:
+    def test_wd_does_not_exist(self, mock_which):
         """Code not available"""
         mock_which.return_value = "/path/to/code"
         with self.assertLogs("fox.py", level="INFO") as cm:
@@ -80,9 +80,7 @@ class TestIdeImpl(unittest.TestCase):
 
     @patch("cli.cmd_ide.ide_impl.shutil.which")
     @patch("cli.cmd_ide.ide_impl.run_process")
-    def test_open_ide_generic(
-        self, mock_run_process: MagicMock, mock_which: MagicMock
-    ) -> None:
+    def test_open_ide_generic(self, mock_run_process, mock_which):
         """Open generic"""
         mock_which.return_value = "/path/to/code"
         mock_run_process.return_value = SubprocessResult(0)
@@ -96,9 +94,7 @@ class TestIdeImpl(unittest.TestCase):
 
     @patch("cli.cmd_ide.ide_impl.shutil.which")
     @patch("cli.cmd_ide.ide_impl.run_process")
-    def test_open_ide_app(
-        self, mock_run_process: MagicMock, mock_which: MagicMock
-    ) -> None:
+    def test_open_ide_app(self, mock_run_process, mock_which):
         """Open app"""
         mock_which.return_value = "/path/to/code"
         mock_run_process.return_value = SubprocessResult(0)
@@ -115,9 +111,7 @@ class TestIdeImpl(unittest.TestCase):
 
     @patch("cli.cmd_ide.ide_impl.shutil.which")
     @patch("cli.cmd_ide.ide_impl.run_process")
-    def test_open_ide_bootloader(
-        self, mock_run_process: MagicMock, mock_which: MagicMock
-    ) -> None:
+    def test_open_ide_bootloader(self, mock_run_process, mock_which):
         """Open bootloader"""
         mock_which.return_value = "/path/to/code"
         mock_run_process.return_value = SubprocessResult(0)
@@ -134,9 +128,7 @@ class TestIdeImpl(unittest.TestCase):
 
     @patch("cli.cmd_ide.ide_impl.shutil.which")
     @patch("cli.cmd_ide.ide_impl.run_process")
-    def test_open_open_ide_embedded_unit_test_app(
-        self, mock_run_process: MagicMock, mock_which: MagicMock
-    ) -> None:
+    def test_open_open_ide_embedded_unit_test_app(self, mock_run_process, mock_which):
         """Open app unit tests"""
         mock_which.return_value = "/path/to/code"
         mock_run_process.return_value = SubprocessResult(0)
@@ -153,9 +145,7 @@ class TestIdeImpl(unittest.TestCase):
 
     @patch("cli.cmd_ide.ide_impl.shutil.which")
     @patch("cli.cmd_ide.ide_impl.run_process")
-    def test_open_ide_embedded_unit_test_bootloader(
-        self, mock_run_process: MagicMock, mock_which: MagicMock
-    ) -> None:
+    def test_open_ide_embedded_unit_test_bootloader(self, mock_run_process, mock_which):
         """Open bootloader unit tests"""
         mock_which.return_value = "/path/to/code"
         mock_run_process.return_value = SubprocessResult(0)
@@ -172,9 +162,7 @@ class TestIdeImpl(unittest.TestCase):
 
     @patch("cli.cmd_ide.ide_impl.shutil.which")
     @patch("cli.cmd_ide.ide_impl.run_process")
-    def test_open_ide_cli(
-        self, mock_run_process: MagicMock, mock_which: MagicMock
-    ) -> None:
+    def test_open_ide_cli(self, mock_run_process, mock_which):
         """Open bootloader unit tests"""
         mock_which.return_value = "/path/to/code"
         mock_run_process.return_value = SubprocessResult(0)

@@ -42,7 +42,7 @@
 import click
 
 from ..cmd_ide import ide_impl
-from ..helpers.click_helpers import HELP_NAMES, verbosity_option
+from ..helpers.click_helpers import HELP_NAMES
 
 
 @click.command(context_settings=HELP_NAMES)
@@ -82,7 +82,6 @@ from ..helpers.click_helpers import HELP_NAMES, verbosity_option
     is_flag=True,
     help="Open a VS Code workspace for fox CLI development.",
 )
-@verbosity_option
 @click.pass_context
 def ide(  # pylint:disable=too-many-arguments,too-many-positional-arguments
     ctx: click.Context,
@@ -92,7 +91,6 @@ def ide(  # pylint:disable=too-many-arguments,too-many-positional-arguments
     app: bool = False,
     bootloader: bool = False,
     cli: bool = False,
-    verbose: int = 0,
 ) -> None:
     """Open one or more pre-configured VS Code workspaces."""
     if generic:
