@@ -1,0 +1,122 @@
+[
+  {
+    "Test ID": "F2-LLR-ALG-070-TC-01",
+    "SUT": "PL_CheckStringVoltage [plausibility/plausibility.c]",
+    "Requirement ID": "F2-LLR-ALG-070\nF2-LLR-ALG-070-01\nF2-LLR-ALG-070-02",
+    "Description": "지정 입력의 반환·출력·상태 및 외부 호출 확인\n원 시험: plausibility/test_plausibility.c / testCheckPackVoltageCellVoltageAndCurrentSensorBothZero",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n상태/객체 packVoltage_mV (int32_t): 0\n상태/객체 highVoltage_mV (int32_t): 0\n",
+    "Inputs": "PL_CheckStringVoltage\n1번째 인수 (int32_t voltageAfe_mV): 0\n2번째 인수 (int32_t voltageCurrentSensor_mV): 0",
+    "Expected": "SUT 반환값 = STD_OK",
+    "section": 10,
+    "source_table": 37,
+    "source_row": 2
+  },
+  {
+    "Test ID": "F2-LLR-ALG-070-TC-02",
+    "SUT": "PL_CheckStringVoltage [plausibility/plausibility.c]",
+    "Requirement ID": "F2-LLR-ALG-070\nF2-LLR-ALG-070-01\nF2-LLR-ALG-070-02",
+    "Description": "지정 입력의 반환·출력·상태 및 외부 호출 확인\n원 시험: plausibility/test_plausibility.c / testCheckPackVoltageCellVoltageAndCurrentSensorBothMaximum",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n상태/객체 packVoltage_mV (int32_t): 2147483647\n상태/객체 highVoltage_mV (int32_t): 2147483647\n",
+    "Inputs": "PL_CheckStringVoltage\n1번째 인수 (int32_t voltageAfe_mV): 2147483647\n2번째 인수 (int32_t voltageCurrentSensor_mV): 2147483647",
+    "Expected": "SUT 반환값 = STD_OK",
+    "section": 10,
+    "source_table": 37,
+    "source_row": 3
+  },
+  {
+    "Test ID": "F2-LLR-ALG-070-TC-03",
+    "SUT": "PL_CheckStringVoltage [plausibility/plausibility.c]",
+    "Requirement ID": "F2-LLR-ALG-070\nF2-LLR-ALG-070-01\nF2-LLR-ALG-070-02",
+    "Description": "지정 입력의 반환·출력·상태 및 외부 호출 확인\n원 시험: plausibility/test_plausibility.c / testCheckPackVoltageCellVoltageAndCurrentSensorDifferenceEqualsTolerance",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n상태/객체 packVoltage_mV (int32_t): 0\n상태/객체 highVoltage_mV (int32_t): 3000\n",
+    "Inputs": "PL_CheckStringVoltage\n1번째 인수 (int32_t voltageAfe_mV): 0\n2번째 인수 (int32_t voltageCurrentSensor_mV): 3000",
+    "Expected": "SUT 반환값 = STD_NOT_OK",
+    "section": 10,
+    "source_table": 37,
+    "source_row": 4
+  },
+  {
+    "Test ID": "F2-LLR-ALG-070-TC-04",
+    "SUT": "PL_CheckStringVoltage [plausibility/plausibility.c]",
+    "Requirement ID": "F2-LLR-ALG-070\nF2-LLR-ALG-070-01\nF2-LLR-ALG-070-02",
+    "Description": "지정 입력의 반환·출력·상태 및 외부 호출 확인\n원 시험: plausibility/test_plausibility.c / testCheckPackVoltageCellVoltageAndCurrentSensorDifferenceEqualsToleranceMinusOne",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n상태/객체 packVoltage_mV (int32_t): 0\n상태/객체 highVoltage_mV (int32_t): 3000 - 1\n",
+    "Inputs": "PL_CheckStringVoltage\n1번째 인수 (int32_t voltageAfe_mV): 0\n2번째 인수 (int32_t voltageCurrentSensor_mV): 3000 - 1",
+    "Expected": "SUT 반환값 = STD_OK",
+    "section": 10,
+    "source_table": 37,
+    "source_row": 5
+  },
+  {
+    "Test ID": "F2-LLR-ALG-070-TC-05",
+    "SUT": "PL_CheckStringVoltage [plausibility/plausibility.c]",
+    "Requirement ID": "F2-LLR-ALG-070\nF2-LLR-ALG-070-01\nF2-LLR-ALG-070-02",
+    "Description": "지정 입력의 반환·출력·상태 및 외부 호출 확인\n원 시험: plausibility/test_plausibility.c / testCheckPackVoltageCellVoltageAndCurrentSensorDifferenceEqualsTolerancePlusOne",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n상태/객체 packVoltage_mV (int32_t): 0\n상태/객체 highVoltage_mV (int32_t): 3000 + 1\n",
+    "Inputs": "PL_CheckStringVoltage\n1번째 인수 (int32_t voltageAfe_mV): 0\n2번째 인수 (int32_t voltageCurrentSensor_mV): (3000 + 1)",
+    "Expected": "SUT 반환값 = STD_NOT_OK",
+    "section": 10,
+    "source_table": 37,
+    "source_row": 6
+  },
+  {
+    "Test ID": "F2-LLR-ALG-070-TC-06",
+    "SUT": "PL_CheckStringVoltage [plausibility/plausibility.c]",
+    "Requirement ID": "F2-LLR-ALG-070\nF2-LLR-ALG-070-01\nF2-LLR-ALG-070-02",
+    "Description": "지정 입력의 반환·출력·상태 및 외부 호출 확인\n원 시험: plausibility/test_plausibility.c / testCheckPackVoltageCellVoltageAndCurrentSensorDifferenceEqualValue",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n상태/객체 packVoltage_mV (int32_t): 4242\n상태/객체 highVoltage_mV (int32_t): 4242\n",
+    "Inputs": "PL_CheckStringVoltage\n1번째 인수 (int32_t voltageAfe_mV): 4242\n2번째 인수 (int32_t voltageCurrentSensor_mV): 4242",
+    "Expected": "SUT 반환값 = STD_OK",
+    "section": 10,
+    "source_table": 37,
+    "source_row": 7
+  },
+  {
+    "Test ID": "F2-LLR-ALG-070-TC-07",
+    "SUT": "PL_CheckStringVoltage [plausibility/plausibility.c]",
+    "Requirement ID": "F2-LLR-ALG-070\nF2-LLR-ALG-070-01\nF2-LLR-ALG-070-02",
+    "Description": "지정 입력의 반환·출력·상태 및 외부 호출 확인\n원 시험: plausibility/test_plausibility.c / testCheckPackVoltageCellVoltageAndCurrentSensorDifferenceINT32MaxMinus",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n상태/객체 packVoltage_mV (int32_t): 0\n상태/객체 highVoltage_mV (int32_t): 2147483647\n",
+    "Inputs": "PL_CheckStringVoltage\n1번째 인수 (int32_t voltageAfe_mV): 0\n2번째 인수 (int32_t voltageCurrentSensor_mV): 2147483647",
+    "Expected": "SUT 반환값 = STD_NOT_OK",
+    "section": 10,
+    "source_table": 37,
+    "source_row": 8
+  },
+  {
+    "Test ID": "F2-LLR-ALG-070-TC-08",
+    "SUT": "PL_CheckStringVoltage [plausibility/plausibility.c]",
+    "Requirement ID": "F2-LLR-ALG-070\nF2-LLR-ALG-070-01\nF2-LLR-ALG-070-02",
+    "Description": "지정 입력의 반환·출력·상태 및 외부 호출 확인\n원 시험: plausibility/test_plausibility.c / testCheckPackVoltageCellVoltageAndCurrentSensorDifferenceINT32MaxPlus",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n상태/객체 highVoltage_mV (int32_t): 2147483647\n",
+    "Inputs": "PL_CheckStringVoltage\n1번째 인수 (int32_t voltageAfe_mV): packVoltage_mV\n2번째 인수 (int32_t voltageCurrentSensor_mV): 2147483647",
+    "Expected": "SUT 반환값 = STD_NOT_OK",
+    "section": 10,
+    "source_table": 37,
+    "source_row": 9
+  },
+  {
+    "Test ID": "F2-LLR-ALG-070-TC-09",
+    "SUT": "PL_CheckStringVoltage [plausibility/plausibility.c]",
+    "Requirement ID": "F2-LLR-ALG-070\nF2-LLR-ALG-070-01\nF2-LLR-ALG-070-02",
+    "Description": "지정 입력의 반환·출력·상태 및 외부 호출 확인\n원 시험: plausibility/test_plausibility.c / testCheckPackVoltageCellVoltageAndCurrentSensorDifferenceINT32MaxPlusTooMuch",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n상태/객체 highVoltage_mV (int32_t): 2147483647\n",
+    "Inputs": "PL_CheckStringVoltage\n1번째 인수 (int32_t voltageAfe_mV): packVoltage_mV\n2번째 인수 (int32_t voltageCurrentSensor_mV): 2147483647",
+    "Expected": "SUT 반환값 = STD_NOT_OK",
+    "section": 10,
+    "source_table": 37,
+    "source_row": 10
+  },
+  {
+    "Test ID": "F2-LLR-ALG-070-TC-10",
+    "SUT": "PL_CheckStringVoltage [plausibility/plausibility.c]",
+    "Requirement ID": "F2-LLR-ALG-070\nF2-LLR-ALG-070-01\nF2-LLR-ALG-070-02",
+    "Description": "지정 입력의 반환·출력·상태 및 외부 호출 확인\n원 시험: plausibility/test_plausibility.c / testCheckPackVoltageCellVoltageAndCurrentSensorDifferenceINT32Max",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n상태/객체 packVoltage_mV (int32_t): 2147483647\n상태/객체 highVoltage_mV (int32_t): 2147483647\n",
+    "Inputs": "PL_CheckStringVoltage\n1번째 인수 (int32_t voltageAfe_mV): 2147483647\n2번째 인수 (int32_t voltageCurrentSensor_mV): 2147483647",
+    "Expected": "SUT 반환값 = STD_OK",
+    "section": 10,
+    "source_table": 37,
+    "source_row": 11
+  }
+]

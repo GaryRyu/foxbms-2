@@ -1,0 +1,552 @@
+{
+  "modules": [
+    {
+      "module": "algorithm_config_algorithm_cfg",
+      "source": "src/app/application/algorithm/config/algorithm_cfg.c",
+      "test": "app/application/algorithm/config/test_algorithm_cfg_document.c",
+      "case_count": 6,
+      "cases": [
+        "F2-LLR-ALG-001-TC-01",
+        "F2-LLR-ALG-001-TC-02",
+        "F2-LLR-ALG-001-TC-03",
+        "F2-LLR-ALG-001-TC-04",
+        "F2-LLR-ALG-005-TC-01",
+        "F2-LLR-ALG-005-TC-02"
+      ],
+      "stubs": [
+        "app/application/algorithm/config/stubs/stub_algorithm_cfg.c"
+      ]
+    },
+    {
+      "module": "algorithm_state_estimation_soc_counting_soc_counting",
+      "source": "src/app/application/algorithm/state_estimation/soc/counting/soc_counting.c",
+      "test": "app/application/algorithm/state_estimation/soc/counting/test_soc_counting_document.c",
+      "case_count": 20,
+      "cases": [
+        "F2-LLR-ALG-008-TC-01",
+        "F2-LLR-ALG-008-TC-02-01",
+        "F2-LLR-ALG-008-TC-02-02",
+        "F2-LLR-ALG-008-TC-02-03",
+        "F2-LLR-ALG-008-TC-02-04",
+        "F2-LLR-ALG-008-TC-02-05",
+        "F2-LLR-ALG-008-TC-02-06",
+        "F2-LLR-ALG-008-TC-02-07",
+        "F2-LLR-ALG-008-TC-02-08",
+        "F2-LLR-ALG-008-TC-02-09",
+        "F2-LLR-ALG-008-TC-03-01",
+        "F2-LLR-ALG-008-TC-03-02",
+        "F2-LLR-ALG-008-TC-03-03",
+        "F2-LLR-ALG-008-TC-03-04",
+        "F2-LLR-ALG-008-TC-03-05",
+        "F2-LLR-ALG-008-TC-03-06",
+        "F2-LLR-ALG-008-TC-03-07",
+        "F2-LLR-ALG-008-TC-03-08",
+        "F2-LLR-ALG-008-06-ADD-001",
+        "F2-LLR-ALG-008-05-ADD-001"
+      ],
+      "stubs": [
+        "support/host/application_storage.c"
+      ],
+      "dependencies": [
+        "src/app/application/config/battery_cell_cfg.c"
+      ]
+    },
+    {
+      "module": "algorithm_state_estimation_soc_debug_soc_debug",
+      "source": "src/app/application/algorithm/state_estimation/soc/debug/soc_debug.c",
+      "test": "app/application/algorithm/state_estimation/soc/debug/test_soc_debug_document.c",
+      "case_count": 6,
+      "cases": [
+        "F2-LLR-ALG-011-TC-01-01",
+        "F2-LLR-ALG-011-TC-01-02",
+        "F2-LLR-ALG-011-TC-01-03",
+        "F2-LLR-ALG-011-TC-02-01",
+        "F2-LLR-ALG-011-TC-02-02",
+        "F2-LLR-ALG-011-TC-03"
+      ]
+    },
+    {
+      "module": "algorithm_state_estimation_soc_lookup_table_soc_lookup_table",
+      "source": "src/app/application/algorithm/state_estimation/soc/lookup-table/soc_lookup-table.c",
+      "test": "app/application/algorithm/state_estimation/soc/lookup-table/test_soc_lookup-table_document.c",
+      "case_count": 27,
+      "cases": [
+        "F2-LLR-ALG-014-TC-01-01",
+        "F2-LLR-ALG-014-TC-01-02",
+        "F2-LLR-ALG-014-TC-01-03",
+        "F2-LLR-ALG-014-TC-03-01",
+        "F2-LLR-ALG-014-TC-03-02",
+        "F2-LLR-ALG-014-TC-03-03",
+        "F2-LLR-ALG-014-TC-03-04",
+        "F2-LLR-ALG-014-TC-03-05",
+        "F2-LLR-ALG-014-TC-03-06",
+        "F2-LLR-ALG-014-TC-04-01",
+        "F2-LLR-ALG-014-TC-04-02",
+        "F2-LLR-ALG-014-TC-04-03",
+        "F2-LLR-ALG-014-TC-04-04",
+        "F2-LLR-ALG-014-TC-04-05",
+        "F2-LLR-ALG-014-TC-04-06",
+        "F2-LLR-ALG-014-TC-04-07",
+        "F2-LLR-ALG-014-TC-04-08",
+        "F2-LLR-ALG-014-TC-05",
+        "F2-LLR-ALG-014-TC-06-01",
+        "F2-LLR-ALG-014-TC-06-02",
+        "F2-LLR-ALG-014-TC-06-03",
+        "F2-LLR-ALG-014-TC-06-04",
+        "F2-LLR-ALG-014-TC-06-05",
+        "F2-LLR-ALG-014-TC-06-06",
+        "F2-LLR-ALG-014-TC-06-07",
+        "F2-LLR-ALG-014-TC-06-08",
+        "F2-LLR-ALG-014-TC-06-09"
+      ],
+      "stubs": [
+        "support/host/application_storage.c"
+      ],
+      "dependencies": [
+        "src/app/application/config/battery_cell_cfg.c"
+      ]
+    },
+    {
+      "module": "algorithm_state_estimation_soc_none_soc_none",
+      "source": "src/app/application/algorithm/state_estimation/soc/none/soc_none.c",
+      "test": "app/application/algorithm/state_estimation/soc/none/test_soc_none_document.c",
+      "case_count": 6,
+      "cases": [
+        "F2-LLR-ALG-020-TC-01-01",
+        "F2-LLR-ALG-020-TC-01-02",
+        "F2-LLR-ALG-020-TC-01-03",
+        "F2-LLR-ALG-020-TC-02-01",
+        "F2-LLR-ALG-020-TC-02-02",
+        "F2-LLR-ALG-020-TC-03"
+      ]
+    },
+    {
+      "module": "algorithm_state_estimation_soe_debug_soe_debug",
+      "source": "src/app/application/algorithm/state_estimation/soe/debug/soe_debug.c",
+      "test": "app/application/algorithm/state_estimation/soe/debug/test_soe_debug_document.c",
+      "case_count": 5,
+      "cases": [
+        "F2-LLR-ALG-023-TC-01-01",
+        "F2-LLR-ALG-023-TC-01-02",
+        "F2-LLR-ALG-023-TC-01-03",
+        "F2-LLR-ALG-023-TC-02-01",
+        "F2-LLR-ALG-023-TC-02-02"
+      ]
+    },
+    {
+      "module": "algorithm_state_estimation_soe_none_soe_none",
+      "source": "src/app/application/algorithm/state_estimation/soe/none/soe_none.c",
+      "test": "app/application/algorithm/state_estimation/soe/none/test_soe_none_document.c",
+      "case_count": 5,
+      "cases": [
+        "F2-LLR-ALG-025-TC-01-01",
+        "F2-LLR-ALG-025-TC-01-02",
+        "F2-LLR-ALG-025-TC-01-03",
+        "F2-LLR-ALG-025-TC-02-01",
+        "F2-LLR-ALG-025-TC-02-02"
+      ]
+    },
+    {
+      "module": "algorithm_state_estimation_soh_debug_soh_debug",
+      "source": "src/app/application/algorithm/state_estimation/soh/debug/soh_debug.c",
+      "test": "app/application/algorithm/state_estimation/soh/debug/test_soh_debug_document.c",
+      "case_count": 5,
+      "cases": [
+        "F2-LLR-ALG-027-TC-01-01",
+        "F2-LLR-ALG-027-TC-01-02",
+        "F2-LLR-ALG-027-TC-01-03",
+        "F2-LLR-ALG-027-TC-02-01",
+        "F2-LLR-ALG-027-TC-02-02"
+      ]
+    },
+    {
+      "module": "algorithm_state_estimation_soh_none_soh_none",
+      "source": "src/app/application/algorithm/state_estimation/soh/none/soh_none.c",
+      "test": "app/application/algorithm/state_estimation/soh/none/test_soh_none_document.c",
+      "case_count": 5,
+      "cases": [
+        "F2-LLR-ALG-029-TC-01-01",
+        "F2-LLR-ALG-029-TC-01-02",
+        "F2-LLR-ALG-029-TC-01-03",
+        "F2-LLR-ALG-029-TC-02-01",
+        "F2-LLR-ALG-029-TC-02-02"
+      ]
+    },
+    {
+      "module": "algorithm_state_estimation_state_estimation",
+      "source": "src/app/application/algorithm/state_estimation/state_estimation.c",
+      "test": "app/application/algorithm/state_estimation/test_state_estimation_document.c",
+      "case_count": 16,
+      "cases": [
+        "F2-LLR-ALG-031-TC-01-01",
+        "F2-LLR-ALG-031-TC-01-02",
+        "F2-LLR-ALG-031-TC-01-03",
+        "F2-LLR-ALG-031-TC-01-04",
+        "F2-LLR-ALG-031-TC-01-05",
+        "F2-LLR-ALG-031-TC-01-06",
+        "F2-LLR-ALG-031-TC-01-07",
+        "F2-LLR-ALG-031-TC-01-08",
+        "F2-LLR-ALG-031-TC-01-09",
+        "F2-LLR-ALG-031-TC-01-10",
+        "F2-LLR-ALG-031-TC-01-11",
+        "F2-LLR-ALG-031-TC-01-12",
+        "F2-LLR-ALG-031-TC-02",
+        "F2-LLR-ALG-031-TC-03",
+        "F2-LLR-ALG-031-TC-04",
+        "F2-LLR-ALG-031-TC-05"
+      ],
+      "stubs": [
+        "support/host/application_storage.c"
+      ],
+      "dependencies": [
+        "src/app/application/algorithm/state_estimation/soc/none/soc_none.c",
+        "src/app/application/algorithm/state_estimation/soe/none/soe_none.c",
+        "src/app/application/algorithm/state_estimation/soh/none/soh_none.c"
+      ]
+    },
+    {
+      "module": "bal_bal",
+      "source": "src/app/application/bal/bal.c",
+      "test": "app/application/bal/test_bal_document.c",
+      "case_count": 18,
+      "cases": [
+        "F2-LLR-ALG-046-TC-01",
+        "F2-LLR-ALG-046-TC-02",
+        "F2-LLR-ALG-046-TC-03",
+        "F2-LLR-ALG-046-TC-05",
+        "F2-LLR-ALG-046-TC-06",
+        "F2-LLR-ALG-046-TC-07",
+        "F2-LLR-ALG-046-TC-08",
+        "F2-LLR-ALG-046-TC-09",
+        "F2-LLR-ALG-046-TC-10",
+        "F2-LLR-ALG-046-TC-11",
+        "F2-LLR-ALG-046-TC-12",
+        "F2-LLR-ALG-046-TC-13",
+        "F2-LLR-ALG-046-TC-14",
+        "F2-LLR-ALG-046-TC-15",
+        "F2-LLR-ALG-046-TC-16",
+        "F2-LLR-ALG-046-TC-17",
+        "F2-LLR-ALG-046-TC-04",
+        "F2-LLR-ALG-046-TC-18"
+      ],
+      "stubs": [
+        "support/host/application_storage.c"
+      ]
+    },
+    {
+      "module": "config_soa_cfg",
+      "source": "src/app/application/config/soa_cfg.c",
+      "test": "app/application/config/test_soa_cfg_document.c",
+      "case_count": 60,
+      "cases": [
+        "F2-LLR-ALG-066-TC-01-01",
+        "F2-LLR-ALG-066-TC-01-02",
+        "F2-LLR-ALG-066-TC-01-03",
+        "F2-LLR-ALG-066-TC-01-04",
+        "F2-LLR-ALG-066-TC-01-05",
+        "F2-LLR-ALG-066-TC-01-06",
+        "F2-LLR-ALG-066-TC-01-07",
+        "F2-LLR-ALG-066-TC-01-08",
+        "F2-LLR-ALG-066-TC-01-09",
+        "F2-LLR-ALG-066-TC-01-10",
+        "F2-LLR-ALG-066-TC-01-11",
+        "F2-LLR-ALG-066-TC-01-12",
+        "F2-LLR-ALG-066-TC-01-13",
+        "F2-LLR-ALG-066-TC-01-14",
+        "F2-LLR-ALG-066-TC-01-15",
+        "F2-LLR-ALG-066-TC-01-16",
+        "F2-LLR-ALG-066-TC-02-01",
+        "F2-LLR-ALG-066-TC-02-02",
+        "F2-LLR-ALG-066-TC-02-03",
+        "F2-LLR-ALG-066-TC-02-04",
+        "F2-LLR-ALG-066-TC-02-05",
+        "F2-LLR-ALG-066-TC-02-06",
+        "F2-LLR-ALG-066-TC-02-07",
+        "F2-LLR-ALG-066-TC-02-08",
+        "F2-LLR-ALG-066-TC-02-09",
+        "F2-LLR-ALG-066-TC-02-10",
+        "F2-LLR-ALG-066-TC-02-11",
+        "F2-LLR-ALG-066-TC-02-12",
+        "F2-LLR-ALG-066-TC-02-13",
+        "F2-LLR-ALG-066-TC-02-14",
+        "F2-LLR-ALG-066-TC-02-15",
+        "F2-LLR-ALG-066-TC-02-16",
+        "F2-LLR-ALG-066-TC-03-01",
+        "F2-LLR-ALG-066-TC-03-02",
+        "F2-LLR-ALG-066-TC-03-03",
+        "F2-LLR-ALG-066-TC-03-04",
+        "F2-LLR-ALG-066-TC-03-05",
+        "F2-LLR-ALG-066-TC-03-06",
+        "F2-LLR-ALG-066-TC-03-07",
+        "F2-LLR-ALG-066-TC-03-08",
+        "F2-LLR-ALG-066-TC-03-09",
+        "F2-LLR-ALG-066-TC-03-10",
+        "F2-LLR-ALG-066-TC-03-11",
+        "F2-LLR-ALG-066-TC-03-12",
+        "F2-LLR-ALG-066-TC-03-13",
+        "F2-LLR-ALG-066-TC-03-14",
+        "F2-LLR-ALG-066-TC-03-15",
+        "F2-LLR-ALG-066-TC-03-16",
+        "F2-LLR-ALG-066-TC-03-17",
+        "F2-LLR-ALG-066-TC-03-18",
+        "F2-LLR-ALG-066-TC-03-19",
+        "F2-LLR-ALG-066-TC-03-20",
+        "F2-LLR-ALG-066-TC-04-01",
+        "F2-LLR-ALG-066-TC-04-02",
+        "F2-LLR-ALG-066-TC-04-03",
+        "F2-LLR-ALG-066-TC-04-04",
+        "F2-LLR-ALG-066-TC-04-05",
+        "F2-LLR-ALG-066-TC-04-06",
+        "F2-LLR-ALG-066-TC-04-07",
+        "F2-LLR-ALG-066-TC-04-08"
+      ]
+    },
+    {
+      "module": "soa_soa",
+      "source": "src/app/application/soa/soa.c",
+      "test": "app/application/soa/test_soa_document.c",
+      "case_count": 6,
+      "cases": [
+        "F2-LLR-ALG-090-TC-01-01",
+        "F2-LLR-ALG-090-TC-01-02",
+        "F2-LLR-ALG-090-TC-02-01",
+        "F2-LLR-ALG-090-TC-02-02",
+        "F2-LLR-ALG-090-TC-02-03",
+        "F2-LLR-ALG-090-04-ADD-001"
+      ],
+      "stubs": [
+        "app/application/soa/stubs/stub_soa_dependencies.c"
+      ]
+    },
+    {
+      "module": "plausibility_plausibility",
+      "source": "src/app/application/plausibility/plausibility.c",
+      "test": "app/application/plausibility/test_plausibility_document.c",
+      "case_count": 17,
+      "cases": [
+        "F2-LLR-ALG-070-TC-01",
+        "F2-LLR-ALG-070-TC-02",
+        "F2-LLR-ALG-070-TC-03",
+        "F2-LLR-ALG-070-TC-04",
+        "F2-LLR-ALG-070-TC-05",
+        "F2-LLR-ALG-070-TC-06",
+        "F2-LLR-ALG-070-TC-07",
+        "F2-LLR-ALG-070-TC-10",
+        "F2-LLR-ALG-070-02-ADD-001",
+        "F2-LLR-ALG-070-02-ADD-002",
+        "F2-LLR-ALG-070-02-ADD-003",
+        "F2-LLR-ALG-070-02-ADD-004",
+        "F2-LLR-ALG-070-03-ADD-001",
+        "F2-LLR-ALG-070-03-ADD-002",
+        "F2-LLR-ALG-070-03-ADD-003",
+        "F2-LLR-ALG-070-05-ADD-001",
+        "F2-LLR-ALG-070-04-ADD-001"
+      ]
+    },
+    {
+      "module": "algorithm_algorithm",
+      "source": "src/app/application/algorithm/algorithm.c",
+      "test": "app/application/algorithm/test_algorithm_document.c",
+      "cases": [
+        "F2-LLR-ALG-036-TC-01",
+        "F2-LLR-ALG-036-TC-02",
+        "F2-LLR-ALG-036-TC-03",
+        "F2-LLR-ALG-036-TC-04",
+        "F2-LLR-ALG-036-TC-05",
+        "F2-LLR-ALG-036-TC-06",
+        "F2-LLR-ALG-036-TC-07",
+        "F2-LLR-ALG-036-TC-08",
+        "F2-LLR-ALG-036-TC-09",
+        "F2-LLR-ALG-036-TC-10",
+        "F2-LLR-ALG-036-06-ADD-001",
+        "F2-LLR-ALG-036-06-ADD-002",
+        "F2-LLR-ALG-036-06-ADD-003",
+        "F2-LLR-ALG-036-07-ADD-001"
+      ],
+      "case_count": 14,
+      "isolated_cases": true,
+      "stubs": [],
+      "dependencies": []
+    },
+    {
+      "module": "algorithm_moving_average_moving_average",
+      "source": "src/app/application/algorithm/moving_average/moving_average.c",
+      "test": "app/application/algorithm/moving_average/test_moving_average_document.c",
+      "cases": [
+        "F2-LLR-ALG-007-TC-01",
+        "F2-LLR-ALG-007-05-ADD-001",
+        "F2-LLR-ALG-007-05-ADD-002"
+      ],
+      "case_count": 3,
+      "isolated_cases": true,
+      "stubs": [
+        "support/host/application_storage.c"
+      ],
+      "dependencies": []
+    },
+    {
+      "module": "bal_history_bal_strategy_history",
+      "source": "src/app/application/bal/history/bal_strategy_history.c",
+      "test": "app/application/bal/history/test_bal_strategy_history_document.c",
+      "cases": [
+        "F2-LLR-ALG-046-TC-20-01",
+        "F2-LLR-ALG-046-TC-21-01",
+        "F2-LLR-ALG-046-TC-21-02",
+        "F2-LLR-ALG-046-12-ADD-001",
+        "F2-LLR-ALG-046-11-ADD-001"
+      ],
+      "case_count": 5,
+      "isolated_cases": true,
+      "stubs": [
+        "support/host/application_storage.c",
+        "app/application/bal/stubs/stub_strategy_calls.c"
+      ],
+      "dependencies": []
+    },
+    {
+      "module": "bal_voltage_bal_strategy_voltage",
+      "source": "src/app/application/bal/voltage/bal_strategy_voltage.c",
+      "test": "app/application/bal/voltage/test_bal_strategy_voltage_document.c",
+      "cases": [
+        "F2-LLR-ALG-046-TC-23-01",
+        "F2-LLR-ALG-046-TC-24-01",
+        "F2-LLR-ALG-046-TC-24-02",
+        "F2-LLR-ALG-046-12-ADD-001",
+        "F2-LLR-ALG-046-10-ADD-001"
+      ],
+      "case_count": 5,
+      "isolated_cases": true,
+      "stubs": [
+        "support/host/application_storage.c",
+        "app/application/bal/stubs/stub_strategy_calls.c"
+      ],
+      "dependencies": []
+    },
+    {
+      "module": "redundancy_redundancy",
+      "source": "src/app/application/redundancy/redundancy.c",
+      "test": "app/application/redundancy/test_redundancy_document.c",
+      "cases": [
+        "F2-LLR-ALG-080-TC-01-01",
+        "F2-LLR-ALG-080-TC-01-02",
+        "F2-LLR-ALG-080-TC-01-03",
+        "F2-LLR-ALG-080-TC-01-04",
+        "F2-LLR-ALG-080-TC-02-01",
+        "F2-LLR-ALG-080-TC-02-02",
+        "F2-LLR-ALG-080-TC-02-03",
+        "F2-LLR-ALG-080-TC-02-04",
+        "F2-LLR-ALG-080-TC-02-05",
+        "F2-LLR-ALG-080-TC-02-06",
+        "F2-LLR-ALG-080-TC-02-07",
+        "F2-LLR-ALG-080-TC-02-08",
+        "F2-LLR-ALG-080-TC-03-01",
+        "F2-LLR-ALG-080-TC-03-02",
+        "F2-LLR-ALG-080-TC-04-01",
+        "F2-LLR-ALG-080-TC-04-02",
+        "F2-LLR-ALG-080-TC-05-01",
+        "F2-LLR-ALG-080-TC-05-02",
+        "F2-LLR-ALG-080-TC-05-03",
+        "F2-LLR-ALG-080-TC-06-01",
+        "F2-LLR-ALG-080-TC-06-02",
+        "F2-LLR-ALG-080-TC-07-01",
+        "F2-LLR-ALG-080-TC-07-02",
+        "F2-LLR-ALG-080-TC-07-03",
+        "F2-LLR-ALG-080-TC-08-01",
+        "F2-LLR-ALG-080-TC-08-02",
+        "F2-LLR-ALG-080-TC-09",
+        "F2-LLR-ALG-080-TC-10-01",
+        "F2-LLR-ALG-080-TC-10-02",
+        "F2-LLR-ALG-080-11-ADD-001",
+        "F2-LLR-ALG-080-12-ADD-001",
+        "F2-LLR-ALG-080-13-ADD-001",
+        "F2-LLR-ALG-080-13-ADD-002",
+        "F2-LLR-ALG-080-28-ADD-001",
+        "F2-LLR-ALG-080-22-ADD-001",
+        "F2-LLR-ALG-080-01-ADD-001",
+        "F2-LLR-ALG-080-03-ADD-001",
+        "F2-LLR-ALG-080-07-ADD-001",
+        "F2-LLR-ALG-080-07-ADD-002",
+        "F2-LLR-ALG-080-10-ADD-001",
+        "F2-LLR-ALG-080-09-ADD-001",
+        "F2-LLR-ALG-080-20-ADD-001",
+        "F2-LLR-ALG-080-16-ADD-001",
+        "F2-LLR-ALG-080-17-ADD-001",
+        "F2-LLR-ALG-080-18-ADD-001",
+        "F2-LLR-ALG-080-19-ADD-001",
+        "F2-LLR-ALG-080-23-ADD-001",
+        "F2-LLR-ALG-080-27-ADD-001",
+        "F2-LLR-ALG-080-14-ADD-001",
+        "F2-LLR-ALG-080-24-ADD-001"
+      ],
+      "case_count": 50,
+      "isolated_cases": false,
+      "stubs": [
+        "app/application/redundancy/stubs/stub_document_redundancy.c"
+      ],
+      "dependencies": []
+    },
+    {
+      "module": "config_bal_cfg",
+      "source": "src/app/application/config/bal_cfg.c",
+      "test": "app/application/config/test_bal_cfg_document.c",
+      "cases": [
+        "F2-LLR-ALG-063-TC-01",
+        "F2-LLR-ALG-063-TC-02",
+        "F2-LLR-ALG-063-TC-03",
+        "F2-LLR-ALG-063-01-ADD-001"
+      ],
+      "case_count": 4,
+      "isolated_cases": false,
+      "stubs": [],
+      "dependencies": []
+    },
+    {
+      "module": "bal_none_bal_strategy_none",
+      "source": "src/app/application/bal/none/bal_strategy_none.c",
+      "test": "app/application/bal/none/test_bal_strategy_none_document.c",
+      "cases": [
+        "F2-LLR-ALG-046-TC-25"
+      ],
+      "case_count": 1,
+      "isolated_cases": false,
+      "stubs": [],
+      "dependencies": []
+    },
+    {
+      "module": "algorithm_state_estimation_soe_counting_soe_counting",
+      "source": "src/app/application/algorithm/state_estimation/soe/counting/soe_counting.c",
+      "test": "app/application/algorithm/state_estimation/soe/counting/test_soe_counting_document.c",
+      "cases": [
+        "F2-LLR-APP-SOE-001-01-ADD-001",
+        "F2-LLR-APP-SOE-001-01-ADD-002",
+        "F2-LLR-APP-SOE-001-02-ADD-003",
+        "F2-LLR-APP-SOE-001-04-ADD-004",
+        "F2-LLR-APP-SOE-001-05-ADD-005",
+        "F2-LLR-APP-SOE-001-03-ADD-001"
+      ],
+      "case_count": 6,
+      "isolated_cases": true,
+      "stubs": [
+        "support/host/application_storage.c"
+      ],
+      "dependencies": [
+        "src/app/application/config/battery_cell_cfg.c"
+      ]
+    },
+    {
+      "module": "redundancy_multistring_unit",
+      "source": "src/app/application/redundancy/redundancy.c",
+      "test": "app/application/redundancy/test_redundancy_multistring_unit.c",
+      "cases": [
+        "F2-LLR-ALG-080-29-ADD-001"
+      ],
+      "case_count": 1,
+      "isolated_cases": false,
+      "stubs": [
+        "app/application/redundancy/stubs/stub_document_redundancy.c"
+      ],
+      "dependencies": [],
+      "strings": 2
+    }
+  ]
+}

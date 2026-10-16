@@ -1,0 +1,62 @@
+[
+  {
+    "Test ID": "F2-LLR-ALG-090-TC-01-01",
+    "SUT": "SOA_CheckVoltages [soa/soa.c]",
+    "Requirement ID": "F2-LLR-ALG-090\nF2-LLR-ALG-090-01\nF2-LLR-ALG-090-02",
+    "Description": "무효 입력에 대한 SUT assertion 확인\n원 시험: soa/test_soa.c / testSOA_CheckVoltages",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n",
+    "Inputs": "SOA_CheckVoltages\n1번째 인수 (DATA_BLOCK_MIN_MAX_s *pMinimumMaximumCellVoltages): NULL",
+    "Expected": "SUT 반환형: void (반환값 판정 없음).\nSUT의 FAS_ASSERT 실패가 발생해야 한다. 해당 assertion을 관찰하면 시험 PASS이며, 임의 crash나 timeout은 합격이 아니다.",
+    "section": 9,
+    "source_table": 35,
+    "source_row": 2
+  },
+  {
+    "Test ID": "F2-LLR-ALG-090-TC-01-02",
+    "SUT": "SOA_CheckVoltages [soa/soa.c]",
+    "Requirement ID": "F2-LLR-ALG-090\nF2-LLR-ALG-090-01\nF2-LLR-ALG-090-02",
+    "Description": "지정 입력의 반환·출력·상태 및 외부 호출 확인\n원 시험: soa/test_soa.c / testSOA_CheckVoltages",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n상태/객체 pMinimumMaximumCellVoltages (DATA_BLOCK_MIN_MAX_s): {.header.uniqueId = DATA_BLOCK_ID_MIN_MAX}; 지정하지 않은 구조체 필드와 배열 원소는 0.\n외부 응답: DIAG_Handler(DIAG_ID_CELL_VOLTAGE_OVERVOLTAGE_MSL, DIAG_EVENT_OK, DIAG_STRING, 0u) → DIAG_HANDLER_RETURN_OK\n외부 응답: DIAG_Handler(DIAG_ID_CELL_VOLTAGE_OVERVOLTAGE_RSL, DIAG_EVENT_OK, DIAG_STRING, 0u) → DIAG_HANDLER_RETURN_OK\n외부 응답: DIAG_Handler(DIAG_ID_CELL_VOLTAGE_OVERVOLTAGE_MOL, DIAG_EVENT_OK, DIAG_STRING, 0u) → DIAG_HANDLER_RETURN_OK\n외부 응답: DIAG_Handler(DIAG_ID_CELL_VOLTAGE_UNDERVOLTAGE_MOL, DIAG_EVENT_NOT_OK, DIAG_STRING, 0u) → DIAG_HANDLER_RETURN_OK\n외부 응답: DIAG_Handler(DIAG_ID_CELL_VOLTAGE_UNDERVOLTAGE_RSL, DIAG_EVENT_NOT_OK, DIAG_STRING, 0u) → DIAG_HANDLER_RETURN_OK\n외부 응답: DIAG_Handler(DIAG_ID_CELL_VOLTAGE_UNDERVOLTAGE_MSL, DIAG_EVENT_NOT_OK, DIAG_STRING, 0u) → DIAG_HANDLER_RETURN_OK",
+    "Inputs": "SOA_CheckVoltages\n1번째 인수 (DATA_BLOCK_MIN_MAX_s *pMinimumMaximumCellVoltages): &pMinimumMaximumCellVoltages",
+    "Expected": "SUT 반환형: void (반환값 판정 없음).\n외부 호출: DIAG_Handler(DIAG_ID_CELL_VOLTAGE_OVERVOLTAGE_MSL, DIAG_EVENT_OK, DIAG_STRING, 0u)\n외부 호출: DIAG_Handler(DIAG_ID_CELL_VOLTAGE_OVERVOLTAGE_RSL, DIAG_EVENT_OK, DIAG_STRING, 0u)\n외부 호출: DIAG_Handler(DIAG_ID_CELL_VOLTAGE_OVERVOLTAGE_MOL, DIAG_EVENT_OK, DIAG_STRING, 0u)\n외부 호출: DIAG_Handler(DIAG_ID_CELL_VOLTAGE_UNDERVOLTAGE_MOL, DIAG_EVENT_NOT_OK, DIAG_STRING, 0u)\n외부 호출: DIAG_Handler(DIAG_ID_CELL_VOLTAGE_UNDERVOLTAGE_RSL, DIAG_EVENT_NOT_OK, DIAG_STRING, 0u)\n외부 호출: DIAG_Handler(DIAG_ID_CELL_VOLTAGE_UNDERVOLTAGE_MSL, DIAG_EVENT_NOT_OK, DIAG_STRING, 0u)",
+    "section": 9,
+    "source_table": 35,
+    "source_row": 3
+  },
+  {
+    "Test ID": "F2-LLR-ALG-090-TC-02-01",
+    "SUT": "SOA_CheckTemperatures [soa/soa.c]",
+    "Requirement ID": "F2-LLR-ALG-090\nF2-LLR-ALG-090-01\nF2-LLR-ALG-090-03",
+    "Description": "무효 입력에 대한 SUT assertion 확인\n원 시험: soa/test_soa.c / testSOA_CheckTemperatures",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n상태/객체 pCurrent (DATA_BLOCK_PACK_VALUES_s): {.header.uniqueId = DATA_BLOCK_ID_PACK_VALUES}; 지정하지 않은 구조체 필드와 배열 원소는 0.\n",
+    "Inputs": "SOA_CheckTemperatures\n1번째 인수 (DATA_BLOCK_MIN_MAX_s *pMinimumMaximumCellTemperatures): NULL\n2번째 인수 (DATA_BLOCK_PACK_VALUES_s *pCurrent): &pCurrent",
+    "Expected": "SUT 반환형: void (반환값 판정 없음).\nSUT의 FAS_ASSERT 실패가 발생해야 한다. 해당 assertion을 관찰하면 시험 PASS이며, 임의 crash나 timeout은 합격이 아니다.",
+    "section": 9,
+    "source_table": 35,
+    "source_row": 4
+  },
+  {
+    "Test ID": "F2-LLR-ALG-090-TC-02-02",
+    "SUT": "SOA_CheckTemperatures [soa/soa.c]",
+    "Requirement ID": "F2-LLR-ALG-090\nF2-LLR-ALG-090-01\nF2-LLR-ALG-090-03",
+    "Description": "무효 입력에 대한 SUT assertion 확인\n원 시험: soa/test_soa.c / testSOA_CheckTemperatures",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n상태/객체 pMinimumMaximumCellVoltages (DATA_BLOCK_MIN_MAX_s): {.header.uniqueId = DATA_BLOCK_ID_MIN_MAX}; 지정하지 않은 구조체 필드와 배열 원소는 0.\n",
+    "Inputs": "SOA_CheckTemperatures\n1번째 인수 (DATA_BLOCK_MIN_MAX_s *pMinimumMaximumCellTemperatures): &pMinimumMaximumCellVoltages\n2번째 인수 (DATA_BLOCK_PACK_VALUES_s *pCurrent): NULL",
+    "Expected": "SUT 반환형: void (반환값 판정 없음).\nSUT의 FAS_ASSERT 실패가 발생해야 한다. 해당 assertion을 관찰하면 시험 PASS이며, 임의 crash나 timeout은 합격이 아니다.",
+    "section": 9,
+    "source_table": 35,
+    "source_row": 5
+  },
+  {
+    "Test ID": "F2-LLR-ALG-090-TC-02-03",
+    "SUT": "SOA_CheckTemperatures [soa/soa.c]",
+    "Requirement ID": "F2-LLR-ALG-090\nF2-LLR-ALG-090-01\nF2-LLR-ALG-090-03",
+    "Description": "지정 입력의 반환·출력·상태 및 외부 호출 확인\n원 시험: soa/test_soa.c / testSOA_CheckTemperatures",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n상태/객체 pMinimumMaximumCellVoltages (DATA_BLOCK_MIN_MAX_s): {.header.uniqueId = DATA_BLOCK_ID_MIN_MAX}; 지정하지 않은 구조체 필드와 배열 원소는 0.\n상태/객체 pCurrent (DATA_BLOCK_PACK_VALUES_s): {.header.uniqueId = DATA_BLOCK_ID_PACK_VALUES}; 지정하지 않은 구조체 필드와 배열 원소는 0.\n외부 응답: BMS_GetCurrentFlowDirection(pCurrent.stringCurrent_mA[0u]) → BMS_AT_REST\n외부 응답: DIAG_Handler(DIAG_ID_TEMP_OVERTEMPERATURE_CHARGE_MSL, DIAG_EVENT_OK, DIAG_STRING, 0u) → DIAG_HANDLER_RETURN_OK\n외부 응답: DIAG_Handler(DIAG_ID_TEMP_OVERTEMPERATURE_CHARGE_RSL, DIAG_EVENT_OK, DIAG_STRING, 0u) → DIAG_HANDLER_RETURN_OK\n외부 응답: DIAG_Handler(DIAG_ID_TEMP_OVERTEMPERATURE_CHARGE_MOL, DIAG_EVENT_OK, DIAG_STRING, 0u) → DIAG_HANDLER_RETURN_OK\n외부 응답: BMS_GetCurrentFlowDirection(pCurrent.stringCurrent_mA[0u]) → BMS_AT_REST\n외부 응답: DIAG_Handler(DIAG_ID_TEMP_UNDERTEMPERATURE_CHARGE_MSL, DIAG_EVENT_OK, DIAG_STRING, 0u) → DIAG_HANDLER_RETURN_OK\n외부 응답: DIAG_Handler(DIAG_ID_TEMP_UNDERTEMPERATURE_CHARGE_RSL, DIAG_EVENT_OK, DIAG_STRING, 0u) → DIAG_HANDLER_RETURN_OK\n외부 응답: DIAG_Handler(DIAG_ID_TEMP_UNDERTEMPERATURE_CHARGE_MOL, DIAG_EVENT_OK, DIAG_STRING, 0u) → DIAG_HANDLER_RETURN_OK",
+    "Inputs": "SOA_CheckTemperatures\n1번째 인수 (DATA_BLOCK_MIN_MAX_s *pMinimumMaximumCellTemperatures): &pMinimumMaximumCellVoltages\n2번째 인수 (DATA_BLOCK_PACK_VALUES_s *pCurrent): &pCurrent",
+    "Expected": "SUT 반환형: void (반환값 판정 없음).\n외부 호출: BMS_GetCurrentFlowDirection(pCurrent.stringCurrent_mA[0u])\n외부 호출: DIAG_Handler(DIAG_ID_TEMP_OVERTEMPERATURE_CHARGE_MSL, DIAG_EVENT_OK, DIAG_STRING, 0u)\n외부 호출: DIAG_Handler(DIAG_ID_TEMP_OVERTEMPERATURE_CHARGE_RSL, DIAG_EVENT_OK, DIAG_STRING, 0u)\n외부 호출: DIAG_Handler(DIAG_ID_TEMP_OVERTEMPERATURE_CHARGE_MOL, DIAG_EVENT_OK, DIAG_STRING, 0u)\n외부 호출: BMS_GetCurrentFlowDirection(pCurrent.stringCurrent_mA[0u])\n외부 호출: DIAG_Handler(DIAG_ID_TEMP_UNDERTEMPERATURE_CHARGE_MSL, DIAG_EVENT_OK, DIAG_STRING, 0u)\n외부 호출: DIAG_Handler(DIAG_ID_TEMP_UNDERTEMPERATURE_CHARGE_RSL, DIAG_EVENT_OK, DIAG_STRING, 0u)\n외부 호출: DIAG_Handler(DIAG_ID_TEMP_UNDERTEMPERATURE_CHARGE_MOL, DIAG_EVENT_OK, DIAG_STRING, 0u)",
+    "section": 9,
+    "source_table": 35,
+    "source_row": 6
+  }
+]

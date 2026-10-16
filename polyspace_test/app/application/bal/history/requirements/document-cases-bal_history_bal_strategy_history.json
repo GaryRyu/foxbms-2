@@ -1,0 +1,62 @@
+[
+  {
+    "Test ID": "F2-LLR-ALG-046-TC-19",
+    "SUT": "BAL_Init [bal/history/bal_strategy_history.c]",
+    "Requirement ID": "F2-LLR-ALG-046\nF2-LLR-ALG-046-08",
+    "Description": "지정 입력의 반환·출력·상태 및 외부 호출 확인\n원 시험: bal/history/test_bal_strategy_history.c / testCheckBalancingInitByDisablingBalancing",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n상태/객체 bms_tableControl (DATA_BLOCK_BALANCING_CONTROL_s): {.header.uniqueId = DATA_BLOCK_ID_BALANCING_CONTROL}; 지정하지 않은 구조체 필드와 배열 원소는 0.\n상태/객체 pBalancing->enableBalancing: true\n과거 호스트 결과: HL_het.h 의존성으로 BUILD_BLOCKED. 이번 문서 작업에서는 빌드하지 않았다. 전략별 내부 상태는 해당 전략 소스의 객체를 사용한다.\nbalancingState는 해당 전략의 실제 내부 bal_state를 가리킨다. pBalancing은 해당 전략의 내부 DATA_BLOCK_BALANCING_CONTROL_s를 가리킨다. 별도 시험 접근 함수를 실행하지 않고 표시된 필드값을 설정/관찰한다.\n외부 응답: DATA_Read1DataBlock(&bms_tableControl) → STD_OK\n외부 응답: DATA_Write1DataBlock(&bms_tableControl) → STD_OK",
+    "Inputs": "BAL_Init\n1번째 인수 (DATA_BLOCK_BALANCING_CONTROL_s *pControl): pBalancing",
+    "Expected": "외부 호출: DATA_Read1DataBlock(&bms_tableControl)\n외부 호출: DATA_Write1DataBlock(&bms_tableControl)\n관찰값 pBalancing->enableBalancing = false",
+    "section": 8,
+    "source_table": 29,
+    "source_row": 20
+  },
+  {
+    "Test ID": "F2-LLR-ALG-046-TC-20-01",
+    "SUT": "BAL_GetState [bal/history/bal_strategy_history.c]",
+    "Requirement ID": "F2-LLR-ALG-046\nF2-LLR-ALG-046-08",
+    "Description": "지정 입력의 반환·출력·상태 및 외부 호출 확인\n원 시험: bal/history/test_bal_strategy_history.c / testBalancingGetState",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n과거 호스트 결과: HL_het.h 의존성으로 BUILD_BLOCKED. 이번 문서 작업에서는 빌드하지 않았다. 전략별 내부 상태는 해당 전략 소스의 객체를 사용한다.\nbalancingState는 해당 전략의 실제 내부 bal_state를 가리킨다. pBalancing은 해당 전략의 내부 DATA_BLOCK_BALANCING_CONTROL_s를 가리킨다. 별도 시험 접근 함수를 실행하지 않고 표시된 필드값을 설정/관찰한다.\n",
+    "Inputs": "BAL_GetState\n인수 없음 (void)",
+    "Expected": "SUT 반환값 = BAL_FSM_UNINITIALIZED",
+    "section": 8,
+    "source_table": 29,
+    "source_row": 21
+  },
+  {
+    "Test ID": "F2-LLR-ALG-046-TC-20-02",
+    "SUT": "BAL_GetState [bal/history/bal_strategy_history.c]",
+    "Requirement ID": "F2-LLR-ALG-046\nF2-LLR-ALG-046-08",
+    "Description": "지정 입력의 반환·출력·상태 및 외부 호출 확인\n원 시험: bal/history/test_bal_strategy_history.c / testBalancingGetState",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n과거 호스트 결과: HL_het.h 의존성으로 BUILD_BLOCKED. 이번 문서 작업에서는 빌드하지 않았다. 전략별 내부 상태는 해당 전략 소스의 객체를 사용한다.\nbalancingState는 해당 전략의 실제 내부 bal_state를 가리킨다. pBalancing은 해당 전략의 내부 DATA_BLOCK_BALANCING_CONTROL_s를 가리킨다. 별도 시험 접근 함수를 실행하지 않고 표시된 필드값을 설정/관찰한다.\n",
+    "Inputs": "BAL_GetState\n인수 없음 (void)",
+    "Expected": "SUT 반환값 = BAL_FSM_INITIALIZED",
+    "section": 8,
+    "source_table": 29,
+    "source_row": 22
+  },
+  {
+    "Test ID": "F2-LLR-ALG-046-TC-21-01",
+    "SUT": "BAL_GetInitializationState [bal/history/bal_strategy_history.c]",
+    "Requirement ID": "F2-LLR-ALG-046\nF2-LLR-ALG-046-08",
+    "Description": "지정 입력의 반환·출력·상태 및 외부 호출 확인\n원 시험: bal/history/test_bal_strategy_history.c / testBalancingFinished",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n과거 호스트 결과: HL_het.h 의존성으로 BUILD_BLOCKED. 이번 문서 작업에서는 빌드하지 않았다. 전략별 내부 상태는 해당 전략 소스의 객체를 사용한다.\nbalancingState는 해당 전략의 실제 내부 bal_state를 가리킨다. pBalancing은 해당 전략의 내부 DATA_BLOCK_BALANCING_CONTROL_s를 가리킨다. 별도 시험 접근 함수를 실행하지 않고 표시된 필드값을 설정/관찰한다.\n",
+    "Inputs": "BAL_GetInitializationState\n인수 없음 (void)",
+    "Expected": "SUT 반환값 = STD_NOT_OK",
+    "section": 8,
+    "source_table": 29,
+    "source_row": 23
+  },
+  {
+    "Test ID": "F2-LLR-ALG-046-TC-21-02",
+    "SUT": "BAL_GetInitializationState [bal/history/bal_strategy_history.c]",
+    "Requirement ID": "F2-LLR-ALG-046\nF2-LLR-ALG-046-08",
+    "Description": "지정 입력의 반환·출력·상태 및 외부 호출 확인\n원 시험: bal/history/test_bal_strategy_history.c / testBalancingFinished",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n과거 호스트 결과: HL_het.h 의존성으로 BUILD_BLOCKED. 이번 문서 작업에서는 빌드하지 않았다. 전략별 내부 상태는 해당 전략 소스의 객체를 사용한다.\nbalancingState는 해당 전략의 실제 내부 bal_state를 가리킨다. pBalancing은 해당 전략의 내부 DATA_BLOCK_BALANCING_CONTROL_s를 가리킨다. 별도 시험 접근 함수를 실행하지 않고 표시된 필드값을 설정/관찰한다.\n",
+    "Inputs": "BAL_GetInitializationState\n인수 없음 (void)",
+    "Expected": "SUT 반환값 = STD_OK",
+    "section": 8,
+    "source_table": 29,
+    "source_row": 24
+  }
+]

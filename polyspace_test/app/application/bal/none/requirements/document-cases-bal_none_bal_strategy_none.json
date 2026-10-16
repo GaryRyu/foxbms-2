@@ -1,0 +1,14 @@
+[
+  {
+    "Test ID": "F2-LLR-ALG-046-TC-25",
+    "SUT": "BAL_GetInitializationState; BAL_SetStateRequest; BAL_Trigger [bal/none/bal_strategy_none.c]",
+    "Requirement ID": "F2-LLR-ALG-046\nF2-LLR-ALG-046-09",
+    "Description": "순차 상태 전이 확인\n원 시험: bal/none/test_bal_strategy_none.c / testBalancingStrategyNone",
+    "Precondition": "순차 시험: 첫 단계만 초기화하고 이후 단계는 앞 단계의 실제 SUT 상태를 유지한다. 단계별 외부 응답은 해당 호출에만 적용한다.\n\n단계 1: 구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n\n\n단계 2: 앞 단계의 실제 SUT 상태를 유지한다. 아래 대입 및 외부 응답만 해당 단계에 적용한다.\n구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 상태 초기화 없이 진행한다.\n\n\n단계 3: 앞 단계의 실제 SUT 상태를 유지한다. 아래 대입 및 외부 응답만 해당 단계에 적용한다.\n구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 상태 초기화 없이 진행한다.\n",
+    "Inputs": "단계 1: BAL_GetInitializationState\n인수 없음 (void)\n\n단계 2: BAL_SetStateRequest\n1번째 인수 (BAL_STATE_REQUEST_e stateRequest): BAL_STATE_INIT_REQUEST\n\n단계 3: BAL_Trigger\n인수 없음 (void)",
+    "Expected": "단계 1: SUT 반환값 = STD_OK\n\n단계 2: SUT 반환값 = BAL_OK\n\n단계 3: SUT 반환형: void (반환값 판정 없음).\n기존 시험에 수치·상태 직접 검사가 없는 정상 호출이다. 이 행만으로 계산 결과 전체가 검증되었다고 판정하지 않는다.",
+    "section": 8,
+    "source_table": 29,
+    "source_row": 30
+  }
+]

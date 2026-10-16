@@ -1,0 +1,14 @@
+[
+  {
+    "Test ID": "F2-LLR-ALG-007-TC-01",
+    "SUT": "ALGO_MovingAverage [algorithm/moving_average/moving_average.c]",
+    "Requirement ID": "F2-LLR-ALG-007\nF2-LLR-ALG-007-01\nF2-LLR-ALG-007-02\nF2-LLR-ALG-007-03\nF2-LLR-ALG-007-04\nF2-LLR-ALG-007-05",
+    "Description": "지정 입력의 반환·출력·상태 및 외부 호출 확인\n원 시험: algorithm/moving_average/test_moving_average.c / testALGO_MovingAverage",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n상태/객체 movingAverage_tab (DATA_BLOCK_MOVING_AVERAGE_s): {.header.uniqueId = DATA_BLOCK_ID_MOVING_AVERAGE}; 지정하지 않은 구조체 필드와 배열 원소는 0.\n전류·전력 DB 읽기 응답: STD_OK; CURRENT.newCurrent=1, POWER.newPower=1; 그 밖의 필드는 초기 0 유지.\n외부 응답: DATA_Read1DataBlock(&movingAverage_tab) → STD_OK\n외부 응답: DATA_Write1DataBlock(&movingAverage_tab) → STD_OK",
+    "Inputs": "ALGO_MovingAverage\n인수 없음 (void)",
+    "Expected": "SUT 반환형: void (반환값 판정 없음).\n외부 호출: DATA_Read2DataBlocks로 CURRENT·POWER 블록 읽기\n외부 호출: DATA_Read1DataBlock(&movingAverage_tab)\n외부 호출: DATA_Write1DataBlock(&movingAverage_tab)\nCURRENT/POWER 및 MOVING_AVERAGE 읽기 후 MOVING_AVERAGE 기록 1회. 초기 전류·전력 값이 모두 0이므로 각 평균 필드는 0이다. 기존 시험은 DB 상호작용만 검사했고 수치 비교는 요구사항으로 보완했다.",
+    "section": 2,
+    "source_table": 6,
+    "source_row": 2
+  }
+]

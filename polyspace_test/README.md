@@ -1,5 +1,107 @@
 # Polyspace Test sources for foxBMS 2 v1.11.0
 
+## Updated application requirements workflow (Windows)
+
+The same application workflow is now the default on **Linux**:
+
+```bash
+export POLYSPACE_ROOT=/opt/polyspace/dynamic/R2026b
+bash polyspace_test/run_tests.sh --validate-only
+bash polyspace_test/run_tests.sh --coverage --compiler /usr/bin/gcc
+```
+
+Required: Python 3.9+, native Linux GCC, Git and Polyspace Test Server R2026b.
+`--polyspace-root` overrides `POLYSPACE_ROOT`; `--compiler` overrides `PST_GCC`.
+Linux selects `polyspace/bin/polyspace-test-server`, falling back to
+`polyspace-test` when present. The static product installation is not used.
+Do not use MinGW on Linux. The bundled byte-identical `requirements/source.docx`
+removes any dependency on the original Windows workspace. `--requirements-doc`
+can explicitly select a different document; validate it against the extracted
+baseline before test execution.
+
+Paths in module configuration are relative POSIX paths. Linux executable names
+have no `.exe` suffix and exact replay commands are saved in
+`run-exact-commands.sh`. Current host ABI and compiler diagnostics are measured
+per run. Linux runtime results remain unverified here; the Windows baseline is
+not a Linux pass guarantee. Known requirement failures remain visible, and the
+runner returns nonzero for any Fail, missing test result or runtime Incomplete.
+
+After a run, use its printed ARTIFACTS directory for traceability and coverage:
+
+```bash
+python3 polyspace_test/summarize_application_tests.py \
+  --run build/polyspace_test/application-<timestamp> --merge-coverage
+```
+
+All test sources, unit dependency definitions, host adapters, module configuration,
+authoring/reporting scripts and requirement traceability files are included in
+the repository. Generated binaries, build directories, profiles and machine-local
+verification summaries are not committed. Do not regenerate tests as part of
+execution: regeneration is explicit and must preserve reviewed inputs/Expected.
+
+The current default host runner targets DOCX sections 4.1–4.11 using **C
+PSTUnit only**, without graphical tests or `.psprjx`. It covers all documented
+SOC/SOE/SOH/balancing strategies in separate unit configurations. The remainder
+of this README describes the historical redundancy-only workflow.
+
+```bat
+polyspace_test\run_tests.bat --validate-only
+polyspace_test\run_tests.bat --coverage
+polyspace_test\run_tests.bat --module redundancy_redundancy --coverage
+```
+
+`--legacy-redundancy` explicitly selects the historical runner. The new runner
+returns a failure exit code for native Fail/Incomplete; matching historical
+failures does not count as a successful product verification.
+
+Canonical sources mirror `src/app/application` under `app/application`. The
+updated document is preserved in `requirements/application-4.1-4.11.json` and
+CSV files. `config/application_host.json` selects each unit source, test artifact
+and dependencies. Per-module `requirements/` files retain original scenario
+content. Existing Ceedling/Unity/CMock/CException tests are not used.
+
+Internal static access uses the explicitly approved `.c` inclusion in the test
+translation unit. This is a host C technique, not an official static-access
+xUnit API. The SUT is not separately linked a second time. `UNITY_UNIT_TEST`
+and `DOCUMENTATION` remain undefined. Hardware and RTOS implementations are
+excluded; production headers provide types. Unit dependency definitions are
+listed as external stub artifacts. Production configuration/LUT data may be
+linked where required. Current source revisions/hashes and warnings are recorded
+afresh rather than enforcing the historical redundancy hash.
+
+Expected SUT Assert is intercepted in a test-only record callback and must occur
+at the original check before dereference. It never becomes a normal-return
+expectation. Unexpected Assert records a test failure and invokes validated
+PST_ABORT; a separate callback probe verifies that subsequent tests run. These
+host tests do not verify target interrupt disable, watchdog reset or persistent
+Assert logging. Modules with inaccessible function-local static state are built
+as independent case executables from temporary selected-case sources. Official
+Polyspace generates main/registration; those files are not handwritten.
+
+Results are saved under `build/polyspace_test/application-<timestamp>/`.
+`commands.json`, `run-exact-commands.bat`, `build-manifest.json`, native results
+and HTML/XML reports preserve actual evidence. Generate the final traceability
+and production-only union coverage report with:
+
+```bat
+python polyspace_test\summarize_application_tests.py --run build\polyspace_test\application-<timestamp> --merge-coverage
+```
+
+`case-results.csv/json` separates authored/readiness status from native test
+execution. `coverage.csv/json` reports Statement, Decision, Condition and MC/DC
+from each production SUT file, excluding harness, mocks, headers and runtime.
+Independent case coverage is union-merged using the official profiler, never
+summed across cases. An absent applicable Condition/MC/DC metric is recorded
+as 0/0 at the supported mcdc instrumentation level; a missing profile remains
+uncollected and is not labeled unsupported.
+
+Authoring scripts reproducibly extract the Word document and create generic,
+module-specific and additional boundary cases. Regeneration is explicit because
+it replaces the authored files; do not run it merely to execute tests. Unresolved
+document inputs/preconditions remain visible and are not inferred from legacy
+tests or SUT output. Production code and the source DOCX are never changed to
+make a test pass.
+
 ## Linux execution
 
 Use Bash, Python 3.9+, native Linux GCC, Git and **Polyspace Test Server R2026b for Linux**.
@@ -47,7 +149,7 @@ Linux outputs `runner` and `host_abi` without `.exe`, and writes
 `build/polyspace_test/<timestamp>/run-exact-commands.sh` with quoted commands,
 working directories and accepted exit codes. Windows continues to write `.bat`.
 Both platforms preserve XML/HTML reports and `commands.json` diagnostics.
-Exit 0 means the 152 case statuses match the historical baseline with no
+For the explicit `--legacy-redundancy` workflow, exit 0 means the 152 case statuses match the historical baseline with no
 incomplete cases; the known 13 failures remain visible in reports. Exit 1 reports
 a build/tool error or a changed/incomplete result. This is regression comparison,
 not a claim that all product requirements pass.

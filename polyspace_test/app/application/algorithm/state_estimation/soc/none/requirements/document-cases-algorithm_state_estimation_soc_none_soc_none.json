@@ -1,0 +1,74 @@
+[
+  {
+    "Test ID": "F2-LLR-ALG-020-TC-01-01",
+    "SUT": "SE_InitializeStateOfCharge [algorithm/state_estimation/soc/none/soc_none.c]",
+    "Requirement ID": "F2-LLR-ALG-020\nF2-LLR-ALG-020-01",
+    "Description": "무효 입력에 대한 SUT assertion 확인\n원 시험: algorithm/state_estimation/soc/none/test_soc_none.c / testSE_InitializeStateOfCharge",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n",
+    "Inputs": "SE_InitializeStateOfCharge\n1번째 인수 (DATA_BLOCK_SOC_s *pSocValues): NULL\n2번째 인수 (bool ccPresent): true\n3번째 인수 (uint8_t stringNumber): 1u - 1u",
+    "Expected": "SUT 반환형: void (반환값 판정 없음).\nSUT의 FAS_ASSERT 실패가 발생해야 한다. 해당 assertion을 관찰하면 시험 PASS이며, 임의 crash나 timeout은 합격이 아니다.",
+    "section": 3,
+    "source_table": 14,
+    "source_row": 2
+  },
+  {
+    "Test ID": "F2-LLR-ALG-020-TC-01-02",
+    "SUT": "SE_InitializeStateOfCharge [algorithm/state_estimation/soc/none/soc_none.c]",
+    "Requirement ID": "F2-LLR-ALG-020\nF2-LLR-ALG-020-01",
+    "Description": "무효 입력에 대한 SUT assertion 확인\n원 시험: algorithm/state_estimation/soc/none/test_soc_none.c / testSE_InitializeStateOfCharge",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n상태/객체 table_testSoc (DATA_BLOCK_SOC_s): {.header.uniqueId = DATA_BLOCK_ID_SOC}; 지정하지 않은 구조체 필드와 배열 원소는 0.\n",
+    "Inputs": "SE_InitializeStateOfCharge\n1번째 인수 (DATA_BLOCK_SOC_s *pSocValues): &table_testSoc\n2번째 인수 (bool ccPresent): true\n3번째 인수 (uint8_t stringNumber): 1u",
+    "Expected": "SUT 반환형: void (반환값 판정 없음).\nSUT의 FAS_ASSERT 실패가 발생해야 한다. 해당 assertion을 관찰하면 시험 PASS이며, 임의 crash나 timeout은 합격이 아니다.",
+    "section": 3,
+    "source_table": 14,
+    "source_row": 3
+  },
+  {
+    "Test ID": "F2-LLR-ALG-020-TC-01-03",
+    "SUT": "SE_InitializeStateOfCharge [algorithm/state_estimation/soc/none/soc_none.c]",
+    "Requirement ID": "F2-LLR-ALG-020\nF2-LLR-ALG-020-01\nF2-LLR-ALG-020-02",
+    "Description": "지정 입력의 반환·출력·상태 및 외부 호출 확인\n원 시험: algorithm/state_estimation/soc/none/test_soc_none.c / testSE_InitializeStateOfCharge",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n상태/객체 table_testSoc (DATA_BLOCK_SOC_s): {.header.uniqueId = DATA_BLOCK_ID_SOC}; 지정하지 않은 구조체 필드와 배열 원소는 0.\n",
+    "Inputs": "SE_InitializeStateOfCharge\n1번째 인수 (DATA_BLOCK_SOC_s *pSocValues): &table_testSoc\n2번째 인수 (bool ccPresent): true\n3번째 인수 (uint8_t stringNumber): 1u - 1u",
+    "Expected": "SUT 반환형: void (반환값 판정 없음).\n출력 블록은 호출 전 스냅샷과 동일해야 한다. 기존 시험은 이 경로의 정상 종료를 확인했으며 블록 불변성 비교는 보완한 요구사항 oracle이다.",
+    "section": 3,
+    "source_table": 14,
+    "source_row": 4
+  },
+  {
+    "Test ID": "F2-LLR-ALG-020-TC-02-01",
+    "SUT": "SE_CalculateStateOfCharge [algorithm/state_estimation/soc/none/soc_none.c]",
+    "Requirement ID": "F2-LLR-ALG-020\nF2-LLR-ALG-020-01",
+    "Description": "무효 입력에 대한 SUT assertion 확인\n원 시험: algorithm/state_estimation/soc/none/test_soc_none.c / testSE_CalculateStateOfCharge",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n",
+    "Inputs": "SE_CalculateStateOfCharge\n1번째 인수 (DATA_BLOCK_SOC_s *pSocValues): NULL",
+    "Expected": "SUT 반환형: void (반환값 판정 없음).\nSUT의 FAS_ASSERT 실패가 발생해야 한다. 해당 assertion을 관찰하면 시험 PASS이며, 임의 crash나 timeout은 합격이 아니다.",
+    "section": 3,
+    "source_table": 14,
+    "source_row": 5
+  },
+  {
+    "Test ID": "F2-LLR-ALG-020-TC-02-02",
+    "SUT": "SE_CalculateStateOfCharge [algorithm/state_estimation/soc/none/soc_none.c]",
+    "Requirement ID": "F2-LLR-ALG-020\nF2-LLR-ALG-020-01\nF2-LLR-ALG-020-02",
+    "Description": "지정 입력의 반환·출력·상태 및 외부 호출 확인\n원 시험: algorithm/state_estimation/soc/none/test_soc_none.c / testSE_CalculateStateOfCharge",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n상태/객체 table_testSoc (DATA_BLOCK_SOC_s): {.header.uniqueId = DATA_BLOCK_ID_SOC}; 지정하지 않은 구조체 필드와 배열 원소는 0.\n",
+    "Inputs": "SE_CalculateStateOfCharge\n1번째 인수 (DATA_BLOCK_SOC_s *pSocValues): &table_testSoc",
+    "Expected": "SUT 반환형: void (반환값 판정 없음).\n출력 블록은 호출 전 스냅샷과 동일해야 한다. 기존 시험은 이 경로의 정상 종료를 확인했으며 블록 불변성 비교는 보완한 요구사항 oracle이다.",
+    "section": 3,
+    "source_table": 14,
+    "source_row": 6
+  },
+  {
+    "Test ID": "F2-LLR-ALG-020-TC-03",
+    "SUT": "SE_GetStateOfChargeFromVoltage [algorithm/state_estimation/soc/none/soc_none.c]",
+    "Requirement ID": "F2-LLR-ALG-020\nF2-LLR-ALG-020-03",
+    "Description": "지정 입력의 반환·출력·상태 및 외부 호출 확인\n원 시험: algorithm/state_estimation/soc/none/test_soc_none.c / testSE_GetStateOfChargeFromVoltage",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n",
+    "Inputs": "SE_GetStateOfChargeFromVoltage\n1번째 인수 (int16_t voltage_mV): 1",
+    "Expected": "SUT 반환값 = 0.0f",
+    "section": 3,
+    "source_table": 14,
+    "source_row": 7
+  }
+]

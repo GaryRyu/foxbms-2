@@ -1,0 +1,122 @@
+[
+  {
+    "Test ID": "F2-LLR-ALG-036-TC-01",
+    "SUT": "ALGO_MainFunction [algorithm/algorithm.c]",
+    "Requirement ID": "F2-LLR-ALG-036\nF2-LLR-ALG-036-01\nF2-LLR-ALG-036-02\nF2-LLR-ALG-036-03\nF2-LLR-ALG-036-04\nF2-LLR-ALG-036-05",
+    "Description": "지정 입력의 반환·출력·상태 및 외부 호출 확인\n원 시험: algorithm/test_algorithm.c / testUninitializedCallsNothing",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n전역 상태 algo_algorithms[0..1].state: ALGO_UNINITIALIZED\n시험 구성 algo_length=2; 두 항목 기본 cycleTime_ms=100, maxCalculationDuration_ms=1000, startTime=0, state=ALGO_UNINITIALIZED. 위에 표시된 개별 필드 대입이 기본값보다 우선한다. 항목 0 fpInitialization=NULL, 항목 1=초기화 대체 함수; 두 fpAlgorithm=계산 대체 함수. 초기 counter_ticks=0, algo_initializationRequested=false이며 이후 단계는 직전 SUT 상태를 따른다.\n완료 표시 외부 함수는 호출을 기록하고 state를 변경하지 않는다. 초기화/계산 대체 함수는 제품 함수 대신 반환·호출 조건을 제공한다.\n",
+    "Inputs": "ALGO_MainFunction\n인수 없음 (void)",
+    "Expected": "SUT 반환형: void (반환값 판정 없음).\n외부 호출: OS_EnterTaskCritical()\n외부 호출: OS_ExitTaskCritical()\n관찰값 algo_algorithms[0].state = ALGO_UNINITIALIZED\n관찰값 algo_algorithms[1].state = ALGO_UNINITIALIZED",
+    "section": 7,
+    "source_table": 27,
+    "source_row": 2
+  },
+  {
+    "Test ID": "F2-LLR-ALG-036-TC-02",
+    "SUT": "ALGO_MainFunction; ALGO_UnlockInitialization [algorithm/algorithm.c]",
+    "Requirement ID": "F2-LLR-ALG-036\nF2-LLR-ALG-036-01\nF2-LLR-ALG-036-02\nF2-LLR-ALG-036-03\nF2-LLR-ALG-036-04\nF2-LLR-ALG-036-05",
+    "Description": "순차 상태 전이 확인\n원 시험: algorithm/test_algorithm.c / testUnlockInitialization",
+    "Precondition": "순차 시험: 첫 단계만 초기화하고 이후 단계는 앞 단계의 실제 SUT 상태를 유지한다. 단계별 외부 응답은 해당 호출에만 적용한다.\n\n단계 1: 구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n전역 상태 algo_algorithms[0..1].state: ALGO_UNINITIALIZED\n시험 구성 algo_length=2; 두 항목 기본 cycleTime_ms=100, maxCalculationDuration_ms=1000, startTime=0, state=ALGO_UNINITIALIZED. 위에 표시된 개별 필드 대입이 기본값보다 우선한다. 항목 0 fpInitialization=NULL, 항목 1=초기화 대체 함수; 두 fpAlgorithm=계산 대체 함수. 초기 counter_ticks=0, algo_initializationRequested=false이며 이후 단계는 직전 SUT 상태를 따른다.\n완료 표시 외부 함수는 호출을 기록하고 state를 변경하지 않는다. 초기화/계산 대체 함수는 제품 함수 대신 반환·호출 조건을 제공한다.\n\n\n단계 2: 앞 단계의 실제 SUT 상태를 유지한다. 아래 대입 및 외부 응답만 해당 단계에 적용한다.\n구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 상태 초기화 없이 진행한다.\n전역 상태 algo_algorithms[0..1].state: ALGO_UNINITIALIZED\n전역 상태 algo_algorithms[0].state: ALGO_UNINITIALIZED\n전역 상태 algo_algorithms[1].state: ALGO_UNINITIALIZED\n시험 구성 algo_length=2; 두 항목 기본 cycleTime_ms=100, maxCalculationDuration_ms=1000, startTime=0, state=ALGO_UNINITIALIZED. 위에 표시된 개별 필드 대입이 기본값보다 우선한다. 항목 0 fpInitialization=NULL, 항목 1=초기화 대체 함수; 두 fpAlgorithm=계산 대체 함수. 초기 counter_ticks=0, algo_initializationRequested=false이며 이후 단계는 직전 SUT 상태를 따른다.\n완료 표시 외부 함수는 호출을 기록하고 state를 변경하지 않는다. 초기화/계산 대체 함수는 제품 함수 대신 반환·호출 조건을 제공한다.\n\n\n단계 3: 앞 단계의 실제 SUT 상태를 유지한다. 아래 대입 및 외부 응답만 해당 단계에 적용한다.\n구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 상태 초기화 없이 진행한다.\n전역 상태 algo_algorithms[0..1].state: ALGO_UNINITIALIZED\n전역 상태 algo_algorithms[0].state: ALGO_UNINITIALIZED\n전역 상태 algo_algorithms[1].state: ALGO_UNINITIALIZED\n시험 구성 algo_length=2; 두 항목 기본 cycleTime_ms=100, maxCalculationDuration_ms=1000, startTime=0, state=ALGO_UNINITIALIZED. 위에 표시된 개별 필드 대입이 기본값보다 우선한다. 항목 0 fpInitialization=NULL, 항목 1=초기화 대체 함수; 두 fpAlgorithm=계산 대체 함수. 초기 counter_ticks=0, algo_initializationRequested=false이며 이후 단계는 직전 SUT 상태를 따른다.\n완료 표시 외부 함수는 호출을 기록하고 state를 변경하지 않는다. 초기화/계산 대체 함수는 제품 함수 대신 반환·호출 조건을 제공한다.\n외부 응답: 초기화_대체함수() → STD_OK\n외부 응답: OS_GetTickCount() → 0u\n외부 응답: OS_GetTickCount() → 0u",
+    "Inputs": "단계 1: ALGO_MainFunction\n인수 없음 (void)\n\n단계 2: ALGO_UnlockInitialization\n인수 없음 (void)\n\n단계 3: ALGO_MainFunction\n인수 없음 (void)",
+    "Expected": "단계 1: SUT 반환형: void (반환값 판정 없음).\n외부 호출: OS_EnterTaskCritical()\n외부 호출: OS_ExitTaskCritical()\n관찰값 algo_algorithms[0].state = ALGO_UNINITIALIZED\n관찰값 algo_algorithms[1].state = ALGO_UNINITIALIZED\n\n단계 2: SUT 반환형: void (반환값 판정 없음).\n외부 호출: OS_EnterTaskCritical()\n외부 호출: OS_ExitTaskCritical()\n\n단계 3: SUT 반환형: void (반환값 판정 없음).\n외부 호출: OS_EnterTaskCritical()\n외부 호출: OS_ExitTaskCritical()\n외부 호출: 초기화_대체함수()\n외부 호출: OS_EnterTaskCritical()\n외부 호출: OS_ExitTaskCritical()\n외부 호출: OS_GetTickCount()\n외부 호출: 계산_대체함수()\n외부 호출: ALGO_MarkAsDone(0u)\n외부 호출: OS_GetTickCount()\n외부 호출: 계산_대체함수()\n외부 호출: ALGO_MarkAsDone(1u)\n관찰값 algo_algorithms[0].state = ALGO_RUNNING\n관찰값 algo_algorithms[1].state = ALGO_RUNNING",
+    "section": 7,
+    "source_table": 27,
+    "source_row": 3
+  },
+  {
+    "Test ID": "F2-LLR-ALG-036-TC-03",
+    "SUT": "ALGO_UnlockInitialization; ALGO_MainFunction [algorithm/algorithm.c]",
+    "Requirement ID": "F2-LLR-ALG-036\nF2-LLR-ALG-036-01\nF2-LLR-ALG-036-02\nF2-LLR-ALG-036-03\nF2-LLR-ALG-036-04\nF2-LLR-ALG-036-05",
+    "Description": "순차 상태 전이 확인\n원 시험: algorithm/test_algorithm.c / testUnlockInitializationInvalidAlgorithmConfiguration",
+    "Precondition": "순차 시험: 첫 단계만 초기화하고 이후 단계는 앞 단계의 실제 SUT 상태를 유지한다. 단계별 외부 응답은 해당 호출에만 적용한다.\n\n단계 1: 구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n전역 상태 algo_algorithms[0..1].state: ALGO_UNINITIALIZED\n시험 구성 algo_length=2; 두 항목 기본 cycleTime_ms=100, maxCalculationDuration_ms=1000, startTime=0, state=ALGO_UNINITIALIZED. 위에 표시된 개별 필드 대입이 기본값보다 우선한다. 항목 0 fpInitialization=NULL, 항목 1=초기화 대체 함수; 두 fpAlgorithm=계산 대체 함수. 초기 counter_ticks=0, algo_initializationRequested=false이며 이후 단계는 직전 SUT 상태를 따른다.\n완료 표시 외부 함수는 호출을 기록하고 state를 변경하지 않는다. 초기화/계산 대체 함수는 제품 함수 대신 반환·호출 조건을 제공한다.\n\n\n단계 2: 앞 단계의 실제 SUT 상태를 유지한다. 아래 대입 및 외부 응답만 해당 단계에 적용한다.\n구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 상태 초기화 없이 진행한다.\n전역 상태 algo_algorithms[0..1].state: ALGO_UNINITIALIZED\n전역 상태 algo_algorithms[0].cycleTime_ms: 100u + 1u\n시험 구성 algo_length=2; 두 항목 기본 cycleTime_ms=100, maxCalculationDuration_ms=1000, startTime=0, state=ALGO_UNINITIALIZED. 위에 표시된 개별 필드 대입이 기본값보다 우선한다. 항목 0 fpInitialization=NULL, 항목 1=초기화 대체 함수; 두 fpAlgorithm=계산 대체 함수. 초기 counter_ticks=0, algo_initializationRequested=false이며 이후 단계는 직전 SUT 상태를 따른다.\n완료 표시 외부 함수는 호출을 기록하고 state를 변경하지 않는다. 초기화/계산 대체 함수는 제품 함수 대신 반환·호출 조건을 제공한다.\n",
+    "Inputs": "단계 1: ALGO_UnlockInitialization\n인수 없음 (void)\n\n단계 2: ALGO_MainFunction\n인수 없음 (void)",
+    "Expected": "단계 1: SUT 반환형: void (반환값 판정 없음).\n외부 호출: OS_EnterTaskCritical()\n외부 호출: OS_ExitTaskCritical()\n\n단계 2: SUT 반환형: void (반환값 판정 없음).\n외부 호출: OS_EnterTaskCritical()\n외부 호출: OS_ExitTaskCritical()\nSUT의 FAS_ASSERT 실패가 발생해야 한다. 해당 assertion을 관찰하면 시험 PASS이며, 임의 crash나 timeout은 합격이 아니다.\n관찰값 algo_algorithms[0].state = ALGO_UNINITIALIZED\n관찰값 algo_algorithms[1].state = ALGO_UNINITIALIZED",
+    "section": 7,
+    "source_table": 27,
+    "source_row": 4
+  },
+  {
+    "Test ID": "F2-LLR-ALG-036-TC-04",
+    "SUT": "ALGO_UnlockInitialization; ALGO_MainFunction [algorithm/algorithm.c]",
+    "Requirement ID": "F2-LLR-ALG-036\nF2-LLR-ALG-036-01\nF2-LLR-ALG-036-02\nF2-LLR-ALG-036-03\nF2-LLR-ALG-036-04\nF2-LLR-ALG-036-05",
+    "Description": "순차 상태 전이 확인\n원 시험: algorithm/test_algorithm.c / testUnsuccessfulInitialization",
+    "Precondition": "순차 시험: 첫 단계만 초기화하고 이후 단계는 앞 단계의 실제 SUT 상태를 유지한다. 단계별 외부 응답은 해당 호출에만 적용한다.\n\n단계 1: 구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n전역 상태 algo_algorithms[0..1].state: ALGO_UNINITIALIZED\n시험 구성 algo_length=2; 두 항목 기본 cycleTime_ms=100, maxCalculationDuration_ms=1000, startTime=0, state=ALGO_UNINITIALIZED. 위에 표시된 개별 필드 대입이 기본값보다 우선한다. 항목 0 fpInitialization=NULL, 항목 1=초기화 대체 함수; 두 fpAlgorithm=계산 대체 함수. 초기 counter_ticks=0, algo_initializationRequested=false이며 이후 단계는 직전 SUT 상태를 따른다.\n완료 표시 외부 함수는 호출을 기록하고 state를 변경하지 않는다. 초기화/계산 대체 함수는 제품 함수 대신 반환·호출 조건을 제공한다.\n\n\n단계 2: 앞 단계의 실제 SUT 상태를 유지한다. 아래 대입 및 외부 응답만 해당 단계에 적용한다.\n구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 상태 초기화 없이 진행한다.\n전역 상태 algo_algorithms[0..1].state: ALGO_UNINITIALIZED\n시험 구성 algo_length=2; 두 항목 기본 cycleTime_ms=100, maxCalculationDuration_ms=1000, startTime=0, state=ALGO_UNINITIALIZED. 위에 표시된 개별 필드 대입이 기본값보다 우선한다. 항목 0 fpInitialization=NULL, 항목 1=초기화 대체 함수; 두 fpAlgorithm=계산 대체 함수. 초기 counter_ticks=0, algo_initializationRequested=false이며 이후 단계는 직전 SUT 상태를 따른다.\n완료 표시 외부 함수는 호출을 기록하고 state를 변경하지 않는다. 초기화/계산 대체 함수는 제품 함수 대신 반환·호출 조건을 제공한다.\n외부 응답: 초기화_대체함수() → STD_NOT_OK\n외부 응답: OS_GetTickCount() → 0u\n\n단계 3: 앞 단계의 실제 SUT 상태를 유지한다. 아래 대입 및 외부 응답만 해당 단계에 적용한다.\n구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 상태 초기화 없이 진행한다.\n전역 상태 algo_algorithms[0..1].state: ALGO_UNINITIALIZED\n전역 상태 algo_algorithms[0].state: ALGO_RUNNING\n전역 상태 algo_algorithms[1].state: ALGO_FAILED_INIT\n시험 구성 algo_length=2; 두 항목 기본 cycleTime_ms=100, maxCalculationDuration_ms=1000, startTime=0, state=ALGO_UNINITIALIZED. 위에 표시된 개별 필드 대입이 기본값보다 우선한다. 항목 0 fpInitialization=NULL, 항목 1=초기화 대체 함수; 두 fpAlgorithm=계산 대체 함수. 초기 counter_ticks=0, algo_initializationRequested=false이며 이후 단계는 직전 SUT 상태를 따른다.\n완료 표시 외부 함수는 호출을 기록하고 state를 변경하지 않는다. 초기화/계산 대체 함수는 제품 함수 대신 반환·호출 조건을 제공한다.\n",
+    "Inputs": "단계 1: ALGO_UnlockInitialization\n인수 없음 (void)\n\n단계 2: ALGO_MainFunction\n인수 없음 (void)\n\n단계 3: ALGO_MainFunction\n인수 없음 (void)",
+    "Expected": "단계 1: SUT 반환형: void (반환값 판정 없음).\n외부 호출: OS_EnterTaskCritical()\n외부 호출: OS_ExitTaskCritical()\n\n단계 2: SUT 반환형: void (반환값 판정 없음).\n외부 호출: OS_EnterTaskCritical()\n외부 호출: OS_ExitTaskCritical()\n외부 호출: 초기화_대체함수()\n외부 호출: OS_EnterTaskCritical()\n외부 호출: OS_ExitTaskCritical()\n외부 호출: OS_GetTickCount()\n외부 호출: 계산_대체함수()\n외부 호출: ALGO_MarkAsDone(0u)\n외부 호출: OS_EnterTaskCritical()\n외부 호출: OS_ExitTaskCritical()\n관찰값 algo_algorithms[0].state = ALGO_RUNNING\n관찰값 algo_algorithms[1].state = ALGO_FAILED_INIT\n\n단계 3: SUT 반환형: void (반환값 판정 없음).\n관찰값 algo_algorithms[0].state = ALGO_RUNNING\n관찰값 algo_algorithms[1].state = ALGO_FAILED_INIT",
+    "section": 7,
+    "source_table": 27,
+    "source_row": 5
+  },
+  {
+    "Test ID": "F2-LLR-ALG-036-TC-05",
+    "SUT": "ALGO_UnlockInitialization; ALGO_MainFunction [algorithm/algorithm.c]",
+    "Requirement ID": "F2-LLR-ALG-036\nF2-LLR-ALG-036-01\nF2-LLR-ALG-036-02\nF2-LLR-ALG-036-03\nF2-LLR-ALG-036-04\nF2-LLR-ALG-036-05",
+    "Description": "순차 상태 전이 확인\n원 시험: algorithm/test_algorithm.c / testTwoTimesInitialization",
+    "Precondition": "순차 시험: 첫 단계만 초기화하고 이후 단계는 앞 단계의 실제 SUT 상태를 유지한다. 단계별 외부 응답은 해당 호출에만 적용한다.\n\n단계 1: 구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n전역 상태 algo_algorithms[0..1].state: ALGO_UNINITIALIZED\n시험 구성 algo_length=2; 두 항목 기본 cycleTime_ms=100, maxCalculationDuration_ms=1000, startTime=0, state=ALGO_UNINITIALIZED. 위에 표시된 개별 필드 대입이 기본값보다 우선한다. 항목 0 fpInitialization=NULL, 항목 1=초기화 대체 함수; 두 fpAlgorithm=계산 대체 함수. 초기 counter_ticks=0, algo_initializationRequested=false이며 이후 단계는 직전 SUT 상태를 따른다.\n완료 표시 외부 함수는 호출을 기록하고 state를 변경하지 않는다. 초기화/계산 대체 함수는 제품 함수 대신 반환·호출 조건을 제공한다.\n\n\n단계 2: 앞 단계의 실제 SUT 상태를 유지한다. 아래 대입 및 외부 응답만 해당 단계에 적용한다.\n구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 상태 초기화 없이 진행한다.\n전역 상태 algo_algorithms[0..1].state: ALGO_UNINITIALIZED\n시험 구성 algo_length=2; 두 항목 기본 cycleTime_ms=100, maxCalculationDuration_ms=1000, startTime=0, state=ALGO_UNINITIALIZED. 위에 표시된 개별 필드 대입이 기본값보다 우선한다. 항목 0 fpInitialization=NULL, 항목 1=초기화 대체 함수; 두 fpAlgorithm=계산 대체 함수. 초기 counter_ticks=0, algo_initializationRequested=false이며 이후 단계는 직전 SUT 상태를 따른다.\n완료 표시 외부 함수는 호출을 기록하고 state를 변경하지 않는다. 초기화/계산 대체 함수는 제품 함수 대신 반환·호출 조건을 제공한다.\n외부 응답: 초기화_대체함수() → STD_OK\n외부 응답: OS_GetTickCount() → 0u\n외부 응답: OS_GetTickCount() → 0u\n\n단계 3: 앞 단계의 실제 SUT 상태를 유지한다. 아래 대입 및 외부 응답만 해당 단계에 적용한다.\n구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 상태 초기화 없이 진행한다.\n전역 상태 algo_algorithms[0..1].state: ALGO_UNINITIALIZED\n전역 상태 algo_algorithms[0].state: ALGO_RUNNING\n전역 상태 algo_algorithms[1].state: ALGO_RUNNING\n시험 구성 algo_length=2; 두 항목 기본 cycleTime_ms=100, maxCalculationDuration_ms=1000, startTime=0, state=ALGO_UNINITIALIZED. 위에 표시된 개별 필드 대입이 기본값보다 우선한다. 항목 0 fpInitialization=NULL, 항목 1=초기화 대체 함수; 두 fpAlgorithm=계산 대체 함수. 초기 counter_ticks=0, algo_initializationRequested=false이며 이후 단계는 직전 SUT 상태를 따른다.\n완료 표시 외부 함수는 호출을 기록하고 state를 변경하지 않는다. 초기화/계산 대체 함수는 제품 함수 대신 반환·호출 조건을 제공한다.\n\n\n단계 4: 앞 단계의 실제 SUT 상태를 유지한다. 아래 대입 및 외부 응답만 해당 단계에 적용한다.\n구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 상태 초기화 없이 진행한다.\n전역 상태 algo_algorithms[0..1].state: ALGO_UNINITIALIZED\n전역 상태 algo_algorithms[0].state: ALGO_RUNNING\n전역 상태 algo_algorithms[1].state: ALGO_RUNNING\n시험 구성 algo_length=2; 두 항목 기본 cycleTime_ms=100, maxCalculationDuration_ms=1000, startTime=0, state=ALGO_UNINITIALIZED. 위에 표시된 개별 필드 대입이 기본값보다 우선한다. 항목 0 fpInitialization=NULL, 항목 1=초기화 대체 함수; 두 fpAlgorithm=계산 대체 함수. 초기 counter_ticks=0, algo_initializationRequested=false이며 이후 단계는 직전 SUT 상태를 따른다.\n완료 표시 외부 함수는 호출을 기록하고 state를 변경하지 않는다. 초기화/계산 대체 함수는 제품 함수 대신 반환·호출 조건을 제공한다.\n",
+    "Inputs": "단계 1: ALGO_UnlockInitialization\n인수 없음 (void)\n\n단계 2: ALGO_MainFunction\n인수 없음 (void)\n\n단계 3: ALGO_UnlockInitialization\n인수 없음 (void)\n\n단계 4: ALGO_MainFunction\n인수 없음 (void)",
+    "Expected": "단계 1: SUT 반환형: void (반환값 판정 없음).\n외부 호출: OS_EnterTaskCritical()\n외부 호출: OS_ExitTaskCritical()\n\n단계 2: SUT 반환형: void (반환값 판정 없음).\n외부 호출: OS_EnterTaskCritical()\n외부 호출: OS_ExitTaskCritical()\n외부 호출: 초기화_대체함수()\n외부 호출: OS_EnterTaskCritical()\n외부 호출: OS_ExitTaskCritical()\n외부 호출: OS_GetTickCount()\n외부 호출: 계산_대체함수()\n외부 호출: ALGO_MarkAsDone(0u)\n외부 호출: OS_GetTickCount()\n외부 호출: 계산_대체함수()\n외부 호출: ALGO_MarkAsDone(1u)\n외부 호출: OS_EnterTaskCritical()\n외부 호출: OS_ExitTaskCritical()\n관찰값 algo_algorithms[0].state = ALGO_RUNNING\n관찰값 algo_algorithms[1].state = ALGO_RUNNING\n\n단계 3: SUT 반환형: void (반환값 판정 없음).\n외부 호출: OS_EnterTaskCritical()\n외부 호출: OS_ExitTaskCritical()\n\n단계 4: SUT 반환형: void (반환값 판정 없음).\n외부 호출: OS_EnterTaskCritical()\n외부 호출: OS_ExitTaskCritical()\n관찰값 algo_algorithms[0].state = ALGO_RUNNING\n관찰값 algo_algorithms[1].state = ALGO_RUNNING",
+    "section": 7,
+    "source_table": 27,
+    "source_row": 6
+  },
+  {
+    "Test ID": "F2-LLR-ALG-036-TC-06",
+    "SUT": "ALGO_UnlockInitialization; ALGO_MainFunction [algorithm/algorithm.c]",
+    "Requirement ID": "F2-LLR-ALG-036\nF2-LLR-ALG-036-01\nF2-LLR-ALG-036-02\nF2-LLR-ALG-036-03\nF2-LLR-ALG-036-04\nF2-LLR-ALG-036-05",
+    "Description": "순차 상태 전이 확인\n원 시험: algorithm/test_algorithm.c / testWrongInitializationImplementation",
+    "Precondition": "순차 시험: 첫 단계만 초기화하고 이후 단계는 앞 단계의 실제 SUT 상태를 유지한다. 단계별 외부 응답은 해당 호출에만 적용한다.\n\n단계 1: 구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n전역 상태 algo_algorithms[0..1].state: ALGO_UNINITIALIZED\n시험 구성 algo_length=2; 두 항목 기본 cycleTime_ms=100, maxCalculationDuration_ms=1000, startTime=0, state=ALGO_UNINITIALIZED. 위에 표시된 개별 필드 대입이 기본값보다 우선한다. 항목 0 fpInitialization=NULL, 항목 1=초기화 대체 함수; 두 fpAlgorithm=계산 대체 함수. 초기 counter_ticks=0, algo_initializationRequested=false이며 이후 단계는 직전 SUT 상태를 따른다.\n완료 표시 외부 함수는 호출을 기록하고 state를 변경하지 않는다. 초기화/계산 대체 함수는 제품 함수 대신 반환·호출 조건을 제공한다.\n\n\n단계 2: 앞 단계의 실제 SUT 상태를 유지한다. 아래 대입 및 외부 응답만 해당 단계에 적용한다.\n구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 상태 초기화 없이 진행한다.\n전역 상태 algo_algorithms[0..1].state: ALGO_UNINITIALIZED\n시험 구성 algo_length=2; 두 항목 기본 cycleTime_ms=100, maxCalculationDuration_ms=1000, startTime=0, state=ALGO_UNINITIALIZED. 위에 표시된 개별 필드 대입이 기본값보다 우선한다. 항목 0 fpInitialization=NULL, 항목 1=초기화 대체 함수; 두 fpAlgorithm=계산 대체 함수. 초기 counter_ticks=0, algo_initializationRequested=false이며 이후 단계는 직전 SUT 상태를 따른다.\n완료 표시 외부 함수는 호출을 기록하고 state를 변경하지 않는다. 초기화/계산 대체 함수는 제품 함수 대신 반환·호출 조건을 제공한다.\n외부 응답: 초기화_대체함수() → 42u",
+    "Inputs": "단계 1: ALGO_UnlockInitialization\n인수 없음 (void)\n\n단계 2: ALGO_MainFunction\n인수 없음 (void)",
+    "Expected": "단계 1: SUT 반환형: void (반환값 판정 없음).\n외부 호출: OS_EnterTaskCritical()\n외부 호출: OS_ExitTaskCritical()\n\n단계 2: SUT 반환형: void (반환값 판정 없음).\n외부 호출: OS_EnterTaskCritical()\n외부 호출: OS_ExitTaskCritical()\n외부 호출: 초기화_대체함수()\nSUT의 FAS_ASSERT 실패가 발생해야 한다. 해당 assertion을 관찰하면 시험 PASS이며, 임의 crash나 timeout은 합격이 아니다.",
+    "section": 7,
+    "source_table": 27,
+    "source_row": 7
+  },
+  {
+    "Test ID": "F2-LLR-ALG-036-TC-07",
+    "SUT": "ALGO_UnlockInitialization; ALGO_MainFunction [algorithm/algorithm.c]",
+    "Requirement ID": "F2-LLR-ALG-036\nF2-LLR-ALG-036-01\nF2-LLR-ALG-036-02\nF2-LLR-ALG-036-03\nF2-LLR-ALG-036-04\nF2-LLR-ALG-036-05",
+    "Description": "순차 상태 전이 확인\n원 시험: algorithm/test_algorithm.c / testCycleTimeZero",
+    "Precondition": "순차 시험: 첫 단계만 초기화하고 이후 단계는 앞 단계의 실제 SUT 상태를 유지한다. 단계별 외부 응답은 해당 호출에만 적용한다.\n\n단계 1: 구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n전역 상태 algo_algorithms[0..1].state: ALGO_UNINITIALIZED\n시험 구성 algo_length=2; 두 항목 기본 cycleTime_ms=100, maxCalculationDuration_ms=1000, startTime=0, state=ALGO_UNINITIALIZED. 위에 표시된 개별 필드 대입이 기본값보다 우선한다. 항목 0 fpInitialization=NULL, 항목 1=초기화 대체 함수; 두 fpAlgorithm=계산 대체 함수. 초기 counter_ticks=0, algo_initializationRequested=false이며 이후 단계는 직전 SUT 상태를 따른다.\n완료 표시 외부 함수는 호출을 기록하고 state를 변경하지 않는다. 초기화/계산 대체 함수는 제품 함수 대신 반환·호출 조건을 제공한다.\n\n\n단계 2: 앞 단계의 실제 SUT 상태를 유지한다. 아래 대입 및 외부 응답만 해당 단계에 적용한다.\n구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 상태 초기화 없이 진행한다.\n전역 상태 algo_algorithms[0..1].state: ALGO_UNINITIALIZED\n전역 상태 algo_algorithms[0].cycleTime_ms: 0u\n시험 구성 algo_length=2; 두 항목 기본 cycleTime_ms=100, maxCalculationDuration_ms=1000, startTime=0, state=ALGO_UNINITIALIZED. 위에 표시된 개별 필드 대입이 기본값보다 우선한다. 항목 0 fpInitialization=NULL, 항목 1=초기화 대체 함수; 두 fpAlgorithm=계산 대체 함수. 초기 counter_ticks=0, algo_initializationRequested=false이며 이후 단계는 직전 SUT 상태를 따른다.\n완료 표시 외부 함수는 호출을 기록하고 state를 변경하지 않는다. 초기화/계산 대체 함수는 제품 함수 대신 반환·호출 조건을 제공한다.\n외부 응답: 초기화_대체함수() → STD_OK\n외부 응답: OS_GetTickCount() → 0u\n외부 응답: OS_GetTickCount() → 0u",
+    "Inputs": "단계 1: ALGO_UnlockInitialization\n인수 없음 (void)\n\n단계 2: ALGO_MainFunction\n인수 없음 (void)",
+    "Expected": "단계 1: SUT 반환형: void (반환값 판정 없음).\n외부 호출: OS_EnterTaskCritical()\n외부 호출: OS_ExitTaskCritical()\n\n단계 2: SUT 반환형: void (반환값 판정 없음).\n외부 호출: OS_EnterTaskCritical()\n외부 호출: OS_ExitTaskCritical()\n외부 호출: 초기화_대체함수()\n외부 호출: OS_EnterTaskCritical()\n외부 호출: OS_ExitTaskCritical()\n외부 호출: OS_GetTickCount()\n외부 호출: 계산_대체함수()\n외부 호출: ALGO_MarkAsDone(0u)\n외부 호출: OS_GetTickCount()\n외부 호출: 계산_대체함수()\n외부 호출: ALGO_MarkAsDone(1u)",
+    "section": 7,
+    "source_table": 27,
+    "source_row": 8
+  },
+  {
+    "Test ID": "F2-LLR-ALG-036-TC-08",
+    "SUT": "ALGO_MonitorExecutionTime [algorithm/algorithm.c]",
+    "Requirement ID": "F2-LLR-ALG-036\nF2-LLR-ALG-036-06",
+    "Description": "지정 입력의 반환·출력·상태 및 외부 호출 확인\n원 시험: algorithm/test_algorithm.c / testMonitorFunctionPassBecauseNotRunning",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n전역 상태 algo_algorithms[0..1].state: ALGO_UNINITIALIZED\n전역 상태 algo_algorithms[0].startTime: 500u\n전역 상태 algo_algorithms[0].state: ALGO_READY\n시험 구성 algo_length=2; 두 항목 기본 cycleTime_ms=100, maxCalculationDuration_ms=1000, startTime=0, state=ALGO_UNINITIALIZED. 위에 표시된 개별 필드 대입이 기본값보다 우선한다. 항목 0 fpInitialization=NULL, 항목 1=초기화 대체 함수; 두 fpAlgorithm=계산 대체 함수. 초기 counter_ticks=0, algo_initializationRequested=false이며 이후 단계는 직전 SUT 상태를 따른다.\n완료 표시 외부 함수는 호출을 기록하고 state를 변경하지 않는다. 초기화/계산 대체 함수는 제품 함수 대신 반환·호출 조건을 제공한다.\n외부 응답: OS_GetTickCount() → 0u",
+    "Inputs": "ALGO_MonitorExecutionTime\n인수 없음 (void)",
+    "Expected": "SUT 반환형: void (반환값 판정 없음).\n외부 호출: OS_GetTickCount()\n관찰값 algo_algorithms[0].state = ALGO_READY",
+    "section": 7,
+    "source_table": 27,
+    "source_row": 9
+  },
+  {
+    "Test ID": "F2-LLR-ALG-036-TC-09",
+    "SUT": "ALGO_MonitorExecutionTime [algorithm/algorithm.c]",
+    "Requirement ID": "F2-LLR-ALG-036\nF2-LLR-ALG-036-06",
+    "Description": "지정 입력의 반환·출력·상태 및 외부 호출 확인\n원 시험: algorithm/test_algorithm.c / testMonitorFunctionPassBecauseInTime",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n전역 상태 algo_algorithms[0..1].state: ALGO_UNINITIALIZED\n전역 상태 algo_algorithms[0].startTime: 500u\n전역 상태 algo_algorithms[0].state: ALGO_RUNNING\n시험 구성 algo_length=2; 두 항목 기본 cycleTime_ms=100, maxCalculationDuration_ms=1000, startTime=0, state=ALGO_UNINITIALIZED. 위에 표시된 개별 필드 대입이 기본값보다 우선한다. 항목 0 fpInitialization=NULL, 항목 1=초기화 대체 함수; 두 fpAlgorithm=계산 대체 함수. 초기 counter_ticks=0, algo_initializationRequested=false이며 이후 단계는 직전 SUT 상태를 따른다.\n완료 표시 외부 함수는 호출을 기록하고 state를 변경하지 않는다. 초기화/계산 대체 함수는 제품 함수 대신 반환·호출 조건을 제공한다.\n외부 응답: OS_GetTickCount() → 500u",
+    "Inputs": "ALGO_MonitorExecutionTime\n인수 없음 (void)",
+    "Expected": "SUT 반환형: void (반환값 판정 없음).\n외부 호출: OS_GetTickCount()\n관찰값 algo_algorithms[0].state = ALGO_RUNNING",
+    "section": 7,
+    "source_table": 27,
+    "source_row": 10
+  },
+  {
+    "Test ID": "F2-LLR-ALG-036-TC-10",
+    "SUT": "ALGO_MonitorExecutionTime [algorithm/algorithm.c]",
+    "Requirement ID": "F2-LLR-ALG-036\nF2-LLR-ALG-036-06",
+    "Description": "지정 입력의 반환·출력·상태 및 외부 호출 확인\n원 시험: algorithm/test_algorithm.c / testMonitorFunctionStopBecauseOutOfTime",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n전역 상태 algo_algorithms[0..1].state: ALGO_UNINITIALIZED\n전역 상태 algo_algorithms[0].startTime: 500u\n전역 상태 algo_algorithms[0].state: ALGO_RUNNING\n시험 구성 algo_length=2; 두 항목 기본 cycleTime_ms=100, maxCalculationDuration_ms=1000, startTime=0, state=ALGO_UNINITIALIZED. 위에 표시된 개별 필드 대입이 기본값보다 우선한다. 항목 0 fpInitialization=NULL, 항목 1=초기화 대체 함수; 두 fpAlgorithm=계산 대체 함수. 초기 counter_ticks=0, algo_initializationRequested=false이며 이후 단계는 직전 SUT 상태를 따른다.\n완료 표시 외부 함수는 호출을 기록하고 state를 변경하지 않는다. 초기화/계산 대체 함수는 제품 함수 대신 반환·호출 조건을 제공한다.\n외부 응답: OS_GetTickCount() → 50000u",
+    "Inputs": "ALGO_MonitorExecutionTime\n인수 없음 (void)",
+    "Expected": "SUT 반환형: void (반환값 판정 없음).\n외부 호출: OS_GetTickCount()\n관찰값 algo_algorithms[0].state = ALGO_BLOCKED",
+    "section": 7,
+    "source_table": 27,
+    "source_row": 11
+  }
+]

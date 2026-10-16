@@ -298,4 +298,9 @@ def main():
 
 
 if __name__ == "__main__":
+    import sys
+    if '--legacy-redundancy' not in sys.argv:
+        raise SystemExit(subprocess.call([sys.executable, '-B', str(HERE/'run_application_tests.py'), *sys.argv[1:]]))
+    if '--legacy-redundancy' in sys.argv:
+        sys.argv.remove('--legacy-redundancy')
     raise SystemExit(main())

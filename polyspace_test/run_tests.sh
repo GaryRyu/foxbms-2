@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Native Linux host tests. All arguments are forwarded without shell evaluation.
+# Application 4.1--4.11 native Linux host tests. --legacy-redundancy is explicit.
 set -euo pipefail
 
 # Dynamic Test Server is installed separately from Bug Finder/Code Prover.

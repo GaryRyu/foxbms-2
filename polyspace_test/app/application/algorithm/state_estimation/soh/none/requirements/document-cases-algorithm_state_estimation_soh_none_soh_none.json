@@ -1,0 +1,62 @@
+[
+  {
+    "Test ID": "F2-LLR-ALG-029-TC-01-01",
+    "SUT": "SE_InitializeStateOfHealth [algorithm/state_estimation/soh/none/soh_none.c]",
+    "Requirement ID": "F2-LLR-ALG-029\nF2-LLR-ALG-029-01",
+    "Description": "무효 입력에 대한 SUT assertion 확인\n원 시험: algorithm/state_estimation/soh/none/test_soh_none.c / testSE_InitializeStateOfHealth",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n",
+    "Inputs": "SE_InitializeStateOfHealth\n1번째 인수 (DATA_BLOCK_SOH_s *pSohValues): NULL\n2번째 인수 (uint8_t stringNumber): 1u - 1u",
+    "Expected": "SUT 반환형: void (반환값 판정 없음).\nSUT의 FAS_ASSERT 실패가 발생해야 한다. 해당 assertion을 관찰하면 시험 PASS이며, 임의 crash나 timeout은 합격이 아니다.",
+    "section": 5,
+    "source_table": 23,
+    "source_row": 2
+  },
+  {
+    "Test ID": "F2-LLR-ALG-029-TC-01-02",
+    "SUT": "SE_InitializeStateOfHealth [algorithm/state_estimation/soh/none/soh_none.c]",
+    "Requirement ID": "F2-LLR-ALG-029\nF2-LLR-ALG-029-01",
+    "Description": "무효 입력에 대한 SUT assertion 확인\n원 시험: algorithm/state_estimation/soh/none/test_soh_none.c / testSE_InitializeStateOfHealth",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n상태/객체 table_testSoh (DATA_BLOCK_SOH_s): {.header.uniqueId = DATA_BLOCK_ID_SOH}; 지정하지 않은 구조체 필드와 배열 원소는 0.\n",
+    "Inputs": "SE_InitializeStateOfHealth\n1번째 인수 (DATA_BLOCK_SOH_s *pSohValues): &table_testSoh\n2번째 인수 (uint8_t stringNumber): 1u",
+    "Expected": "SUT 반환형: void (반환값 판정 없음).\nSUT의 FAS_ASSERT 실패가 발생해야 한다. 해당 assertion을 관찰하면 시험 PASS이며, 임의 crash나 timeout은 합격이 아니다.",
+    "section": 5,
+    "source_table": 23,
+    "source_row": 3
+  },
+  {
+    "Test ID": "F2-LLR-ALG-029-TC-01-03",
+    "SUT": "SE_InitializeStateOfHealth [algorithm/state_estimation/soh/none/soh_none.c]",
+    "Requirement ID": "F2-LLR-ALG-029\nF2-LLR-ALG-029-01\nF2-LLR-ALG-029-02",
+    "Description": "지정 입력의 반환·출력·상태 및 외부 호출 확인\n원 시험: algorithm/state_estimation/soh/none/test_soh_none.c / testSE_InitializeStateOfHealth",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n상태/객체 table_testSoh (DATA_BLOCK_SOH_s): {.header.uniqueId = DATA_BLOCK_ID_SOH}; 지정하지 않은 구조체 필드와 배열 원소는 0.\n",
+    "Inputs": "SE_InitializeStateOfHealth\n1번째 인수 (DATA_BLOCK_SOH_s *pSohValues): &table_testSoh\n2번째 인수 (uint8_t stringNumber): 1u - 1u",
+    "Expected": "SUT 반환형: void (반환값 판정 없음).\n출력 블록은 호출 전 스냅샷과 동일해야 한다. 기존 시험은 이 경로의 정상 종료를 확인했으며 블록 불변성 비교는 보완한 요구사항 oracle이다.",
+    "section": 5,
+    "source_table": 23,
+    "source_row": 4
+  },
+  {
+    "Test ID": "F2-LLR-ALG-029-TC-02-01",
+    "SUT": "SE_CalculateStateOfHealth [algorithm/state_estimation/soh/none/soh_none.c]",
+    "Requirement ID": "F2-LLR-ALG-029\nF2-LLR-ALG-029-01",
+    "Description": "무효 입력에 대한 SUT assertion 확인\n원 시험: algorithm/state_estimation/soh/none/test_soh_none.c / testSE_CalculateStateOfHealth",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n",
+    "Inputs": "SE_CalculateStateOfHealth\n1번째 인수 (DATA_BLOCK_SOH_s *pSohValues): NULL",
+    "Expected": "SUT 반환형: void (반환값 판정 없음).\nSUT의 FAS_ASSERT 실패가 발생해야 한다. 해당 assertion을 관찰하면 시험 PASS이며, 임의 crash나 timeout은 합격이 아니다.",
+    "section": 5,
+    "source_table": 23,
+    "source_row": 5
+  },
+  {
+    "Test ID": "F2-LLR-ALG-029-TC-02-02",
+    "SUT": "SE_CalculateStateOfHealth [algorithm/state_estimation/soh/none/soh_none.c]",
+    "Requirement ID": "F2-LLR-ALG-029\nF2-LLR-ALG-029-01\nF2-LLR-ALG-029-02",
+    "Description": "지정 입력의 반환·출력·상태 및 외부 호출 확인\n원 시험: algorithm/state_estimation/soh/none/test_soh_none.c / testSE_CalculateStateOfHealth",
+    "Precondition": "구성: BS_NR_OF_STRINGS=1; 유효 스트링 index=0. 각 독립 시나리오는 새 SUT 상태에서 시작한다.\n상태/객체 table_testSoh (DATA_BLOCK_SOH_s): {.header.uniqueId = DATA_BLOCK_ID_SOH}; 지정하지 않은 구조체 필드와 배열 원소는 0.\n",
+    "Inputs": "SE_CalculateStateOfHealth\n1번째 인수 (DATA_BLOCK_SOH_s *pSohValues): &table_testSoh",
+    "Expected": "SUT 반환형: void (반환값 판정 없음).\n출력 블록은 호출 전 스냅샷과 동일해야 한다. 기존 시험은 이 경로의 정상 종료를 확인했으며 블록 불변성 비교는 보완한 요구사항 oracle이다.",
+    "section": 5,
+    "source_table": 23,
+    "source_row": 6
+  }
+]
